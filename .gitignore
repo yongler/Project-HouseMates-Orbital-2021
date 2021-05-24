@@ -3,7 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
 
 .vscode/
-./HousmMates/vscode/
+./HouseMates/vscode/
 
 ### Django ###
 *.log
