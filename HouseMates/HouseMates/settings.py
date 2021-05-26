@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'form.apps.FormConfig'
     
 ]
 
@@ -58,7 +59,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'reactapp/build')
+            os.path.join(BASE_DIR, 'templates'),
+            # os.path.join(BASE_DIR, 'reactapp/build')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
