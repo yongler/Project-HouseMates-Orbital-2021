@@ -13,7 +13,6 @@ import RoommateDetail from './pages/RoommateDetail'
 import RoommateForm from './pages/RoommateForm'
 import Roommates from './pages/Roommates'
 import SideNav from './components/SideNav'
-import Testing from './pages/Testing'
 
 const drawerWidth = 190
 
@@ -85,7 +84,6 @@ const App = () => {
         <Switch>
           <Route component={Login} path="/login" />
           <Route component={Register} path="/register" />
-          <Route component={Testing} path="/testing" />
 
           <>
             <div className={classes.root}>
