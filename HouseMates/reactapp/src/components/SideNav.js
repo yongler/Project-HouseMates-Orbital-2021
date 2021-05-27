@@ -2,18 +2,15 @@ import React from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core'
 import clsx from 'clsx'
-import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import HomeIcon from '@material-ui/icons/Home'
-import IconButton from '@material-ui/core/IconButton'
 import PeopleIcon from '@material-ui/icons/People'
 
-const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
+const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose }) => {
   const useStyles = makeStyles(theme => ({
     active: {
       background: theme.palette.action.hover,
@@ -22,6 +19,7 @@ const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
+      position: 'absolute',
     },
     drawerOpen: {
       width: drawerWidth,
@@ -50,7 +48,7 @@ const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
       ...theme.mixins.toolbar,
     },
   }))
-  
+
   const categories = [
     {
       text: 'Housings',
@@ -71,13 +69,12 @@ const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
   return (
     <Drawer
       variant="permanent"
-      className={clsx(
-        classes.drawer,
-        {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        }
-      )}
+      onMouseEnter={hover ? handleDrawerOpen : null}
+      onMouseLeave={hover ? handleDrawerClose : null}
+      className={clsx(classes.drawer, {
+        [classes.drawerOpen]: open,
+        [classes.drawerClose]: !open,
+      })}
       classes={{
         paper: clsx({
           [classes.drawerOpen]: open,
@@ -85,13 +82,7 @@ const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
         }),
       }}
     >
-      <div className={classes.toolbar}>
-        <IconButton onClick={handleDrawerClose}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </div>
-
-      <Divider />
+      <div className={classes.toolbar} />
 
       <List>
         {categories.map(category => (

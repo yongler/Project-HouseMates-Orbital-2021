@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import Container from '@material-ui/core/Container'
 import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import Grid from '@material-ui/core/Grid'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -83,6 +84,7 @@ const Login = () => {
             autoFocus
             onChange={handleUsernameChange}
             error={usernameError}
+            helperText={usernameError ? "This is a required field" : ""}
           />
           <TextField
             variant="outlined"
@@ -94,6 +96,7 @@ const Login = () => {
             type="password"
             onChange={handlePasswordChange}
             error={passwordError}
+            helperText={passwordError ? "This is a required field" : ""}
           />
 
           <FormControl
@@ -109,8 +112,9 @@ const Login = () => {
               label="Account"
             >
               <MenuItem value="tenant">Tenant</MenuItem>
-              <MenuItem value="landlord">Landlord</MenuItem>
+              <MenuItem value="landlord">Host</MenuItem>
             </Select>
+            <FormHelperText>{accountError ? "This is a required field" : ""}</FormHelperText>
           </FormControl>
 
           <Button

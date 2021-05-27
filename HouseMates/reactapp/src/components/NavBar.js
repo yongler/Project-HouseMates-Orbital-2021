@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { makeStyles, fade } from '@material-ui/core/styles'
-import clsx from 'clsx'
 import AppBar from '@material-ui/core/AppBar'
 import Avatar from '@material-ui/core/Avatar'
 import InputBase from '@material-ui/core/InputBase'
@@ -13,28 +12,14 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 
-const NavBar = ({ drawerWidth, open, handleDrawerOpen }) => {
+const NavBar = ({ drawerWidth, handleDrawerToggle }) => {
   const useStyles = makeStyles(theme => ({
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-    },
-    appBarShift: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
     },
     menuButton: {
       marginRight: 25,
-    },
-    hide: {
-      display: 'none',
+      marginLeft: -20,
     },
     title: {
       display: 'none',
@@ -97,38 +82,34 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen }) => {
   const classes = useStyles()
   const history = useHistory()
   const [anchorEl, setAnchorEl] = useState(null)
-  const isMenuOpen = Boolean(anchorEl)
 
   const handleMenuOpen = e => { setAnchorEl(e.currentTarget) }
   const handleMenuClose = () => { setAnchorEl(null) }
-  const handleLogout = () => { history.push("/login") }
+  const handleLogout = () => {
+    setAnchorEl(null)
+    history.push("/login")
+  }
 
   return (
     <div>
       <AppBar
         position="fixed"
-        className={clsx(
-          classes.appBar, 
-          {[classes.appBarShift]: open,}
-        )}
+        className={classes.appBar}
       >
         <Toolbar className={classes.toolbar}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={handleDrawerToggle}
             edge="start"
-            className={clsx(
-              classes.menuButton, 
-              {[classes.hide]: open,}
-            )}
+            className={classes.menuButton}
           >
             <MenuIcon />
           </IconButton>
 
           <img alt="logo" src="/housemates-logo-without-text-white.svg" width="45" height="45" className={classes.logo} />
 
-          <Typography variant="h6" noWrap classes={classes.title}>
+          <Typography variant="h6" noWrap className={classes.title}>
             HouseMates
             </Typography>
 
@@ -152,16 +133,14 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen }) => {
 
           <Typography>Welcome User!</Typography>
 
-          <Avatar className={classes.user} button onClick={handleMenuOpen} />
+          <Avatar className={classes.user} onClick={handleMenuOpen} />
         </Toolbar>
       </AppBar>
 
       <Menu
         anchorEl={anchorEl}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         keepMounted
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={isMenuOpen}
+        open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
         <MenuItem onClick={handleLogout}>Logout</MenuItem>

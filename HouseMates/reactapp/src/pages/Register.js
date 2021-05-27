@@ -5,6 +5,7 @@ import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
 import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import Grid from '@material-ui/core/Grid'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -37,6 +38,7 @@ const Register = () => {
   const [emailError, setEmailError] = useState(false)
   const [passwordError, setPasswordError] = useState(false)
   const [confirmPasswordError, setConfirmPasswordError] = useState(false)
+  const [samePasswordError, setSamePasswordError] = useState(false)
   const [accountError, setAccountError] = useState(false)
 
   const handleSubmit = e => {
@@ -46,16 +48,17 @@ const Register = () => {
     setEmailError(false)
     setPasswordError(false)
     setConfirmPasswordError(false)
+    setSamePasswordError(false)
     setAccountError(false)
 
     if (username === '') { setUsernameError(true) }
     if (email === '') { setEmailError(true) }
     if (password === '') { setPasswordError(true) }
     if (confirmPassword === '') { setConfirmPasswordError(true) }
-    if (confirmPassword !== password) { setConfirmPasswordError(true) }
+    if (confirmPassword !== password) { setSamePasswordError(true) }
     if (account === '') { setAccountError(true) }
 
-    if (username && email && password && confirmPassword && confirmPassword === password && account) {
+    if (username && email && password && confirmPassword && !samePasswordError && account) {
       history.push("/")
     }
   }
@@ -74,10 +77,15 @@ const Register = () => {
   }
   const handleConfirmPasswordChange = e => {
     setConfirmPassword(e.target.value)
-    if (e.target.value === '' || e.target.value !== password) {
+    if (e.target.value === '') {
       setConfirmPasswordError(true)
+      setSamePasswordError(false)
+    } else if (e.target.value !== password) {
+      setSamePasswordError(true)
+      setConfirmPasswordError(false)
     } else {
       setConfirmPasswordError(false)
+      setSamePasswordError(false)
     }
   }
   const handleAccountChange = e => {
@@ -107,6 +115,7 @@ const Register = () => {
             autoFocus
             onChange={handleUsernameChange}
             error={usernameError}
+            helperText={usernameError ? "This is a required field" : ""}
           />
           <TextField
             variant="outlined"
@@ -118,6 +127,7 @@ const Register = () => {
             margin="normal"
             onChange={handleEmailChange}
             error={emailError}
+            helperText={emailError ? "This is a required field" : ""}
           />
           <TextField
             variant="outlined"
@@ -129,6 +139,7 @@ const Register = () => {
             margin="normal"
             onChange={handlePasswordChange}
             error={passwordError}
+            helperText={passwordError ? "This is a required field" : ""}
           />
           <TextField
             variant="outlined"
@@ -139,7 +150,8 @@ const Register = () => {
             type="password"
             margin="normal"
             onChange={handleConfirmPasswordChange}
-            error={confirmPasswordError}
+            error={confirmPasswordError || samePasswordError}
+            helperText={confirmPasswordError ? "This is a required field" : (samePasswordError ? "Password does not match" : "")}
           />
 
           <FormControl
@@ -155,8 +167,9 @@ const Register = () => {
               label="Account"
             >
               <MenuItem value="tenant">Tenant</MenuItem>
-              <MenuItem value="landlord">Landlord</MenuItem>
+              <MenuItem value="landlord">Host</MenuItem>
             </Select>
+            <FormHelperText>{accountError ? "This is a required field" : ""}</FormHelperText>
           </FormControl>
 
           <Button

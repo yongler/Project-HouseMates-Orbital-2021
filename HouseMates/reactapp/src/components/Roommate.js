@@ -19,6 +19,9 @@ const useStyles = makeStyles(theme => ({
   tag: {
     marginRight: 5
   },
+  text: {
+    height: 100,
+  },
 }))
 
 const Roommate = ({ roommate }) => {
@@ -39,8 +42,8 @@ const Roommate = ({ roommate }) => {
               {roommate.name}
             </Typography>
 
-            <Typography variant="body2" color="textSecondary">
-              {roommate.age} &middot; {roommate.gender} &middot; {roommate.bio}
+            <Typography variant="body2" color="textSecondary" className={classes.text}>
+              {roommate.age} &middot; {roommate.gender} &middot; {roommate.bio.length > 220 ? roommate.bio.substring(0, 220) + "..." : roommate.bio}
             </Typography>
 
             <br />
