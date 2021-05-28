@@ -16,7 +16,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import { logout } from "../actions/auth";
 import { connect } from "react-redux";
 
-const NavBar = ({ drawerWidth, handleDrawerToggle, isAuthenticated }) => {
+const NavBar = ({ drawerWidth, handleDrawerToggle, isAuthenticated, logout }) => {
   const useStyles = makeStyles((theme) => ({
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -115,13 +115,13 @@ const NavBar = ({ drawerWidth, handleDrawerToggle, isAuthenticated }) => {
     </Fragment>
   );
 
-  const authLinks = () => (
-    <li className="nav-item">
-      <a className="nav-link" href="#!" onClick={logout}>
-        Logout
-      </a>
-    </li>
-  );
+  // const authLinks = () => (
+  //   <li className="nav-item">
+  //     <a className="nav-link" href="#!" onClick={logout}>
+  //       Logout
+  //     </a>
+  //   </li>
+  // );
 
   return (
     <div>

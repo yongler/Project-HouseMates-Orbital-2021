@@ -3,9 +3,9 @@ from django.db import models
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
-    question_form_type = models.CharField(max_length=200)
+    question_form_type = models.CharField(max_length=200, default='')
     category = models.CharField(max_length=200, default='')
-    question_type = models.CharField(max_length=200)
+    question_type = models.CharField(max_length=200, default='')
 
     # pub_date = models.DateTimeField('date published')
 
