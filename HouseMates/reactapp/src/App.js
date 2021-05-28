@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  createMuiTheme,
+  makeStyles,
+  ThemeProvider,
+} from "@material-ui/core/styles";
+import { indigo } from "@material-ui/core/colors";
+
 import Box from "@material-ui/core/Box";
 
 import Dashboard from "./pages/Dashboard";
@@ -15,7 +21,9 @@ import Register from "./pages/Register";
 
 import Footer from "./components/Footer";
 import NavBar from "./components/NavBar";
-import RoommateDetail from "./components/RoommateDetail";
+import RoommateDetail from "./pages/RoommateDetail";
+import RoommateForm from "./pages/RoommateForm";
+
 import SideNav from "./components/SideNav";
 
 import Layout from "./hocs/Layout";
@@ -40,77 +48,120 @@ const useStyles = makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
+  flex: {
+    display: "flex",
+  },
+  closeSize: {
+    minHeight: 100,
+    width: theme.spacing(7) + 1,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  openSize: {
+    minHeight: 100,
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
 }));
 
-const App = () => {
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+const theme = createMuiTheme({
+  palette: {
+    primary: indigo,
+  },
+});
 
+const App = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [hover, setHover] = useState(true);
+  var hoverOpen = true;
+
+  const handleDrawerOpen = () => {
+    hoverOpen = true;
+    setTimeout(() => (hoverOpen ? setOpen(true) : null), 1000);
+  };
+  const handleDrawerClose = () => {
+    hoverOpen = false;
+    setOpen(false);
+  };
+  const handleDrawerToggle = () => {
+    setOpen(!open);
+    open === true ? setHover(true) : setHover(false);
+  };
 
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <Layout>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Register} />
-            <Route path="/reset-password" component={ResetPassword} />
-            <Route
-              path="/password/reset/confirm/:uid/:token"
-              component={ResetPasswordConfirm}
-            />
-            <Route path="/activate/:uid/:token" component={Activate} />
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Layout>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/login" component={Login} />
+              <Route path="/register" component={Register} />
+              <Route path="/reset-password" component={ResetPassword} />
+              <Route
+                path="/password/reset/confirm/:uid/:token"
+                component={ResetPasswordConfirm}
+              />
+              <Route path="/activate/:uid/:token" component={Activate} />
 
-            <>
-              <div className={classes.root}>
-                <NavBar
-                  drawerWidth={drawerWidth}
-                  open={open}
-                  handleDrawerOpen={handleDrawerOpen}
-                />
+              <>
+                <div className={classes.root}>
+                  <NavBar
+                    drawerWidth={drawerWidth}
+                    handleDrawerToggle={handleDrawerToggle}
+                  />
 
-                <SideNav
-                  drawerWidth={drawerWidth}
-                  open={open}
-                  handleDrawerClose={handleDrawerClose}
-                />
+                  <SideNav
+                    drawerWidth={drawerWidth}
+                    open={open}
+                    hover={hover}
+                    handleDrawerOpen={handleDrawerOpen}
+                    handleDrawerClose={handleDrawerClose}
+                  />
 
-                <main className={classes.content}>
-                  <div className={classes.toolbar} />
-                  <Route exact path="/">
-                    <Dashboard />
-                  </Route>
+                  <main className={classes.content}>
+                    <div className={classes.toolbar} />
+                    <div className={classes.flex}>
+                      <div
+                        className={hover ? classes.closeSize : classes.openSize}
+                      />
+                      <Route exact path="/">
+                        <Dashboard />
+                      </Route>
 
-                  <Route path="/housings">
-                    <Housings />
-                  </Route>
+                      <Route path="/housings">
+                        <Housings />
+                      </Route>
 
-                  <Route exact path="/roommates">
-                    <Roommates />
-                  </Route>
+                      <Route exact path="/roommates">
+                        <Roommates />
+                      </Route>
 
-                  <Route path="/roommates/:id">
-                    <RoommateDetail />
-                  </Route>
+                      <Route path="/roommates/:id">
+                        <RoommateDetail />
+                      </Route>
 
-                  <div className={classes.toolbar} />
+                      <Route path="/form">
+                        <RoommateForm />
+                      </Route>
+                    </div>
 
-                  <Box mt={8}>
-                    <Footer />
-                  </Box>
-                </main>
-              </div>
-            </>
-          </Switch>
-        </Layout>
-      </BrowserRouter>
+                    <Box mt={8}>
+                      <Footer />
+                    </Box>
+                  </main>
+                </div>
+              </>
+            </Switch>
+          </Layout>
+        </BrowserRouter>
+      </ThemeProvider>
     </Provider>
   );
 };

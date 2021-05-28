@@ -1,5 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core'
+import { useHistory } from 'react-router-dom'
+
 import AddIcon from '@material-ui/icons/Add'
 import Container from '@material-ui/core/Container'
 import Fab from '@material-ui/core/Fab'
@@ -56,11 +58,14 @@ const Roommates = () => {
   ]
 
   const classes = useStyles()
+  const history = useHistory()
+
+  const handleClick = () => { history.push("/form") }
 
   return (
     <div>
       <Container>
-        <Grid container spacing={2}>
+        <Grid container spacing={5} justify="space-between">
           {roommates.map(roommate => (
             <Grid item xs={12} md={6} lg={4} key={roommate.id}>
               <Roommate roommate={roommate} />
@@ -68,7 +73,7 @@ const Roommates = () => {
           ))}
         </Grid>
       </Container>
-      <Tooltip title="">
+      <Tooltip title="" onClick={handleClick}>
         <Fab color="primary" className={classes.tooltip}>
           <AddIcon />
         </Fab>

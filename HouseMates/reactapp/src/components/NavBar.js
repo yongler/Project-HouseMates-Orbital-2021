@@ -20,24 +20,10 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen, isAuthenticated, logout})
   const useStyles = makeStyles(theme => ({
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-    },
-    appBarShift: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
     },
     menuButton: {
       marginRight: 25,
-    },
-    hide: {
-      display: 'none',
+      marginLeft: -20,
     },
     title: {
       display: 'none',
@@ -104,7 +90,10 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen, isAuthenticated, logout})
 
   const handleMenuOpen = e => { setAnchorEl(e.currentTarget) }
   const handleMenuClose = () => { setAnchorEl(null) }
-  const handleLogout = () => { history.push("/login") }
+  const handleLogout = () => { 
+    setAnchorEl(null)
+    history.push("/login") 
+  }
 
   const guestLinks = () => (
     <Fragment>
@@ -127,10 +116,7 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen, isAuthenticated, logout})
     <div>
       <AppBar
         position="fixed"
-        className={clsx(
-          classes.appBar, 
-          {[classes.appBarShift]: open,}
-        )}
+        className={classes.appBar}
       >
         <Toolbar className={classes.toolbar}>
           <IconButton
@@ -138,10 +124,7 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen, isAuthenticated, logout})
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(
-              classes.menuButton, 
-              {[classes.hide]: open,}
-            )}
+            className={classes.menuButton}
           >
             <MenuIcon />
           </IconButton>

@@ -13,7 +13,8 @@ import HomeIcon from '@material-ui/icons/Home'
 import IconButton from '@material-ui/core/IconButton'
 import PeopleIcon from '@material-ui/icons/People'
 
-const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
+const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose }) => {
+
   const useStyles = makeStyles(theme => ({
     active: {
       background: theme.palette.action.hover,
@@ -22,6 +23,7 @@ const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
+      position: 'absolute',
     },
     drawerOpen: {
       width: drawerWidth,
@@ -71,13 +73,12 @@ const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
   return (
     <Drawer
       variant="permanent"
-      className={clsx(
-        classes.drawer,
-        {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        }
-      )}
+      onMouseEnter={hover ? handleDrawerOpen : null}
+      onMouseLeave={hover ? handleDrawerClose : null}
+      className={clsx(classes.drawer, {
+        [classes.drawerOpen]: open,
+        [classes.drawerClose]: !open,
+      })}
       classes={{
         paper: clsx({
           [classes.drawerOpen]: open,
@@ -85,13 +86,7 @@ const SideNav = ({ drawerWidth, open, handleDrawerClose }) => {
         }),
       }}
     >
-      <div className={classes.toolbar}>
-        <IconButton onClick={handleDrawerClose}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </div>
-
-      <Divider />
+      <div className={classes.toolbar} />
 
       <List>
         {categories.map(category => (
