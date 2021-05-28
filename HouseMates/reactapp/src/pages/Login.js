@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { NavLink, useHistory } from 'react-router-dom'
+import { NavLink, useHistory, Redirect } from 'react-router-dom'
+import {connect} from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
+import Box from '@material-ui/core/Box' 
 import Container from '@material-ui/core/Container'
 import FormControl from '@material-ui/core/FormControl'
 import Grid from '@material-ui/core/Grid'
@@ -12,6 +13,7 @@ import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import Footer from '../components/Footer'
+import {login} from '../actions/auth'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -25,12 +27,12 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Login = () => {
+const Login = ({login, isAuthenticated}) => {
   const classes = useStyles()
   const history = useHistory()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [account, setAccount] = useState('')
+  const [account, setAccount] = useState('tenant')
   const [usernameError, setUsernameError] = useState(false)
   const [passwordError, setPasswordError] = useState(false)
   const [accountError, setAccountError] = useState(false)
@@ -46,6 +48,8 @@ const Login = () => {
     if (account === '') { setAccountError(true) }
 
     if (username && password && account) { history.push("/") }
+
+    login(username,password)
   }
 
   const handleUsernameChange = e => {
@@ -59,6 +63,10 @@ const Login = () => {
   const handleAccountChange = e => {
     setAccount(e.target.value)
     if (e.target.value === '') { setAccountError(true) } else { setAccountError(false) }
+  }
+
+  if (isAuthenticated) {
+    return <Redirect to='/' />
   }
 
   return (
@@ -128,6 +136,10 @@ const Login = () => {
               <NavLink to="/register" variant="body2">
                 Don't have an account? Register now!
               </NavLink>
+              <br />
+              <NavLink to="/reset-password" variant="body2">
+                Forgot your password? 
+              </NavLink>
             </Grid>
           </Grid>
         </form>
@@ -140,4 +152,8 @@ const Login = () => {
   )
 }
 
-export default Login
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, {login}) (Login)

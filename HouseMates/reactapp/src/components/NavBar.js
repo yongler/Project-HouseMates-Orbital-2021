@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useState, Fragment } from 'react'
+import { useHistory, Redirect, NavLink, Link } from 'react-router-dom'
 import { makeStyles, fade } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import AppBar from '@material-ui/core/AppBar'
@@ -13,7 +13,10 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 
-const NavBar = ({ drawerWidth, open, handleDrawerOpen }) => {
+import {logout} from '../actions/auth'
+import {connect} from 'react-redux'
+
+const NavBar = ({ drawerWidth, open, handleDrawerOpen, isAuthenticated, logout}) => {
   const useStyles = makeStyles(theme => ({
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -103,6 +106,23 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen }) => {
   const handleMenuClose = () => { setAnchorEl(null) }
   const handleLogout = () => { history.push("/login") }
 
+  const guestLinks = () => (
+    <Fragment>
+        <li className='nav-item'>
+            <Link className='nav-link' to='/login'>Login</Link>
+        </li>
+        <li className='nav-item'>
+            <Link className='nav-link' to='/register'>Register</Link>
+        </li>
+    </Fragment>
+);
+
+  const authLinks = () => (
+      <li className='nav-item'>
+          <a className='nav-link' href='#!' onClick={logout}>Logout</a>
+      </li>
+  );
+
   return (
     <div>
       <AppBar
@@ -133,7 +153,8 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen }) => {
             </Typography>
 
           <div className={classes.grow} />
-
+          
+          
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -147,15 +168,25 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen }) => {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
-
+          
           <div className={classes.grow} />
 
-          <Typography>Welcome User!</Typography>
+          <div>
+            {!isAuthenticated && guestLinks()}
+          </div>
 
-          <Avatar className={classes.user} button onClick={handleMenuOpen} />
+          {isAuthenticated && <div>
+            <Typography>Welcome User!</Typography>
+            <Avatar className={classes.user} button onClick={handleMenuOpen} />
+          </div>
+   
+          } 
+
+          
         </Toolbar>
       </AppBar>
 
+      {isAuthenticated &&
       <Menu
         anchorEl={anchorEl}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -163,11 +194,18 @@ const NavBar = ({ drawerWidth, open, handleDrawerOpen }) => {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={isMenuOpen}
         onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      >  
+
+        <MenuItem onClick={logout}> Logout</MenuItem>
+    
       </Menu>
+      } 
     </div>
   )
-}
+};
 
-export default NavBar
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, {logout}) (NavBar);

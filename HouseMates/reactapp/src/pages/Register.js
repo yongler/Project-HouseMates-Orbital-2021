@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink, useHistory } from 'react-router-dom'
+import { NavLink, useHistory, Redirect } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
@@ -13,6 +13,9 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import Footer from '../components/Footer'
 
+import {register} from '../actions/auth'
+import { connect } from 'react-redux';
+
 const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -25,44 +28,66 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Register = () => {
+const Register = ({isAuthenticated, register}) => {
   const classes = useStyles()
   const history = useHistory()
-  const [username, setUsername] = useState('')
+
+  const [lastName, setLastName] = useState('')
+  const [firstName, setFirstName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [account, setAccount] = useState('')
-  const [usernameError, setUsernameError] = useState(false)
+  const [account, setAccount] = useState('tenant')
+
+  const [lastNameError, setLastNameError] = useState(false)
+  const [firstNameError, setFirstNameError] = useState(false)
   const [emailError, setEmailError] = useState(false)
   const [passwordError, setPasswordError] = useState(false)
   const [confirmPasswordError, setConfirmPasswordError] = useState(false)
   const [accountError, setAccountError] = useState(false)
 
+  const [accountCreated , setAccountCreated] = useState(false)
+
   const handleSubmit = e => {
     e.preventDefault()
 
-    setUsernameError(false)
-    setEmailError(false)
-    setPasswordError(false)
-    setConfirmPasswordError(false)
-    setAccountError(false)
+    // setUsernameError(false)
+    // setEmailError(false)
+    // setPasswordError(false)
+    // setConfirmPasswordError(false)
+    // setAccountError(false)
 
-    if (username === '') { setUsernameError(true) }
+    if (firstName === '') { setFirstNameError(true) }
+    if (lastName === '') { setLastNameError(true) }
     if (email === '') { setEmailError(true) }
     if (password === '') { setPasswordError(true) }
     if (confirmPassword === '') { setConfirmPasswordError(true) }
     if (confirmPassword !== password) { setConfirmPasswordError(true) }
     if (account === '') { setAccountError(true) }
 
-    if (username && email && password && confirmPassword && confirmPassword === password && account) {
+    if (firstName && lastName && email && password && confirmPassword && confirmPassword === password && account) {
       history.push("/")
     }
+
+    register(firstName, lastName, email, password, confirmPassword)
+    setAccountCreated(true);
   }
 
-  const handleUsernameChange = e => {
-    setUsername(e.target.value)
-    if (e.target.value === '') { setUsernameError(true) } else { setUsernameError(false) }
+  if (isAuthenticated) {
+    return <Redirect to='/' />
+  }
+
+  if (accountCreated) {
+      return <Redirect to='/login' />
+  }
+
+  const handleFirstNameChange = e => {
+    setFirstName(e.target.value)
+    if (e.target.value === '') { setFirstNameError(true) } else { setFirstNameError(false) }
+  }
+  const handleLastNameChange = e => {
+    setLastName(e.target.value)
+    if (e.target.value === '') { setLastNameError(true) } else { setLastNameError(false) }
   }
   const handleEmailChange = e => {
     setEmail(e.target.value)
@@ -101,12 +126,23 @@ const Register = () => {
             variant="outlined"
             required
             fullWidth
-            label="Username"
-            name="username"
+            label="First Name"
+            name="firstName"
             margin="normal"
             autoFocus
-            onChange={handleUsernameChange}
-            error={usernameError}
+            onChange={handleFirstNameChange}
+            error={firstNameError}
+          />
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            label="Last Name"
+            name="lastName"
+            margin="normal"
+            autoFocus
+            onChange={handleLastNameChange}
+            error={lastNameError}
           />
           <TextField
             variant="outlined"
@@ -186,4 +222,8 @@ const Register = () => {
   )
 }
 
-export default Register
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, {register}) (Register)
