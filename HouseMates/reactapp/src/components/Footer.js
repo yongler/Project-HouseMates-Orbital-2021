@@ -1,17 +1,16 @@
 import React from 'react'
-// import Link from '@material-ui/core/Link'
 import Typography from '@material-ui/core/Typography'
 
+// Footer consists of copyright.
 const Footer = () => {
   return (
+    // Copyright
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      {/* <Link color="inherit"> */}
-        Team Eclipse
-      {/* </Link> */}
-      {' '}
+      {"Copyright © "}
+      Team Eclipse
+      {" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   )
 }

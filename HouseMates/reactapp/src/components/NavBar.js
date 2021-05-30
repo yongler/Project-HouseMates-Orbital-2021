@@ -1,132 +1,115 @@
-import React, { useState, Fragment } from "react";
-import { useHistory, Redirect, NavLink, Link } from "react-router-dom";
-import { makeStyles, fade } from "@material-ui/core/styles";
-// import clsx from "clsx";
-import AppBar from "@material-ui/core/AppBar";
-import Avatar from "@material-ui/core/Avatar";
-import InputBase from "@material-ui/core/InputBase";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
+import React, { useState } from 'react'
+import { useHistory, Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { makeStyles, fade } from '@material-ui/core/styles'
+import AppBar from '@material-ui/core/AppBar'
+import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import InputBase from '@material-ui/core/InputBase'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
+import MenuIcon from '@material-ui/icons/Menu'
+import SearchIcon from '@material-ui/icons/Search'
+import { logout } from '../actions/auth'
+import Logo from '../static/housemates-logo-without-text-white.svg'
 
-import { logout } from "../actions/auth";
-import { connect } from "react-redux";
-
-const NavBar = ({ drawerWidth, handleDrawerToggle, isAuthenticated, logout }) => {
-  const useStyles = makeStyles((theme) => ({
+// NavBar consists of menu button, logo, title, search bar, and welcome text and profile pic, or login and register buttons, dependent of user authentication, from left to right.
+const NavBar = ({ handleDrawerToggle, isAuthenticated, logout }) => {
+  // Styling (from left to right)
+  const useStyles = makeStyles(theme => ({
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
+    },
+    toolbar: {
+      display: 'flex',
     },
     menuButton: {
       marginRight: 25,
       marginLeft: -20,
     },
+    logo: {
+      marginRight: 10,
+    },
     title: {
-      display: "none",
-      [theme.breakpoints.up("sm")]: {
-        display: "block",
+      display: 'none',
+      [theme.breakpoints.up('sm')]: {
+        display: 'block',
       },
+      marginRight: 10,
+    },
+    grow: {
+      flexGrow: 1,
     },
     search: {
-      position: "relative",
+      position: 'relative',
       borderRadius: theme.shape.borderRadius,
       backgroundColor: fade(theme.palette.common.white, 0.15),
-      "&:hover": {
+      '&:hover': {
         backgroundColor: fade(theme.palette.common.white, 0.25),
       },
       marginRight: theme.spacing(2),
       marginLeft: 0,
       width: 400,
-      // [theme.breakpoints.up('sm')]: {
-      //   marginLeft: theme.spacing(3),
-      //   width: 'auto',
-      // },
     },
     searchIcon: {
       padding: theme.spacing(0, 2),
-      height: "100%",
-      position: "absolute",
-      pointerEvents: "none",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
+      height: '100%',
+      position: 'absolute',
+      pointerEvents: 'none',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     inputRoot: {
-      color: "inherit",
+      color: 'inherit',
     },
     inputInput: {
       padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
+      transition: theme.transitions.create('width'),
+      width: '100%',
       [theme.breakpoints.up("md")]: {
-        width: "20ch",
+        width: '20ch',
       },
     },
-    logo: {
-      marginRight: 10,
+    buttons: {
+      textDecoration: 'none',
+      color: 'white',
     },
-    toolbar: {
-      display: "flex",
-    },
-    user: {
+    profilePic: {
       marginLeft: 10,
-      cursor: "pointer",
+      cursor: 'pointer',
     },
-    grow: {
-      flexGrow: 1,
-    },
-  }));
+  }))
 
-  const classes = useStyles();
-  const history = useHistory();
-  const [anchorEl, setAnchorEl] = useState(null);
-  // const isMenuOpen = Boolean(anchorEl);
+  // Hooks
+  const classes = useStyles()
+  const history = useHistory()
 
-  const handleMenuOpen = (e) => {
-    setAnchorEl(e.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  // States
+  const [anchorEl, setAnchorEl] = useState(null)
+
+  // Handlers
+  const handleMenuOpen = e => { setAnchorEl(e.currentTarget) }
+  const handleMenuClose = () => { setAnchorEl(null) }
+  const handleProfile = () => {
+    setAnchorEl(null)
+    history.push("/profile")
+  }
   const handleLogout = () => {
-    // logout;
-    setAnchorEl(null);
-    history.push("/login");
-  };
-
-  const guestLinks = () => (
-    <Fragment>
-      <li className="nav-item">
-        <Link className="nav-link" to="/login">
-          Login
-        </Link>
-      </li>
-      <li className="nav-item">
-        <Link className="nav-link" to="/register">
-          Register
-        </Link>
-      </li>
-    </Fragment>
-  );
-
-  // const authLinks = () => (
-  //   <li className="nav-item">
-  //     <a className="nav-link" href="#!" onClick={logout}>
-  //       Logout
-  //     </a>
-  //   </li>
-  // );
+    setAnchorEl(null)
+    logout()
+    history.push("/login")
+  }
 
   return (
     <div>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
+          {/* Menu button */}
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -137,20 +120,21 @@ const NavBar = ({ drawerWidth, handleDrawerToggle, isAuthenticated, logout }) =>
             <MenuIcon />
           </IconButton>
 
+          {/* Logo */}
           <img
             alt="logo"
-            src="/housemates-logo-without-text-white.svg"
+            src={Logo}
             width="45"
             height="45"
             className={classes.logo}
           />
 
-          <Typography variant="h6" noWrap classes={classes.title}>
-            HouseMates
-          </Typography>
+          {/* Title */}
+          <Typography variant="h6" className={classes.title}>HouseMates</Typography>
 
           <div className={classes.grow} />
 
+          {/* Search bar */}
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -167,38 +151,38 @@ const NavBar = ({ drawerWidth, handleDrawerToggle, isAuthenticated, logout }) =>
 
           <div className={classes.grow} />
 
-          <div>{!isAuthenticated && guestLinks()}</div>
-
-          {isAuthenticated && (
-            <div>
-              <Typography>Welcome User!</Typography>
+          {/* Welcome text and profile pic, or login and register buttons */}
+          {isAuthenticated
+            ?
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div style={{ alignSelf: 'center' }}><Typography noWrap>Welcome User!</Typography></div>
+              <div><Avatar className={classes.profilePic} onClick={handleMenuOpen} /></div>
+              <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
             </div>
-          )}
-
-          {isAuthenticated && (
+            :
             <div>
-              <Avatar className={classes.user} onClick={handleMenuOpen} />
+              <Button>
+                <Link to="/login" className={classes.buttons}>Login</Link>
+              </Button>
+              <Button>
+                <Link to="/register" className={classes.buttons}>Register</Link>
+              </Button>
             </div>
-          )}
+          }
         </Toolbar>
       </AppBar>
-
-      {isAuthenticated && (
-        <Menu
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={logout}> Logout</MenuItem>
-        </Menu>
-      )}
     </div>
-  );
-};
+  )
+}
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
+const mapStateToProps = state => ({ isAuthenticated: state.auth.isAuthenticated })
 
-export default connect(mapStateToProps, { logout })(NavBar);
+export default connect(mapStateToProps, { logout })(NavBar)

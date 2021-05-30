@@ -16,31 +16,34 @@ import Stepper from '@material-ui/core/Stepper'
 import Typography from '@material-ui/core/Typography'
 import Confirmation from '../components/Confirmation'
 
-const useStyles = makeStyles(theme => ({
-    backButton: {
-        marginRight: theme.spacing(1),
-    },
-    paper: {
-        width: '100%',
-        padding: 30,
-        paddingBottom: 50,
-        marginLeft: 23,
-        marginRight: 23,
-    },
-    flex: {
-        display: 'flex',
-        flexDirection: 'column',
-        paddingLeft: 250,
-    },
-    category: {
-        marginBottom: 10,
-    },
-    active: {
-        background: theme.palette.action.hover,
-    },
-}))
-
+// RoommateForm consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 const RoommateForm = () => {
+    // Styling
+    const useStyles = makeStyles(theme => ({
+        backButton: {
+            marginRight: theme.spacing(1),
+        },
+        paper: {
+            width: '100%',
+            padding: 30,
+            paddingBottom: 50,
+            marginLeft: 23,
+            marginRight: 23,
+        },
+        flex: {
+            display: 'flex',
+            flexDirection: 'column',
+            paddingLeft: 250,
+        },
+        category: {
+            marginBottom: 10,
+        },
+        active: {
+            background: theme.palette.action.hover,
+        },
+    }))
+
+    // Data (hard coded for now)
     const categories = [
         "Personalities",
         "Work/Study",
@@ -87,8 +90,18 @@ const RoommateForm = () => {
         },
     ]
 
+    // Hooks
     const classes = useStyles()
     const history = useHistory()
+
+    // Helper functions
+    const completed = category => {
+        return questions
+            .filter(question => question.category === categories[category])
+            .reduce((prev, curr) => prev && variables[curr.id - 1] !== "", true)
+    }
+
+    // States
     const [currentCategory, setCurrentCategory] = useState(0)
     const [maxCategory, setMaxCategory] = useState(0)
     const [categoryCompleted, setCategoryCompleted] = useState({})
@@ -102,6 +115,7 @@ const RoommateForm = () => {
     const variables = [age, nationality, catDog, smoker, workingShift, alcoholic]
     const functions = [setAge, setNationality, setCatDog, setSmoker, setWorkingShift, setAlcoholic]
 
+    // Handlers
     const handleNext = () => {
         setCurrentCategory(prev => prev + 1)
         setMaxCategory(prev => currentCategory >= maxCategory ? prev + 1 : prev)
@@ -118,14 +132,10 @@ const RoommateForm = () => {
         setOpen(false)
         history.push("/roommates")
     }
-    const completed = category => {
-        return questions
-            .filter(question => question.category === categories[category])
-            .reduce((prev, curr) => prev && variables[curr.id - 1] !== "", true)
-    }
 
     return (
         <Paper className={classes.paper}>
+            {/* Stepper */}
             <Stepper nonLinear alternativeLabel activeStep={currentCategory}>
                 {categories.map((category, index) => (
                     <Step key={category}>
@@ -143,25 +153,31 @@ const RoommateForm = () => {
             <div>
                 {currentCategory === categories.length - 1
                     ?
+                    // Summary
                     <Box className={classes.flex} mt={5}>
                         <Grid container spacing={2}>
                             {categories
                                 .filter(category => category !== "Confirmation")
                                 .map(category =>
                                     <Grid container className={classes.category} key={category}>
+                                        {/* Category */}
                                         <Grid item xs={12}>
                                             <Typography variant="h6">{category}</Typography>
                                         </Grid>
+
                                         <Grid container item xs={12}>
                                             {questions
                                                 .filter(question => question.category === category)
                                                 .map(question =>
                                                     <Grid container item xs={12} key={question.id}>
+                                                        {/* Question */}
                                                         <Grid item xs={6}>
                                                             <Typography variant="body1" gutterBottom>
                                                                 {question.question}
                                                             </Typography>
                                                         </Grid>
+
+                                                        {/* User input */}
                                                         <Grid item xs={6}>
                                                             <Typography variant="body1" gutterBottom>
                                                                 {variables[question.id - 1]}
@@ -174,24 +190,28 @@ const RoommateForm = () => {
                                 )}
                         </Grid>
 
+                        {/* Back and submit buttons */}
                         <Box mt={10}>
                             <Button onClick={handleBack} className={classes.backButton}>Back</Button>
                             <Button variant="contained" color="primary" onClick={handleConfirmation}>Submit</Button>
                         </Box>
                     </Box>
                     :
+                    // List of questions based on category
                     <Box className={classes.flex}>
                         {questions
                             .filter(question => question.category === categories[currentCategory])
                             .map(question =>
                                 <Box mt={5} key={question.id}>
                                     <FormControl>
+                                        {/* Question */}
                                         <FormLabel>
                                             <Typography variant="h6" color="textPrimary">
                                                 {question.question}
                                             </Typography>
                                         </FormLabel>
 
+                                        {/* List of choices */}
                                         <RadioGroup
                                             onChange={handleChange(question.id - 1)}
                                             value={variables[question.id - 1]}
@@ -210,6 +230,7 @@ const RoommateForm = () => {
                             )
                         }
 
+                        {/* Back and next buttons */}
                         <Box mt={10}>
                             <Button
                                 disabled={currentCategory === 0}
@@ -230,9 +251,11 @@ const RoommateForm = () => {
                     </Box>
                 }
             </div>
+
+            {/* Confirmation dialog */}
             <Confirmation open={open} handleClose={handleClose} handleRedirect={handleRedirect}/>
         </Paper>
-    );
+    )
 }
 
 export default RoommateForm

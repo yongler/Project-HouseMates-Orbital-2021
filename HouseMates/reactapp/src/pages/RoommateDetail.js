@@ -12,38 +12,42 @@ import Tooltip from '@material-ui/core/Tooltip'
 import IconButton from '@material-ui/core/IconButton'
 import AddIcon from '@material-ui/icons/Add'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import Pic from '../static/mrbean.jpg'
 
-const useStyles = makeStyles(theme => ({
-    avatar: {
-        height: 200,
-        width: 200,
-        marginBottom: 20,
-    },
-    content: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    tag: {
-        marginRight: 5,
-        marginTop: 5,
-    },
-    category: {
-        marginBottom: 30,
-    },
-    card: {
-        width: '100%',
-        marginLeft: 23,
-        marginRight: 23,
-    },
-    tooltip: {
-        position: 'fixed',
-        bottom: theme.spacing(2),
-        right: theme.spacing(3),
-    },
-}))
-
+// RoommateDetail consists of profile pic, name, categories of tags and post button.
 const RoommateDetail = () => {
+    // Styling
+    const useStyles = makeStyles(theme => ({
+        avatar: {
+            height: 200,
+            width: 200,
+            marginBottom: 20,
+        },
+        content: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+        },
+        tag: {
+            marginRight: 5,
+            marginTop: 5,
+        },
+        category: {
+            marginBottom: 30,
+        },
+        card: {
+            width: '100%',
+            marginLeft: 23,
+            marginRight: 23,
+        },
+        tooltip: {
+            position: 'fixed',
+            bottom: theme.spacing(2),
+            right: theme.spacing(3),
+        },
+    }))
+    
+    // Data (hard coded for now)
     const roommate = {
         id: 1,
         pic: 'mrbean.jpg',
@@ -69,16 +73,19 @@ const RoommateDetail = () => {
         car: 'Owns a car',
     }
 
-    const handleBack = () => { history.go(-1) }
-    const handleClick = () => { history.push("/form") }
-
+    // Hooks
     const classes = useStyles()
     const history = useHistory()
     const { id } = useParams()
 
+    // Handlers
+    const handleBack = () => { history.go(-1) }
+    const handleClick = () => { history.push("/form") }
+
     return (
         <div className={classes.card}>
             <Card>
+                {/* Back button */}
                 <CardHeader
                     avatar={
                         <IconButton onClick={handleBack}>
@@ -88,19 +95,23 @@ const RoommateDetail = () => {
                 />
 
                 <CardContent className={classes.content}>
-                    <Avatar className={classes.avatar} src={roommate.pic} />
+                    {/* Profile pic */}
+                    <Avatar className={classes.avatar} src={Pic} />
 
+                    {/* Name */}
                     <Typography variant="h5">{id} {roommate.name}</Typography>
 
                     <Typography variant="body2" color="textSecondary" className={classes.category}>
                         Looking for roommates who are:
-                </Typography>
+                    </Typography>
 
+                    {/* Categories of tags */}
                     <div>
                         <div className={classes.category}>
                             <Typography variant="body1" color="textPrimary" gutterBottom>
                                 Personalities
-                        </Typography>
+                            </Typography>
+
                             <Chip className={classes.tag} label={roommate.age} color="primary" />
                             <Chip className={classes.tag} label={roommate.gender} color="primary" />
                             <Chip className={classes.tag} label={roommate.nationality} color="primary" />
@@ -111,7 +122,8 @@ const RoommateDetail = () => {
                         <div className={classes.category}>
                             <Typography variant="body1" color="textPrimary" gutterBottom>
                                 Work / Study
-                        </Typography>
+                            </Typography>
+
                             <Chip className={classes.tag} label={roommate.discipline} color="primary" />
                             <Chip className={classes.tag} label={roommate.company} color="primary" />
                             <Chip className={classes.tag} label={roommate.shift} color="primary" />
@@ -119,6 +131,7 @@ const RoommateDetail = () => {
 
                         <div className={classes.category}>
                             <Typography variant="body1" color="textPrimary" gutterBottom>Interests</Typography>
+
                             {roommate.interests.map(interest =>
                                 <Chip key={interest} label={interest} color="primary" className={classes.tag} />
                             )}
@@ -127,7 +140,8 @@ const RoommateDetail = () => {
                         <div className={classes.category}>
                             <Typography variant="body1" color="textPrimary" gutterBottom>
                                 Habits
-                        </Typography>
+                            </Typography>
+
                             <Chip className={classes.tag} label={roommate.smoker} color="primary" />
                             <Chip className={classes.tag} label={roommate.alcoholic} color="primary" />
                             <Chip className={classes.tag} label={roommate.sleepingTime} color="primary" />
@@ -138,7 +152,8 @@ const RoommateDetail = () => {
                         <div className={classes.category}>
                             <Typography variant="body1" color="textPrimary" gutterBottom>
                                 Room Preferences
-                        </Typography>
+                            </Typography>
+
                             <Chip className={classes.tag} label={roommate.room} color="primary" />
                             {roommate.facilities.map(facility =>
                                 <Chip key={facility} label={facility} color="primary" className={classes.tag} />
@@ -148,6 +163,8 @@ const RoommateDetail = () => {
                     </div>
                 </CardContent>
             </Card >
+
+            {/* Post button */}
             <Tooltip title="" onClick={handleClick}>
                 <Fab color="primary" className={classes.tooltip}>
                     <AddIcon />

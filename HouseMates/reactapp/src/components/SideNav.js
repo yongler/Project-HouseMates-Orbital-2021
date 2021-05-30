@@ -2,19 +2,17 @@ import React from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core'
 import clsx from 'clsx'
-// import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-// import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import HomeIcon from '@material-ui/icons/Home'
-// import IconButton from '@material-ui/core/IconButton'
 import PeopleIcon from '@material-ui/icons/People'
 
+// SideNav consists of list of tabs.
 const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose }) => {
-
+  // Styling
   const useStyles = makeStyles(theme => ({
     active: {
       background: theme.palette.action.hover,
@@ -53,6 +51,7 @@ const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose
     },
   }))
   
+  // Content
   const categories = [
     {
       text: 'Housings',
@@ -66,6 +65,7 @@ const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose
     },
   ]
 
+  // Hooks
   const history = useHistory()
   const location = useLocation()
   const classes = useStyles()
@@ -88,6 +88,7 @@ const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose
     >
       <div className={classes.toolbar} />
 
+      {/* List of tabs */}
       <List>
         {categories.map(category => (
           <ListItem
