@@ -1,106 +1,116 @@
 import React, { useState } from 'react'
-import { NavLink, useHistory, Redirect } from 'react-router-dom'
-import {connect} from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box' 
-import Container from '@material-ui/core/Container'
-import FormControl from '@material-ui/core/FormControl'
 import Grid from '@material-ui/core/Grid'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
+import Container from '@material-ui/core/Container'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-import Footer from '../components/Footer'
+import { reset_password } from '../actions/auth'
 
-import {reset_password} from '../actions/auth'
+// ResetPassword consists of title, and ((confirmation text), or (email input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
+const ResetPassword = ({ reset_password }) => {
+  // Styling
+  const useStyles = makeStyles(theme => ({
+    paper: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
+    buttons: {
+      margin: theme.spacing(3, 0, 2),
+    },
+  }))
 
-
-const useStyles = makeStyles(theme => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}))
-
-const ResetPassword = ({reset_password}) => {
+  // Hooks
   const classes = useStyles()
   const history = useHistory()
-  
-  const [username, setUsername] = useState('')
-  const [usernameError, setUsernameError] = useState(false)
 
-  const [requestSent, setRequestSent] = useState(false);
+  // States
+  const [email, setEmail] = useState("")
+  const [emailError, setEmailError] = useState(false)
 
+  const [requestSent, setRequestSent] = useState(false)
+
+  // Handlers
+  const handleEmailChange = e => {
+    setEmail(e.target.value)
+    if (e.target.value === "") { setEmailError(true) } else { setEmailError(false) }
+  }
+  const handleCancel = () => history.go(-1)
   const handleSubmit = e => {
     e.preventDefault()
-    setUsernameError(false)
-    if (username === '') { setUsernameError(true) }
 
-    if (username) { history.push("/") }
+    setEmailError(false)
 
-    reset_password(username)
-    setRequestSent(true);
-  }
+    if (email === "") { setEmailError(true) }
 
-  if (requestSent) {
-    return <Redirect to='/' />
-}
-
-  const handleUsernameChange = e => {
-    setUsername(e.target.value)
-    if (e.target.value === '') { setUsernameError(true) } else { setUsernameError(false) }
+    if (email) {
+      reset_password(email)
+      setRequestSent(true)
+    }
   }
 
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
-        <img alt="logo" src="housemates-logo-with-text-black.svg" width="150" height="150" />
-
+        {/* Title */}
         <Typography variant="h6" gutterBottom>Reset Password</Typography>
 
-        <form
-          className={classes.form}
-          noValidate
-          onSubmit={handleSubmit}
-        >
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            label="Username"
-            name="username"
-            autoFocus
-            onChange={handleUsernameChange}
-            error={usernameError}
-          />
+        {requestSent
+          ?
+          // Confirmation text
+          <div>
+            <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
+              Kindly check your email to reset your password.
+            </Typography>
+            <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
+              You may close this window.
+            </Typography>
+          </div>
+          :
+          <form noValidate onSubmit={handleSubmit}>
+            {/* Email input */}
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Email"
+              name="email"
+              autoFocus
+              onChange={handleEmailChange}
+              error={emailError}
+              helperText={emailError ? "This is a required field" : ""}
+            />
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Submit
-          </Button>
-
-        </form>
+            {/* Cancel and submit buttons */}
+            <Grid container spacing={2} className={classes.buttons}>
+              <Grid item xs={12} sm={6}>
+                <Button
+                  fullWidth
+                  onClick={handleCancel}
+                >
+                  Cancel
+              </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                >
+                  Submit
+              </Button>
+              </Grid>
+            </Grid>
+          </form>
+        }
       </div>
-
-      <Box mt={8}>
-        <Footer />
-      </Box>
     </Container>
   )
 }
 
-
-export default connect(null, {reset_password}) (ResetPassword)
+export default connect(null, { reset_password })(ResetPassword)

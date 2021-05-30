@@ -1,41 +1,64 @@
-import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { verify } from '../actions/auth';
+import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
+import Container from '@material-ui/core/Container'
+import Typography from '@material-ui/core/Typography'
+import { verify } from '../actions/auth'
 
+// Activate consists of title and verify button, from top to bottom.
 const Activate = ({ verify, match }) => {
-    const [verified, setVerified] = useState(false);
+    // Styling
+    const useStyles = makeStyles(theme => ({
+        paper: {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+        },
+        button: {
+            margin: theme.spacing(3, 0, 2),
+        },
+    }))
 
-    const verify_account = e => {
-        const uid = match.params.uid;
-        const token = match.params.token;
+    // Hooks
+    const classes = useStyles()
 
-        verify(uid, token);
-        setVerified(true);
-    };
+    // States
+    const [verified, setVerified] = useState(false)
 
-    if (verified) {
-        return <Redirect to='/' />
+    // Handlers
+    const handleVerification = e => {
+        e.preventDefault()
+
+        const uid = match.params.uid
+        const token = match.params.token
+        verify(uid, token)
+        setVerified(true)
     }
 
+    if (verified) { return <Redirect to='/' /> }
+
     return (
-        <div className='container'>
-            <div 
-                className='d-flex flex-column justify-content-center align-items-center'
-                style={{ marginTop: '200px' }}
-            >
-                <h1>Verify your Account:</h1>
-                <button
-                    onClick={verify_account}
-                    style={{ marginTop: '50px' }}
-                    type='button'
-                    className='btn btn-primary'
+        <Container maxWidth="xs">
+            <div className={classes.paper}>
+                {/* Title */}
+                <Typography variant="h6" gutterBottom>Account Verification</Typography>
+
+                {/* Verify button */}
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    onClick={handleVerification}
+                    className={classes.button}
                 >
                     Verify
-                </button>
+                </Button>
             </div>
-        </div>
-    );
-};
+        </Container>
+    )
+}
 
-export default connect(null, { verify })(Activate);
+export default connect(null, { verify })(Activate)

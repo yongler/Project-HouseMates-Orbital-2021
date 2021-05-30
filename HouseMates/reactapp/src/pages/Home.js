@@ -1,9 +1,10 @@
 import React from 'react'
 
+// Empty for now
 const Home = () => {
     return (
         <div>
-            <h3>home</h3>
+            Home
         </div>
     )
 }

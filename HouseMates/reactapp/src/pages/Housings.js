@@ -7,15 +7,18 @@ import Grid from '@material-ui/core/Grid'
 import Tooltip from '@material-ui/core/Tooltip'
 import Housing from '../components/Housing'
 
-const useStyles = makeStyles(theme => ({
-  tooltip: {
-    position: 'fixed',
-    bottom: theme.spacing(2),
-    right: theme.spacing(3),
-  },
-}))
-
+// Housings consists of list of Housing and post button
 const Housings = () => {
+  // Styling
+  const useStyles = makeStyles(theme => ({
+    tooltip: {
+      position: 'fixed',
+      bottom: theme.spacing(2),
+      right: theme.spacing(3),
+    },
+  }))
+
+  // Data (hard coded for now)
   const housings = [
     {
       id: 1,
@@ -43,10 +46,12 @@ const Housings = () => {
     },
   ]
 
+  // Hooks
   const classes = useStyles()
 
   return (
     <div>
+      {/* List of Housing */}
       <Container>
         <Grid container spacing={2}>
           {housings.map(housing => (
@@ -56,6 +61,8 @@ const Housings = () => {
           ))}
         </Grid>
       </Container>
+
+      {/* Post button */}
       <Tooltip title="">
         <Fab color="primary" className={classes.tooltip}>
           <AddIcon />

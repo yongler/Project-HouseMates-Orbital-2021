@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
-
 import AddIcon from '@material-ui/icons/Add'
 import Container from '@material-ui/core/Container'
 import Fab from '@material-ui/core/Fab'
@@ -9,17 +8,18 @@ import Grid from '@material-ui/core/Grid'
 import Tooltip from '@material-ui/core/Tooltip'
 import Roommate from '../components/Roommate'
 
-// import mrbean from './mrbean.jpg'
-
-const useStyles = makeStyles(theme => ({
-  tooltip: {
-    position: 'fixed',
-    bottom: theme.spacing(2),
-    right: theme.spacing(3),
-  },
-}))
-
+// Roommates consists of list of Roommate and post button.
 const Roommates = () => {
+  // Styling
+  const useStyles = makeStyles(theme => ({
+    tooltip: {
+      position: 'fixed',
+      bottom: theme.spacing(2),
+      right: theme.spacing(3),
+    },
+  }))
+
+  // Data (hard coded for now)
   const roommates = [
     {
       id: 1,
@@ -59,13 +59,16 @@ const Roommates = () => {
     },
   ]
 
+  // Hooks
   const classes = useStyles()
   const history = useHistory()
 
+  // Handlers
   const handleClick = () => { history.push("/form") }
 
   return (
     <div>
+      {/* List of Roommate */}
       <Container>
         <Grid container spacing={5} justify="space-between">
           {roommates.map(roommate => (
@@ -75,6 +78,8 @@ const Roommates = () => {
           ))}
         </Grid>
       </Container>
+
+      {/* Post button */}
       <Tooltip title="" onClick={handleClick}>
         <Fab color="primary" className={classes.tooltip}>
           <AddIcon />
