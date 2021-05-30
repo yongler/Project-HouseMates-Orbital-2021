@@ -12,6 +12,7 @@
 <form action="{% url 'form:vote' question.id %}" method="post">
 	{% csrf_token %} 
 	{% for choice in question.choice_set.all %}
+		{% comment %} {% print(choice) %} {% endcomment %}
 		<div class="form-check">
 			<input
 				type="radio"

@@ -16,8 +16,12 @@ class ChoiceInline(admin.TabularInline):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    fieldsets = [(None, {'fields': ['question_text']}),
-                 (None, {'fields': ['category']})]
+    fieldsets = [
+                 (None, {'fields': ['question_form_type']}),
+                 (None, {'fields': ['category']}),
+                 (None, {'fields': ['question_text']}),
+                 (None, {'fields': ['question_type']})
+                 ]
     inlines = [ChoiceInline]
 
 

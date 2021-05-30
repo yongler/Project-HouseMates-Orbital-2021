@@ -2,9 +2,13 @@
 {% block content %}
 <h1 class="mb-5 text-center">{{ question.question_text }}</h1>
 
+{% comment %} {{ question.choice_set.all }} {% endcomment %}
+
 <ul class="list-group mb-5">
 	{% for choice in question.choice_set.all %}
 	{% if choice.selected %}
+		{{ question.choice_set.all }} 
+		{{ question.choice_set}} 
 		<li class="list-group-item">
 			{{ choice.choice_text }}  
 			{% comment %} <span class="badge badge-success float-right">{{ choice.votes }} vote{{ choice.votes | pluralize }}</span> {% endcomment %}

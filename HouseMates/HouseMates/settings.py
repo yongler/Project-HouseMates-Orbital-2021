@@ -65,7 +65,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            # os.path.join(BASE_DIR, "build"),
+            # os.path.join(BASE_DIR, "templates"),
             os.path.join(BASE_DIR, "reactapp/build")
         ],
         "APP_DIRS": True,
@@ -146,7 +146,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "reactapp/build/static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "reactapp/static")
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated"),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),

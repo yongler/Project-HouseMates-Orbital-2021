@@ -82,6 +82,8 @@ class CustomUser(AbstractBaseUser):
     # is_tenant = models.BooleanField(default=True)
     # is_host = models.BooleanField(default=False)
 
+    
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
 

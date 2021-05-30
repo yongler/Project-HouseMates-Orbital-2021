@@ -1,5 +1,5 @@
 import {useEffect} from 'react'
-import Navbar from '../components/NavBar'
+// import Navbar from '../components/NavBar'
 import {connect} from 'react-redux'
 import {checkAuthenticated, load_user} from '../actions/auth'
 
@@ -11,9 +11,7 @@ const Layout= (props) => {
 
     return (
     <div>
-        <Navbar />
         {props.children}
-
     </div>   
     )  
     

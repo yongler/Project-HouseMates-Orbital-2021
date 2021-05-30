@@ -9,6 +9,8 @@ import Grid from '@material-ui/core/Grid'
 import Tooltip from '@material-ui/core/Tooltip'
 import Roommate from '../components/Roommate'
 
+// import mrbean from './mrbean.jpg'
+
 const useStyles = makeStyles(theme => ({
   tooltip: {
     position: 'fixed',
