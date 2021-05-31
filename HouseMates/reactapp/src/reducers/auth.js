@@ -43,7 +43,7 @@ export default function(state = initialState, action) {
                 ...state,
                 isAuthenticated: true,
                 access: payload.access,
-                refresh: payload.refresh
+                refresh: payload.refresh,
             }
 
         case USER_LOADED_SUCCESS:

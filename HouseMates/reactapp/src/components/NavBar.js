@@ -17,7 +17,7 @@ import { logout } from '../actions/auth'
 import Logo from '../static/housemates-logo-without-text-white.svg'
 
 // NavBar consists of menu button, logo, title, search bar, and welcome text and profile pic, or login and register buttons, dependent of user authentication, from left to right.
-const NavBar = ({ handleDrawerToggle, isAuthenticated, logout }) => {
+const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
   // Styling (from left to right)
   const useStyles = makeStyles(theme => ({
     appBar: {
@@ -152,10 +152,10 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout }) => {
           <div className={classes.grow} />
 
           {/* Welcome text and profile pic, or login and register buttons */}
-          {isAuthenticated
+          {isAuthenticated && user 
             ?
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <div style={{ alignSelf: 'center' }}><Typography noWrap>Welcome User!</Typography></div>
+              <div style={{ alignSelf: 'center' }}><Typography noWrap>Welcome {user.first_name} {user.last_name}!</Typography></div>
               <div><Avatar className={classes.profilePic} onClick={handleMenuOpen} /></div>
               <Menu
                 anchorEl={anchorEl}
@@ -176,13 +176,16 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout }) => {
                 <Link to="/register" className={classes.buttons}>Register</Link>
               </Button>
             </div>
-          }
+          } 
         </Toolbar>
       </AppBar>
     </div>
   )
 }
 
-const mapStateToProps = state => ({ isAuthenticated: state.auth.isAuthenticated })
+const mapStateToProps = state => ({ 
+  isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user
+})
 
 export default connect(mapStateToProps, { logout })(NavBar)
