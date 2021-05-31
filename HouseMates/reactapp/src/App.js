@@ -4,13 +4,16 @@ import { Provider } from 'react-redux'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { indigo } from '@material-ui/core/colors'
 import Activate from './pages/Activate'
+import Dashboard from './pages/Dashboard'
 import Home from './pages/Home'
 import Housings from './pages/Housings'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
 import ResetPassword from './pages/ResetPassword'
-import ResetPasswordConfirm from './pages/ResetPasswordConfirm'
+import ResetPasswordConfirm from '<div className="" />
+<pages />
+<ResetPasswordC></ResetPasswordC>onfirm'
 import RoommateDetail from './pages/RoommateDetail'
 import RoommateForm from './pages/RoommateForm'
 import Roommates from './pages/Roommates'
@@ -46,6 +49,7 @@ const App = () => {
 
               {/* Routes with LayoutTwo */}
               <RouteWrapper exact path="/" component={Home} layout={LayoutTwo} />
+              <RouteWrapper exact path="/dashboard" component={Dashboard} layout={LayoutTwo} />
               <RouteWrapper path="/housings" component={Housings} layout={LayoutTwo} />
               <RouteWrapper exact path="/roommates" component={Roommates} layout={LayoutTwo} />
               <RouteWrapper path="/roommates/:id" component={RoommateDetail} layout={LayoutTwo} />

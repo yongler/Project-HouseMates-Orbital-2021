@@ -68,7 +68,7 @@ const Login = ({ login, isAuthenticated }) => {
     }
   }
 
-  if (isAuthenticated) { return <Redirect to="/" /> }
+  if (isAuthenticated) { return <Redirect to="/dashboard" /> }
 
   return (
     <Container maxWidth="xs">
