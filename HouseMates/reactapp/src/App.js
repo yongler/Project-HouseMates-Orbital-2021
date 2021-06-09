@@ -11,9 +11,7 @@ import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
 import ResetPassword from './pages/ResetPassword'
-import ResetPasswordConfirm from '<div className="" />
-<pages />
-<ResetPasswordC></ResetPasswordC>onfirm'
+import ResetPasswordConfirm from './pages/ResetPasswordConfirm'
 import RoommateDetail from './pages/RoommateDetail'
 import RoommateForm from './pages/RoommateForm'
 import Roommates from './pages/Roommates'

@@ -4,7 +4,7 @@ Create virtual environment
 
 After pull/clone:
 npm install (in reactapp directory)
-pip3 install -r requirement.txt
+pip3 install -r requirements.txt
 
 If there are any changes made to the reactapp directory, run 'npm run build' in reactapp directory
 
