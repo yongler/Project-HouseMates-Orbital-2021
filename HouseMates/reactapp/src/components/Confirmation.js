@@ -32,12 +32,12 @@ const Confirmation = ({ open, handleClose, handleRedirect }) => {
                 :
                 <Box>
                     <DialogContent>Are you sure you want to submit?</DialogContent>
-                    
+
                     <DialogActions>
+                        <Button variant="contained" onClick={handleClose}>No</Button>
                         <Button variant="contained" color="primary" type="submit" onClick={handleSubmit}>
                             Yes
                         </Button>
-                        <Button variant="contained" onClick={handleClose}>No</Button>
                     </DialogActions>
                 </Box>
             }

@@ -11,7 +11,7 @@ import HomeIcon from '@material-ui/icons/Home'
 import PeopleIcon from '@material-ui/icons/People'
 
 // SideNav consists of list of tabs.
-const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose }) => {
+const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnter, handleMouseLeave }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     active: {
@@ -30,6 +30,14 @@ const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
+    drawerOpenDelay: {
+      width: drawerWidth,
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      transitionDelay: '1s'
+    },
     drawerClose: {
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
@@ -46,8 +54,7 @@ const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose
       alignItems: 'center',
       justifyContent: 'flex-end',
       padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
+      minHeight: theme.mixins.toolbar.minHeight + 8,
     },
   }))
   
@@ -73,16 +80,18 @@ const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose
   return (
     <Drawer
       variant="permanent"
-      onMouseEnter={hover ? handleDrawerOpen : null}
-      onMouseLeave={hover ? handleDrawerClose : null}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={clsx(classes.drawer, {
-        [classes.drawerOpen]: open,
-        [classes.drawerClose]: !open,
+        [classes.drawerOpen]: drawerOpen,
+        [classes.drawerOpenDelay]: !menuOpen && hoverOpen,
+        [classes.drawerClose]: !drawerOpen,
       })}
       classes={{
         paper: clsx({
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
+          [classes.drawerOpen]: drawerOpen,
+          [classes.drawerOpenDelay]: !menuOpen && hoverOpen,
+          [classes.drawerClose]: !drawerOpen,
         }),
       }}
     >
@@ -94,7 +103,10 @@ const SideNav = ({ drawerWidth, open, hover, handleDrawerOpen, handleDrawerClose
           <ListItem
             key={category.text}
             button
-            onClick={() => history.push(category.path)}
+            onClick={() => {
+              // setHoverOpen(true)
+              history.push(category.path)
+            }}
             className={location.pathname === category.path ? classes.active : null}
           >
             <ListItemIcon>{category.icon}</ListItemIcon>

@@ -1,18 +1,21 @@
 import { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { checkAuthenticated, load_user } from '../actions/auth'
+import { checkAuthentication } from '../redux/auth/actions'
 
-const Layout = (props) => {
+const Layout = ({ children, checkAuthentication}) => {
     useEffect(() => {
-        props.checkAuthenticated()
-        props.load_user()
+        checkAuthentication()
     }, [])
 
     return (
     <div>
-        {props.children}
+        {children}
     </div>   
     )  
 }
 
-export default connect(null, { checkAuthenticated, load_user })(Layout)
+const mapDispatchToProps = dispatch => ({
+    checkAuthentication: () => dispatch(checkAuthentication()),
+})
+
+export default connect(null, mapDispatchToProps)(Layout)

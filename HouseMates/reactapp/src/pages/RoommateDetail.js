@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Avatar from '@material-ui/core/Avatar'
@@ -46,7 +46,7 @@ const RoommateDetail = () => {
             right: theme.spacing(3),
         },
     }))
-    
+
     // Data (hard coded for now)
     const roommate = {
         id: 1,
@@ -81,6 +81,10 @@ const RoommateDetail = () => {
     // Handlers
     const handleBack = () => { history.go(-1) }
     const handleClick = () => { history.push("/form") }
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
 
     return (
         <div className={classes.card}>

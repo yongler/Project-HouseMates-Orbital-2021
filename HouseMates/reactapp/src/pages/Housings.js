@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import Container from '@material-ui/core/Container'
@@ -48,6 +48,10 @@ const Housings = () => {
 
   // Hooks
   const classes = useStyles()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <div>
