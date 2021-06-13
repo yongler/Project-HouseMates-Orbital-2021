@@ -3,11 +3,11 @@ from django.http import JsonResponse
 from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import QuestionSerializer, ChoiceSerializer
+from .serializers import QuestionSerializer, PostSerializer, SelectedChoiceSerializer
 
-from .models import Question, Choice
+from .models import Question, Choice, Post, Selected_choice
 
-# Serializers for Question model 
+
 @api_view(['GET'])
 def apiOverview(request):
 	permission_classes = [
@@ -15,30 +15,53 @@ def apiOverview(request):
     ]
 
 	api_urls = {
-		'List':'/question-list/',
-		'Detail View':'/question-detail/<str:pk>/',
-		'Update':'/question-update/<str:pk>/',
+		'Question List':'/question-list/<str:form_type>/',
+		'Post List':'/post-list/',
+		'Post Detail View':'/post-detail/<str:pk>/',
+		'Post Create':'/post-create/',
+		'Post Update':'/post-update/<str:pk>/',
+		# 'Selected_choice Create':'/selected-choice-create/',
 		}
 
 	return Response(api_urls)
 
+# Admin blank forms model views
 @api_view(['GET'])
-def questionList(request):
-	questions = Question.objects.all().order_by('category')
+def questionList(request, form_type):
+	questions = Question.objects.all().filter(question_form_type__in = [form_type])
 	serializer = QuestionSerializer(questions, many=True)
 	return Response(serializer.data)
 
+
+# User filled forms model views
 @api_view(['GET'])
-def questionDetail(request, pk):
-	questions = Question.objects.get(id=pk)
-	serializer = QuestionSerializer(questions, many=False)
+def postList(request):
+	posts = Post.objects.all()
+	serializer = PostSerializer(posts, many=True)
 	return Response(serializer.data)
 
 
+@api_view(['GET'])
+def postDetail(request, pk):
+	posts = Post.objects.get(id=pk)
+	serializer = PostSerializer(posts, many=False)
+	return Response(serializer.data)
+
+
+@api_view(['PUT'])
+def postCreate(request):
+  serializer = PostSerializer(data=request.data)
+
+  if serializer.is_valid():
+	  serializer.save()
+
+  return Response(serializer.data)
+
+
 @api_view(['POST'])
-def questionUpdate(request, pk):
-	question = Question.objects.get(id=pk)
-	serializer = QuestionSerializer(instance=question, data=request.data)
+def postUpdate(request, pk):
+	post = Post.objects.get(id=pk)
+	serializer = PostSerializer(instance=post, data=request.data)
 
 	if serializer.is_valid():
 		serializer.save()
@@ -47,71 +70,17 @@ def questionUpdate(request, pk):
 
 
 
+# @api_view(['PUT'])
+# def selectedChoiceCreate(request, pk):
+# 	post = Post.objects.get(id=pk)
+# 	post.selected_choice_set.create(request.data)
+# 	serializer = SelectedChoiceSerializer(data=request.data)
 
-# Serializers for Choice model 
-@api_view(['GET'])
-def choiceList(request):
-	choices = Choice.objects.all().order_by('category')
-	serializer = ChoiceSerializer(choices, many=True)
-	return Response(serializer.data)
+# 	if serializer.is_valid():
+# 		serializer.save()
 
-@api_view(['POST'])
-def choiceUpdate(request, pk):
-	choice = Choice.objects.get(id=pk)
-	serializer = ChoiceSerializer(instance=choice, data=request.data)
-
-	if serializer.is_valid():
-		serializer.save()
-
-	return Response(serializer.data)
+# 	return Response(serializer.data)
 
 
 
 
-# from django.template import loader
-# from django.http import HttpResponse, HttpResponseRedirect
-# from django.shortcuts import get_object_or_404, render
-# from django.urls import reverse
-# from django.http import Http404
-
-# from .models import Question, Choice
-
-# # Get questions and display them
-# def index(request):
-#     latest_question_list = Question.objects.order_by('category')[:5]
-#     context = {'latest_question_list': latest_question_list}
-#     return render(request, 'form/index.html', context)
-
-# # Show specific question and choices
-# def detail(request, question_id):
-#   try:
-#     question = Question.objects.get(pk=question_id)
-#   except Question.DoesNotExist:
-#     raise Http404("Question does not exist")
-#   return render(request, 'form/detail.html', { 'question': question })
-
-# # Get question and display results
-# def results(request, question_id):
-#   question = get_object_or_404(Question, pk=question_id)
-# #   print(question.choice_set.all)
-#   return render(request, 'form/results.html', { 'question': question })
-
-# # Vote for a question choice
-# def vote(request, question_id):
-#     # print(request.POST['choice'])
-#     question = get_object_or_404(Question, pk=question_id)
-#     try:
-#         selected_choice = question.choice_set.get(pk=request.POST['choice'])
-#     except (KeyError, Choice.DoesNotExist):
-#         # Redisplay the question voting form.
-#         return render(request, 'form/detail.html', {
-#             'question': question,
-#             'error_message': "You didn't select a choice.",
-#         })
-#     else:
-#         selected_choice.selected = not selected_choice.selected
-#         selected_choice.save()
-#         # Always return an HttpResponseRedirect after successfully dealing
-#         # with POST data. This prevents data from being posted twice if a
-#         # user hits the Back button.
-#         return HttpResponseRedirect(reverse('form:results', args=(question.id,)))
