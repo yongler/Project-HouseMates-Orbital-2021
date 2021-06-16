@@ -1,86 +1,44 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework import permissions
+from rest_framework import permissions, viewsets, generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import QuestionSerializer, PostSerializer, SelectedChoiceSerializer
+from rest_framework.serializers import Serializer
+from .serializers import QuestionSerializer, PostSerializer, SelectedChoiceSerializer, ChoiceSerializer, FormSerializer
 
-from .models import Question, Choice, Post, Selected_choice
+from .models import Question, Choice, Post, Selected_choice, Form
 
-
-@api_view(['GET'])
-def apiOverview(request):
+# class QuestionView(generics.ListAPIView):
+class QuestionView(viewsets.ModelViewSet):
 	permission_classes = [
-        permissions.IsAuthenticated,
+        permissions.IsAuthenticatedOrReadOnly,
     ]
 
-	api_urls = {
-		'Question List':'/question-list/<str:form_type>/',
-		'Post List':'/post-list/',
-		'Post Detail View':'/post-detail/<str:pk>/',
-		'Post Create':'/post-create/',
-		'Post Update':'/post-update/<str:pk>/',
-		# 'Selected_choice Create':'/selected-choice-create/',
-		}
+	serializer_class = QuestionSerializer
 
-	return Response(api_urls)
+	def get_queryset(self):
+		queryset = Question.objects.all()
+		form_type = self.request.query_params.get('form_type')
+		if form_type is not None:
+			queryset = queryset.filter(question_form_type=form_type)
+		return queryset
 
-# Admin blank forms model views
-@api_view(['GET'])
-def questionList(request, form_type):
-	questions = Question.objects.all().filter(question_form_type__in = [form_type])
-	serializer = QuestionSerializer(questions, many=True)
-	return Response(serializer.data)
+class PostView(viewsets.ModelViewSet):
+	serializer_class = PostSerializer
 
+	def get_queryset(self):
+		queryset = Post.objects.all()
+		form_type = self.request.query_params.get('form_type')
+		if form_type is not None:
+			queryset = queryset.filter(post_form_type=form_type)
+		return queryset
 
-# User filled forms model views
-@api_view(['GET'])
-def postList(request):
-	posts = Post.objects.all()
-	serializer = PostSerializer(posts, many=True)
-	return Response(serializer.data)
+class ChoiceView(viewsets.ModelViewSet):
+	queryset = Choice.objects.all()
+	serializer_class = ChoiceSerializer
 
-
-@api_view(['GET'])
-def postDetail(request, pk):
-	posts = Post.objects.get(id=pk)
-	serializer = PostSerializer(posts, many=False)
-	return Response(serializer.data)
-
-
-@api_view(['PUT'])
-def postCreate(request):
-  serializer = PostSerializer(data=request.data)
-
-  if serializer.is_valid():
-	  serializer.save()
-
-  return Response(serializer.data)
-
-
-@api_view(['POST'])
-def postUpdate(request, pk):
-	post = Post.objects.get(id=pk)
-	serializer = PostSerializer(instance=post, data=request.data)
-
-	if serializer.is_valid():
-		serializer.save()
-
-	return Response(serializer.data)
-
-
-
-# @api_view(['PUT'])
-# def selectedChoiceCreate(request, pk):
-# 	post = Post.objects.get(id=pk)
-# 	post.selected_choice_set.create(request.data)
-# 	serializer = SelectedChoiceSerializer(data=request.data)
-
-# 	if serializer.is_valid():
-# 		serializer.save()
-
-# 	return Response(serializer.data)
-
-
+class FormView(viewsets.ModelViewSet):
+	queryset = Form.objects.all()
+	serializer_class = FormSerializer
 
 

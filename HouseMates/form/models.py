@@ -22,21 +22,19 @@ class Question(models.Model):
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
-    selected = models.BooleanField(default=False)
 
     def __str__(self):
         return self.choice_text
 
 
-
 # User filled forms model 
 class Post(models.Model):
-    post_form_type = models.OneToOneField(Form, on_delete=models.CASCADE)
+    post_form_type = models.ForeignKey(Form, on_delete=models.CASCADE)
     selected_choices = models.JSONField(default=list)
-    owner = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE)
+    owner = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return str(self.id) + ',' + str(self.owner)
+        return str(self.id) 
 
 class Selected_choice(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

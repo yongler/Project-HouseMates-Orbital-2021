@@ -174,6 +174,7 @@ DJOSER = {
     "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     # 'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
     "SERIALIZERS": {
@@ -188,3 +189,5 @@ DJOSER = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CORS_ALLOW_CREDENTIALS = True 

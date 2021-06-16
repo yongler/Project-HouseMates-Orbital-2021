@@ -19,7 +19,7 @@ import Confirmation from "../components/Confirmation";
 import { getQuestions } from "../actions/form";
 
 // RoommateForm consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
-const RoommateForm = ({ getQuestions }) => {
+const RoommateForm = ({ getQuestions, questionList }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     backButton: {
@@ -54,44 +54,44 @@ const RoommateForm = ({ getQuestions }) => {
     "Room Preferences",
     "Confirmation",
   ];
-  const questionList = [
-    {
-      id: 1,
-      question: "Age",
-      choices: ["20s", "30s", "40s"],
-      category: "Personality",
-    },
-    {
-      id: 2,
-      question: "Nationality",
-      choices: ["Malaysian", "Singaporean", "Others"],
-      category: "Work/Study",
-    },
-    {
-      id: 3,
-      question: "Cat or Dog",
-      choices: ["Cat person", "Dog person"],
-      category: "Interests",
-    },
-    {
-      id: 4,
-      question: "Smoker",
-      choices: ["Yes", "No"],
-      category: "Habits",
-    },
-    {
-      id: 5,
-      question: "Working shift",
-      choices: ["Morning", "Night"],
-      category: "Room Preferences",
-    },
-    {
-      id: 6,
-      question: "Alcoholic",
-      choices: ["Yes", "No"],
-      category: "Habits",
-    },
-  ];
+  // const questionList = [
+  //   {
+  //     id: 1,
+  //     question: "Age",
+  //     choices: ["20s", "30s", "40s"],
+  //     category: "Personality",
+  //   },
+  //   {
+  //     id: 2,
+  //     question: "Nationality",
+  //     choices: ["Malaysian", "Singaporean", "Others"],
+  //     category: "Work/Study",
+  //   },
+  //   {
+  //     id: 3,
+  //     question: "Cat or Dog",
+  //     choices: ["Cat person", "Dog person"],
+  //     category: "Interests",
+  //   },
+  //   {
+  //     id: 4,
+  //     question: "Smoker",
+  //     choices: ["Yes", "No"],
+  //     category: "Habits",
+  //   },
+  //   {
+  //     id: 5,
+  //     question: "Working shift",
+  //     choices: ["Morning", "Night"],
+  //     category: "Room Preferences",
+  //   },
+  //   {
+  //     id: 6,
+  //     question: "Alcoholic",
+  //     choices: ["Yes", "No"],
+  //     category: "Habits",
+  //   },
+  // ];
 
   // Hooks
   const classes = useStyles();
@@ -147,11 +147,14 @@ const RoommateForm = ({ getQuestions }) => {
   };
 
   useEffect(() => {
+    console.log("hi")
     getQuestions();
   }, []);
 
   return (
+
     <Paper className={classes.paper}>
+      {console.log(questionList)}
       {/* Stepper */}
       <Stepper nonLinear alternativeLabel activeStep={currentCategory}>
         {categories.map((category, index) => (
@@ -233,16 +236,16 @@ const RoommateForm = ({ getQuestions }) => {
                     {/* Question */}
                     <FormLabel>
                       <Typography variant="h6" color="textPrimary">
-                        {question.question}
+                        {question.question_text}
                       </Typography>
                     </FormLabel>
 
-                    {/* List of choices */}
+                    {/* List of choices */} 
                     <RadioGroup
                       onChange={handleChange(question.id - 1)}
                       value={variables[question.id - 1]}
                     >
-                      {question.choices.map((choice) => (
+                      {question.choice_set.map((choice) => (
                         <FormControlLabel
                           value={choice}
                           control={<Radio color="primary" />}
