@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from 'react'
 import { useHistory, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles, fade } from "@material-ui/core/styles";
@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import { logout } from "../actions/auth";
+import { logout } from "../redux/auth/actions";
 import Logo from "../static/housemates-logo-without-text-white.svg";
 
 import Brightness3Icon from "@material-ui/icons/Brightness3";
@@ -35,7 +35,7 @@ export const dark = {
 };
 
 // NavBar consists of menu button, logo, title, search bar, and welcome text and profile pic, or login and register buttons, dependent of user authentication, from left to right.
-const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
+const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
   // Styling (from left to right)
   const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -43,6 +43,8 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
     },
     toolbar: {
       display: "flex",
+      paddingLeft: 24,
+      minHeight: theme.mixins.toolbar.minHeight + 8,
     },
     menuButton: {
       marginRight: 25,
@@ -52,11 +54,7 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
       marginRight: 10,
     },
     title: {
-      display: "none",
-      [theme.breakpoints.up("sm")]: {
-        display: "block",
-      },
-      marginRight: 10,
+      marginRight: 30,
     },
     grow: {
       flexGrow: 1,
@@ -89,9 +87,6 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
       paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
       transition: theme.transitions.create("width"),
       width: "100%",
-      [theme.breakpoints.up("md")]: {
-        width: "20ch",
-      },
     },
     buttons: {
       textDecoration: "none",
@@ -103,7 +98,6 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
     },
   }));
 
-  
   const [theme, setTheme] = useState(true);
   const icon = !theme ? <Brightness7Icon /> : <Brightness3Icon />; // Icons imported from `@material-ui/icons`
   const appliedTheme = createMuiTheme(theme ? light : dark);
@@ -140,7 +134,7 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerToggle}
+            onClick={handleMenuButton}
             edge="start"
             className={classes.menuButton}
           >
@@ -182,18 +176,20 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
 
           {/* Welcome text and profile pic, or login and register buttons */}
           {isAuthenticated && user ? (
-            <div style={{ display: "flex", flexDirection: "row" }}>
+            <Fragment style={{ display: "flex", flexDirection: "row" }}>
               <div style={{ alignSelf: "center" }}>
                 <Typography noWrap>
                   Welcome {user.first_name} {user.last_name}!
                 </Typography>
               </div>
+
               <div>
                 <Avatar
                   className={classes.profilePic}
                   onClick={handleMenuOpen}
                 />
               </div>
+
               <Menu
                 anchorEl={anchorEl}
                 keepMounted
@@ -201,7 +197,6 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
                 onClose={handleMenuClose}
               >
                 <MenuItem>
-                  
                   <IconButton
                     edge="end"
                     color="inherit"
@@ -214,9 +209,9 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
-            </div>
+            </Fragment>
           ) : (
-            <div>
+            <Fragment>
               <Button>
                 <Link to="/login" className={classes.buttons}>
                   Login
@@ -227,7 +222,7 @@ const NavBar = ({ handleDrawerToggle, isAuthenticated, logout, user }) => {
                   Register
                 </Link>
               </Button>
-            </div>
+            </Fragment>
           )}
         </Toolbar>
       </AppBar>
@@ -240,4 +235,8 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { logout })(NavBar);
+const mapDispatchToProps = {
+  logout: () => (dispatch) => dispatch(logout()),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

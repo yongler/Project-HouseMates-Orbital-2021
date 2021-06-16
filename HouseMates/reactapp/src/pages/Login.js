@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { NavLink, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -12,10 +12,10 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-import { login } from '../actions/auth'
+import { login, resetErrorMsg } from '../redux/auth/actions'
 
 // Login consists of title, email input, password input, account input, login button, and (forgot password and register links), from top to bottom.
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ isAuthenticated, login, resetErrorMsg }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -64,9 +64,14 @@ const Login = ({ login, isAuthenticated }) => {
     if (account === "") { setAccountError(true) }
 
     if (email && password && account) {
+      resetErrorMsg()
       login(email, password)
     }
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   if (isAuthenticated) { return <Redirect to="/dashboard" /> }
 
@@ -141,12 +146,12 @@ const Login = ({ login, isAuthenticated }) => {
           {/* Forgot password and register links */}
           <Grid container>
             <Grid item xs>
-              <NavLink to="/reset-password" variant="body2">
+              <NavLink to="/reset-password" variant="body2" onClick={resetErrorMsg}>
                 Forgot password?
               </NavLink>
             </Grid>
             <Grid item>
-              <NavLink to="/register" variant="body2">
+              <NavLink to="/register" variant="body2" onClick={resetErrorMsg}>
                 Don't have an account? Register now!
               </NavLink>
             </Grid>
@@ -157,6 +162,13 @@ const Login = ({ login, isAuthenticated }) => {
   )
 }
 
-const mapStateToProps = state => ({ isAuthenticated: state.auth.isAuthenticated })
+const mapStateToProps = state => ({ 
+  isAuthenticated: state.auth.isAuthenticated,
+})
 
-export default connect(mapStateToProps, { login })(Login)
+const mapDispatchToProps = {
+  login,
+  resetErrorMsg: () => dispatch => dispatch(resetErrorMsg()),
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

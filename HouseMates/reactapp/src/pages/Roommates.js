@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import AddIcon from '@material-ui/icons/Add'
@@ -16,6 +16,10 @@ const Roommates = () => {
       position: 'fixed',
       bottom: theme.spacing(2),
       right: theme.spacing(3),
+    },
+    grid: {
+      display: 'flex',
+      flexDirection: 'column',
     },
   }))
 
@@ -64,15 +68,19 @@ const Roommates = () => {
   const history = useHistory()
 
   // Handlers
-  const handleClick = () => { history.push("/form") }
+  const handleClick = () => { history.push('/form') }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <div>
       {/* List of Roommate */}
       <Container>
-        <Grid container spacing={5} justify="space-between">
+        <Grid container spacing={2}>
           {roommates.map(roommate => (
-            <Grid item xs={12} md={6} lg={4} key={roommate.id}>
+            <Grid item xs={12} md={6} lg={4} key={roommate.id} className={classes.grid}>
               <Roommate roommate={roommate} />
             </Grid>
           ))}

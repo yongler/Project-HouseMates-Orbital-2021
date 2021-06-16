@@ -14,6 +14,7 @@ const Housing = ({ housing }) => {
     card: {
       display: 'flex',
       height: 200,
+      cursor: 'pointer',
     },
     content: {
       flex: '1 0 auto',

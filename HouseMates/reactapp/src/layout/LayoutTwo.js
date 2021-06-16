@@ -21,15 +21,14 @@ const LayoutTwo = ({ children }) => {
       alignItems: 'center',
       justifyContent: 'flex-end',
       padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
+      minHeight: theme.mixins.toolbar.minHeight + 8,
     },
     flex: {
       display: 'flex',
     },
     closeSize: {
       minHeight: 100,
-      width: theme.spacing(7) + 1,
+      width: theme.spacing(8) + 1,
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -37,7 +36,7 @@ const LayoutTwo = ({ children }) => {
     },
     openSize: {
       minHeight: 100,
-      width: drawerWidth,
+      width: drawerWidth + 60,
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -52,45 +51,42 @@ const LayoutTwo = ({ children }) => {
   const classes = useStyles()
 
   // States
-  const [open, setOpen] = useState(false)
-  const [hover, setHover] = useState(true)
-  var hoverOpen = true
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [hoverOpen, setHoverOpen] = useState(false)
+  const drawerOpen = menuOpen || (!menuOpen && hoverOpen)
 
   // Handlers
-  const handleDrawerOpen = () => {
-    hoverOpen = true
-    setTimeout(() => (hoverOpen ? setOpen(true) : null), 1000)
-  }
-  const handleDrawerClose = () => {
-    hoverOpen = false
-    setOpen(false)
-  }
-  const handleDrawerToggle = () => {
-    setOpen(!open)
-    open === true ? setHover(true) : setHover(false)
-  }
+  const handleMenuButton = () => { setMenuOpen(!menuOpen) }
+  const handleMouseEnter = () => { setHoverOpen(true) }
+  const handleMouseLeave = () => { setHoverOpen(false) }
 
   return (
     <div className={classes.root}>
       {/* NavBar */}
-      <NavBar handleDrawerToggle={handleDrawerToggle} />
+      <NavBar
+        handleMenuButton={handleMenuButton}
+      />
 
       {/* SideNav */}
       <SideNav
         drawerWidth={drawerWidth}
-        open={open}
-        hover={hover}
-        handleDrawerOpen={handleDrawerOpen}
-        handleDrawerClose={handleDrawerClose}
+        menuOpen={menuOpen}
+        hoverOpen={hoverOpen}
+        drawerOpen={drawerOpen}
+        handleMouseEnter={handleMouseEnter}
+        handleMouseLeave={handleMouseLeave}
       />
 
       {/* Component */}
       <main className={classes.content}>
+        {/* Top padding */}
         <div className={classes.toolbar} />
+
         <div className={classes.flex}>
-          <div
-            className={hover ? classes.closeSize : classes.openSize}
-          />
+          {/* Side padding */}
+          <div className={!menuOpen ? classes.closeSize : classes.openSize} />
+
+          {/* Main content */}
           {children}
         </div>
 

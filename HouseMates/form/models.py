@@ -40,7 +40,7 @@ class Selected_choice(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     question_category = models.CharField(max_length=200, default='')
     question_id = models.IntegerField()
-    choice_id = models.IntegerField()
+    choice_text = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return str(self.question_id) + ',' + str(self.choice_id)

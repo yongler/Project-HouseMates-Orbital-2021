@@ -16,7 +16,7 @@ import StepButton from "@material-ui/core/StepButton";
 import Stepper from "@material-ui/core/Stepper";
 import Typography from "@material-ui/core/Typography";
 import Confirmation from "../components/Confirmation";
-import { getQuestions } from "../actions/form";
+import { getQuestions } from "../redux/form/actions";
 
 // RoommateForm consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 const RoommateForm = ({ getQuestions, questionList }) => {
@@ -31,11 +31,15 @@ const RoommateForm = ({ getQuestions, questionList }) => {
       paddingBottom: 50,
       marginLeft: 23,
       marginRight: 23,
+      // display: 'flex',
+      // flexDirection: 'column',
+      // alignItems: 'center',
     },
     flex: {
       display: "flex",
       flexDirection: "column",
       paddingLeft: 250,
+      // alignItems: 'center',
     },
     category: {
       marginBottom: 10,
@@ -105,6 +109,7 @@ const RoommateForm = ({ getQuestions, questionList }) => {
   };
 
   // States
+  const [formFields, setFormFields] = useState({});
   const [currentCategory, setCurrentCategory] = useState(0);
   const [maxCategory, setMaxCategory] = useState(0);
   const [categoryCompleted, setCategoryCompleted] = useState({});
@@ -127,6 +132,7 @@ const RoommateForm = ({ getQuestions, questionList }) => {
 
   // Handlers
   const handleNext = () => {
+    window.scrollTo(0, 0);
     setCurrentCategory((prev) => prev + 1);
     setMaxCategory((prev) =>
       currentCategory >= maxCategory ? prev + 1 : prev
@@ -147,137 +153,140 @@ const RoommateForm = ({ getQuestions, questionList }) => {
   };
 
   useEffect(() => {
-    console.log("hi")
     getQuestions();
+    window.scrollTo(0, 0);
   }, []);
 
-  return (
+  const stepper = (
+    <Stepper nonLinear alternativeLabel activeStep={currentCategory}>
+      {categories.map((category, index) => (
+        <Step key={category}>
+          <StepButton
+            onClick={handleStep(index)}
+            completed={categoryCompleted[index]}
+            className={index === currentCategory ? classes.active : null}
+          >
+            {category}
+          </StepButton>
+        </Step>
+      ))}
+    </Stepper>
+  );
 
-    <Paper className={classes.paper}>
-      {console.log(questionList)}
-      {/* Stepper */}
-      <Stepper nonLinear alternativeLabel activeStep={currentCategory}>
-        {categories.map((category, index) => (
-          <Step key={category}>
-            <StepButton
-              onClick={handleStep(index)}
-              completed={categoryCompleted[index]}
-              className={index === currentCategory ? classes.active : null}
-            >
-              {category}
-            </StepButton>
-          </Step>
+  const summary = (
+    <Box mt={5} className={classes.flex}>
+      <Grid container spacing={2}>
+        {categories
+          .filter((category) => category !== "Confirmation")
+          .map((category) => (
+            <Grid container className={classes.category} key={category}>
+              {/* Category */}
+              <Grid item xs={12}>
+                <Typography variant="h6">{category}</Typography>
+              </Grid>
+
+              <Grid container item xs={12}>
+                {questionList
+                  .filter((question) => question.category === category)
+                  .map((question) => (
+                    <Grid container item xs={12} key={question.id}>
+                      {/* Question */}
+                      <Grid item xs={6}>
+                        <Typography variant="body1" gutterBottom>
+                          {question.question}
+                        </Typography>
+                      </Grid>
+
+                      {/* User input */}
+                      <Grid item xs={6}>
+                        <Typography variant="body1" gutterBottom>
+                          {variables[question.id - 1]}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  ))}
+              </Grid>
+            </Grid>
+          ))}
+      </Grid>
+
+      {/* Back and submit buttons */}
+      <Box mt={10}>
+        <Button onClick={handleBack} className={classes.backButton}>
+          Back
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleConfirmation}
+        >
+          Submit
+        </Button>
+      </Box>
+    </Box>
+  );
+
+  const questionsBasedOnCategory = (
+    <Box className={classes.flex}>
+      {questionList
+        .filter((question) => question.category === categories[currentCategory])
+        .map((question) => (
+          <Box mt={5} key={question.id}>
+            <FormControl>
+              {/* Question */}
+              <FormLabel>
+                <Typography variant="h6" color="textPrimary">
+                  {question.question}
+                </Typography>
+              </FormLabel>
+
+              {/* List of choices */}
+              <RadioGroup
+                onChange={handleChange(question.id - 1)}
+                value={variables[question.id - 1]}
+              >
+                {question.choice_set.map((choice) => (
+                  <FormControlLabel
+                    value={choice}
+                    control={<Radio color="primary" />}
+                    label={choice}
+                    key={choice}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Box>
         ))}
-      </Stepper>
+
+      {/* Back and next buttons */}
+      <Box mt={10}>
+        <Button
+          disabled={currentCategory === 0}
+          onClick={handleBack}
+          className={classes.backButton}
+        >
+          Back
+        </Button>
+        <Button
+          disabled={!completed(currentCategory)}
+          variant="contained"
+          color="primary"
+          onClick={handleNext}
+        >
+          Next
+        </Button>
+      </Box>
+    </Box>
+  );
+
+  return (
+    <Paper className={classes.paper}>
+      {stepper}
 
       <div>
-        {currentCategory === categories.length - 1 ? (
-          // Summary
-          <Box className={classes.flex} mt={5}>
-            <Grid container spacing={2}>
-              {categories
-                .filter((category) => category !== "Confirmation")
-                .map((category) => (
-                  <Grid container className={classes.category} key={category}>
-                    {/* Category */}
-                    <Grid item xs={12}>
-                      <Typography variant="h6">{category}</Typography>
-                    </Grid>
-
-                    <Grid container item xs={12}>
-                      {questionList
-                        .filter((question) => question.category === category)
-                        .map((question) => (
-                          <Grid container item xs={12} key={question.id}>
-                            {/* Question */}
-                            <Grid item xs={6}>
-                              <Typography variant="body1" gutterBottom>
-                                {question.question}
-                              </Typography>
-                            </Grid>
-
-                            {/* User input */}
-                            <Grid item xs={6}>
-                              <Typography variant="body1" gutterBottom>
-                                {variables[question.id - 1]}
-                              </Typography>
-                            </Grid>
-                          </Grid>
-                        ))}
-                    </Grid>
-                  </Grid>
-                ))}
-            </Grid>
-
-            {/* Back and submit buttons */}
-            <Box mt={10}>
-              <Button onClick={handleBack} className={classes.backButton}>
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleConfirmation}
-              >
-                Submit
-              </Button>
-            </Box>
-          </Box>
-        ) : (
-          // List of questions based on category
-          <Box className={classes.flex}>
-            {questionList
-              .filter(
-                (question) => question.category === categories[currentCategory]
-              )
-              .map((question) => (
-                <Box mt={5} key={question.id}>
-                  <FormControl>
-                    {/* Question */}
-                    <FormLabel>
-                      <Typography variant="h6" color="textPrimary">
-                        {question.question_text}
-                      </Typography>
-                    </FormLabel>
-
-                    {/* List of choices */} 
-                    <RadioGroup
-                      onChange={handleChange(question.id - 1)}
-                      value={variables[question.id - 1]}
-                    >
-                      {question.choice_set.map((choice) => (
-                        <FormControlLabel
-                          value={choice}
-                          control={<Radio color="primary" />}
-                          label={choice}
-                          key={choice}
-                        />
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                </Box>
-              ))}
-
-            {/* Back and next buttons */}
-            <Box mt={10}>
-              <Button
-                disabled={currentCategory === 0}
-                onClick={handleBack}
-                className={classes.backButton}
-              >
-                Back
-              </Button>
-              <Button
-                disabled={!completed(currentCategory)}
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-              >
-                Next
-              </Button>
-            </Box>
-          </Box>
-        )}
+        {currentCategory === categories.length - 1
+          ? summary
+          : questionsBasedOnCategory}
       </div>
 
       {/* Confirmation dialog */}
@@ -292,6 +301,6 @@ const RoommateForm = ({ getQuestions, questionList }) => {
 
 const mapStateToProps = (state) => ({
   questionList: state.form.question_list,
-});
+})
 
-export default connect(mapStateToProps, { getQuestions })(RoommateForm);
+export default connect(mapStateToProps, { getQuestions })(RoommateForm)

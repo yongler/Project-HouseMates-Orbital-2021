@@ -7,10 +7,10 @@ import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-import { resetPassword, resetErrorMsg } from '../redux/auth/actions'
+import { resendActivationEmail, resetErrorMsg } from '../redux/auth/actions'
 
-// ResetPassword consists of title, and ((confirmation text), or (email input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
-const ResetPassword = ({ resetPasswordSuccess, resetPassword, resetErrorMsg }) => {
+// ResendActivationEmail consists of title, and ((confirmation text), or (email input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
+const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationEmail, resetErrorMsg }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -40,13 +40,13 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword, resetErrorMsg }) =
   const handleSubmit = e => {
     e.preventDefault()
 
+    resetErrorMsg()
     setEmailError(false)
 
     if (email === "") { setEmailError(true) }
 
     if (email) {
-      resetErrorMsg()
-      resetPassword(email)
+      resendActivationEmail(email)
     }
   }
 
@@ -58,14 +58,14 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword, resetErrorMsg }) =
     <Container maxWidth="xs">
       <div className={classes.paper}>
         {/* Title */}
-        <Typography variant="h6" gutterBottom>Reset Password</Typography>
+        <Typography variant="h6" gutterBottom>Resend Activation Email</Typography>
 
-        {resetPasswordSuccess
+        {resendActivationEmailSuccess
           ?
           // Confirmation text
           <div>
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
-              Kindly check your email to reset your password.
+              Kindly check your email for the activation email.
             </Typography>
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
               You may close this window.
@@ -116,12 +116,12 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword, resetErrorMsg }) =
 }
 
 const mapStateToProps = state => ({
-  resetPasswordSuccess: state.auth.resetPasswordSuccess,
+  resendActivationEmailSuccess: state.auth.resendActivationEmailSuccess,
 })
 
 const mapDispatchToProps = {
-  resetPassword,
-  resetErrorMsg: () => dispatch => dispatch(resetErrorMsg()),
+  resendActivationEmail,
+  resetErrorMsg,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword)
+export default connect(mapStateToProps, mapDispatchToProps)(ResendActivationEmail)

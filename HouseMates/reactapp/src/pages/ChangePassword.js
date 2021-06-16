@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-import { resetPasswordConfirm, resetErrorMsg } from '../redux/auth/actions'
+import { changePassword, resetErrorMsg, resetChangePasswordSuccess } from '../redux/auth/actions'
 
-// ResetPasswordConfirm consists of new password input, confirm new password input and reset password button, from top to bottom.
-const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfirm, resetErrorMsg }) => {
+// setPassword consists of current password input, new password input, confirm new password input and reset password button, from top to bottom.
+const ChangePassword = ({ changePasswordSuccess, changePassword, resetErrorMsg, resetChangePasswordSuccess }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -20,30 +20,36 @@ const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfir
     submit: {
       margin: theme.spacing(3, 0, 2),
     },
-    buttons: {
-      margin: theme.spacing(3, 0, 2),
-    },
   }))
 
   // Hooks
   const classes = useStyles()
   const history = useHistory()
-  const { uid, token } = useParams()
 
   // States
+  const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [currentPasswordError, setCurrentPasswordError] = useState(false)
   const [newPasswordError, setNewPasswordError] = useState(false)
   const [confirmNewPasswordError, setConfirmNewPasswordError] = useState(false)
   const [samePasswordError, setSamePasswordError] = useState(false)
 
   // Handlers
+  const handleCurrentPasswordChange = (e) => {
+    setCurrentPassword(e.target.value)
+    if (e.target.value === '') {
+      setCurrentPasswordError(true)
+    } else {
+      setCurrentPasswordError(false)
+    }
+  }
   const handleNewPasswordChange = (e) => {
     setNewPassword(e.target.value)
     if (e.target.value === '') {
       setNewPasswordError(true)
       setSamePasswordError(false)
-    } else if (e.target.value !== newPassword) {
+    } else if (e.target.value !== confirmNewPassword) {
       setSamePasswordError(true)
       setNewPasswordError(false)
     } else {
@@ -67,10 +73,14 @@ const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfir
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    setCurrentPasswordError(false)
     setNewPasswordError(false)
     setConfirmNewPasswordError(false)
     setSamePasswordError(false)
 
+    if (currentPassword === '') {
+      setCurrentPasswordError(true)
+    }
     if (newPassword === '') {
       setNewPasswordError(true)
     }
@@ -81,12 +91,15 @@ const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfir
       setSamePasswordError(true)
     }
 
-    if (newPassword && confirmNewPassword && !samePasswordError) {
+    if (currentPassword && newPassword && confirmNewPassword && !samePasswordError) {
       resetErrorMsg()
-      resetPasswordConfirm(uid, token, newPassword, confirmNewPassword)
+      changePassword(currentPassword, newPassword, confirmNewPassword)
     }
   }
-  const handleRedirect = () => { history.push('/login') }
+  const handleRedirect = () => { 
+    history.go(-1) 
+    resetChangePasswordSuccess()
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -97,18 +110,18 @@ const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfir
       <div className={classes.paper}>
         {/* Title */}
         <Typography variant="h6" gutterBottom>
-          Reset Password
+          Change Password
         </Typography>
 
-        {resetPasswordConfirmSuccess
+        {changePasswordSuccess
           ?
           <div>
             {/* Confirmation text */}
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
-              You have successfully reset your password.
+              You have successfully changed your password.
             </Typography>
 
-            {/* Login button */}
+            {/* Profile button */}
             < Button
               type="submit"
               fullWidth
@@ -117,11 +130,26 @@ const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfir
               onClick={handleRedirect}
               className={classes.button}
             >
-              Proceed to Login
+              Back to Profile
             </Button>
           </div>
-          :
+      :
           <form noValidate onSubmit={handleSubmit}>
+            {/* Current password input */}
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Current Password"
+              name="currentPassword"
+              type="password"
+              autoFocus
+              onChange={handleCurrentPasswordChange}
+              error={currentPasswordError}
+              helperText={currentPasswordError ? "This is a required field" : ""}
+            />
+
             {/* New password input */}
             <TextField
               variant="outlined"
@@ -131,7 +159,6 @@ const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfir
               label="New Password"
               name="newPassword"
               type="password"
-              autoFocus
               onChange={handleNewPasswordChange}
               error={newPasswordError}
               helperText={newPasswordError ? "This is a required field" : ""}
@@ -157,7 +184,7 @@ const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfir
               }
             />
 
-            {/* Reset password button */}
+            {/* Change password button */}
             <Button
               type="submit"
               fullWidth
@@ -165,22 +192,25 @@ const ResetPasswordConfirm = ({ resetPasswordConfirmSuccess, resetPasswordConfir
               color="primary"
               className={classes.submit}
             >
-              Reset Password
+              Change Password
           </Button>
           </form>
         }
+
+
       </div>
     </Container>
   )
 }
 
 const mapStateToProps = state => ({
-  resetPasswordConfirmSuccess: state.auth.resetPasswordConfirmSuccess,
+  changePasswordSuccess: state.auth.changePasswordSuccess,
 })
 
 const mapDispatchToProps = {
-  resetPasswordConfirm,
+  changePassword,
   resetErrorMsg: () => dispatch => dispatch(resetErrorMsg()),
+  resetChangePasswordSuccess: () => dispatch => dispatch(resetChangePasswordSuccess()),
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResetPasswordConfirm)
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePassword)

@@ -15,14 +15,16 @@ const Roommate = ({ roommate }) => {
   const useStyles = makeStyles(theme => ({
     card: {
       maxWidth: 345,
-      cursor: 'pointer'
+      cursor: 'pointer',
+      alignSelf: 'center',
     },
     media: {
       height: 140,
     },
     tag: {
-      marginRight: 5
-    },
+      marginRight: 5,
+      marginTop: 5,
+  },
     text: {
       height: 100,
     },
@@ -32,15 +34,15 @@ const Roommate = ({ roommate }) => {
   const classes = useStyles()
 
   return (
-    <Link to={`/roommates/${roommate.id}`} style={{ textDecoration: 'none' }}>
-      <Card className={classes.card}>
+    <Card className={classes.card}>
+      <Link to={`/roommates/${roommate.id}`} style={{ textDecoration: 'none', color: 'black' }}>
         {/* Pic */}
         <CardMedia
           className={classes.media}
           image={Pic}
           title={roommate.name}
         />
-        
+
         <CardActionArea>
           {/* Poster's description */}
           <CardContent>
@@ -66,8 +68,8 @@ const Roommate = ({ roommate }) => {
             )}
           </CardContent>
         </CardActionArea>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   )
 }
 
