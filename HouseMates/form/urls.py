@@ -1,14 +1,14 @@
-from django.urls import path
+from django.urls import path, include 
+from rest_framework import routers
 
 from . import views
 
 app_name = 'form'
+
+router = routers.DefaultRouter()
+router.register(r'question-list', views.QuestionView, basename='QuestionView')
+router.register(r'post-list', views.PostView, basename='PostView')
+
 urlpatterns = [
-    path('', views.apiOverview, name="api-overview"),
-	path('question-list/<str:form_type>/', views.questionList, name="questionList"),
-	path('post-list/', views.postList, name="postList"),
-	path('post-detail/<str:pk>/', views.postDetail, name="postDetail"),
-	path('post-create/', views.postCreate, name="postCreate"),
-	path('post-update/<str:pk>/', views.postUpdate, name="postUpdate"),
-	# path('selected-choice-create/', views.selectedChoiceCreate, name="selected-choice-create"),
+	path('', include(router.urls))
 ]

@@ -27,12 +27,12 @@ import Layout from './hocs/Layout'
 import store from './redux/store'
 
 const App = () => {
-  // Styling
+  // Styling;
   const theme = createMuiTheme({
     palette: {
       primary: indigo,
     },
-  })
+  });
 
   return (
     <Provider store={store}>
@@ -69,7 +69,26 @@ const App = () => {
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
-  )
-}
+  );
+};
 
-export default App
+export default App;
+
+// import React, { useEffect, useLocalStorage, useMedia } from "react";
+// import Button from "@material-ui/core/Button";
+// import useDarkMode from './useDarkMode'
+
+// // Usage
+// function App() {
+//   const [darkMode, setDarkMode] = useDarkMode();
+//   return (
+//     <div>
+//       <div className="navbar">
+//         <Button darkMode={darkMode} setDarkMode={setDarkMode} />
+//       </div>
+//       {/* <Content /> */}
+//     </div>
+//   );
+// }
+
+// export default App;

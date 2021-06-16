@@ -13,7 +13,7 @@ const initialState = {
 }
 
 const formReducer = (state = initialState, action) => {
-  const { type, payload } = action
+  const { type, payload } = action;
 
   switch (type) {
     case GET_QUESTIONS_SUCCESS:
@@ -39,17 +39,17 @@ const formReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-      }
+      };
 
     case RESET_FORM_LOADING:
       return {
         ...state,
         loading: false,
-      }
+      };
 
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default formReducer
+export default formReducer;

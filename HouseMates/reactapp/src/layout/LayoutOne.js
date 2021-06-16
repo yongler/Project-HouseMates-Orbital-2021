@@ -15,11 +15,13 @@ const LayoutOne = ({ children, title, errorMsg, loading, resetErrorMsg }) => {
 
   // Components
   const Alert = (props) => {
-    return <MuiAlert elevation={6} variant="filled" {...props} />
-  }
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
       {/* Error message */}
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -48,13 +50,13 @@ const LayoutOne = ({ children, title, errorMsg, loading, resetErrorMsg }) => {
       {/* Footer */}
       <div style={{ marginTop: 60 }}><Footer /></div>
     </div>
-  )
-}
+  );
+};
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   errorMsg: state.auth.errorMsg,
   loading: state.auth.loading,
-})
+});
 
 const mapDispatchToProps = {
   resetErrorMsg,
