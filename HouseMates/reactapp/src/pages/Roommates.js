@@ -1,30 +1,18 @@
-import React, { useEffect } from 'react'
-import { makeStyles } from '@material-ui/core'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
-import AddIcon from '@material-ui/icons/Add'
-import Container from '@material-ui/core/Container'
-import Fab from '@material-ui/core/Fab'
-import Grid from '@material-ui/core/Grid'
-import Tooltip from '@material-ui/core/Tooltip'
-import Roommate from '../components/Roommate'
+import Posts from '../components/Posts'
+import RoommateCard from '../components/RoommateCard'
 
-// Roommates consists of list of Roommate and post button.
+// Roommates consists of list of RoommateCard and post button.
 const Roommates = () => {
-  // Styling
-  const useStyles = makeStyles(theme => ({
-    tooltip: {
-      position: 'fixed',
-      bottom: theme.spacing(2),
-      right: theme.spacing(3),
-    },
-    grid: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-  }))
+  // Hooks
+  const history = useHistory()
+
+  // Handlers
+  const handlePostButton = () => { history.push('/roommate-form') }
 
   // Data (hard coded for now)
-  const roommates = [
+  const posts = [
     {
       id: 1,
       pic: "mrbean.jpg",
@@ -63,36 +51,17 @@ const Roommates = () => {
     },
   ]
 
-  // Hooks
-  const classes = useStyles()
-  const history = useHistory()
-
-  // Handlers
-  const handleClick = () => { history.push('/form') }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
   return (
     <div>
-      {/* List of Roommate */}
-      <Container>
-        <Grid container spacing={2}>
-          {roommates.map(roommate => (
-            <Grid item xs={12} md={6} lg={4} key={roommate.id} className={classes.grid}>
-              <Roommate roommate={roommate} />
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      {/* Post button */}
-      <Tooltip title="" onClick={handleClick}>
-        <Fab color="primary" className={classes.tooltip}>
-          <AddIcon />
-        </Fab>
-      </Tooltip>
+      <Posts
+        postType={7}
+        handlePostButton={handlePostButton}
+        PostComponent={RoommateCard}
+        xs={12}
+        md={6}
+        lg={4}
+        posts={posts}
+      />
     </div>
   )
 }

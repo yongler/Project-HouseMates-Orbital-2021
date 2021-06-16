@@ -2,20 +2,9 @@ import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import Accordion from '@material-ui/core/Accordion'
-import AccordionSummary from '@material-ui/core/AccordionSummary'
-import AccordionDetails from '@material-ui/core/AccordionDetails'
-import Avatar from '@material-ui/core/Avatar'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import CardHeader from '@material-ui/core/CardHeader'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
+import { Accordion, AccordionSummary, AccordionDetails, Avatar, Card, CardContent, CardHeader, IconButton, List, ListItem, ListItemText, Typography } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ListItemText from '@material-ui/core/ListItemText'
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({ user }) => {
@@ -38,16 +27,20 @@ const Profile = ({ user }) => {
     },
   }))
 
-  const handleClick = () => { history.push('/change-password') }
+  const handleChangePassword = () => { history.push('/change-password') }
+  const handleDeleteAccount = () => { history.push('/delete-account') }
 
   // Content
   const accordions = [
     {
       summary: 'Profile',
       details: [
-        <ListItem button onClick={handleClick} style={{ width: '100%' }}>
+        <ListItem button onClick={handleChangePassword} style={{ width: '100%' }}>
           <ListItemText primary='Change password' />
         </ListItem>,
+        <ListItem button onClick={handleDeleteAccount} style={{ width: '100%' }}>
+          <ListItemText primary='Delete Account' />
+        </ListItem>
       ],
     },
   ]

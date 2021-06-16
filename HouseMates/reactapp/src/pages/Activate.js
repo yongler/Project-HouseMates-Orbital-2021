@@ -3,10 +3,10 @@ import { NavLink, useHistory, useParams } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Container, Grid, Typography } from '@material-ui/core'
-import { activate, resetErrorMsg } from '../redux/auth/actions'
+import { activate } from '../redux/auth/actions'
 
 // Activate consists of title and activate button, from top to bottom.
-const Activate = ({ activationSuccess, activate, resetErrorMsg }) => {
+const Activate = ({ activationSuccess, activate }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -28,7 +28,6 @@ const Activate = ({ activationSuccess, activate, resetErrorMsg }) => {
   const handleActivation = (e) => {
     e.preventDefault()
 
-    resetErrorMsg()
     activate(uid, token)
   }
   const handleRedirect = () => { history.push('/login') }
@@ -40,11 +39,6 @@ const Activate = ({ activationSuccess, activate, resetErrorMsg }) => {
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
-        {/* Title */}
-        <Typography variant="h6" gutterBottom>
-          Account Activation
-        </Typography>
-
         {activationSuccess
           ?
           <div>
@@ -100,7 +94,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   activate,
-  resetErrorMsg: () => dispatch => dispatch(resetErrorMsg()),
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Activate)

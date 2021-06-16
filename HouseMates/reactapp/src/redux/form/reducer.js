@@ -1,13 +1,14 @@
 import {
-  GET_FORM_SUCCESS,
-  GET_FORM_FAIL,
-  LOADING,
-  RESET_LOADING,
+  GET_QUESTIONS_SUCCESS,
+  GET_QUESTIONS_FAIL,
+  FORM_LOADING,
+  RESET_FORM_LOADING,
 } from './types'
 
 const initialState = {
   loading: false,
   questions: [],
+  categories: [],
   errorMsg: '',
 }
 
@@ -15,27 +16,32 @@ const formReducer = (state = initialState, action) => {
   const { type, payload } = action
 
   switch (type) {
-    case GET_FORM_SUCCESS:
+    case GET_QUESTIONS_SUCCESS:
+      const rawCategories = payload.map(question => question.category)
+      const uniqueCategories = [...new Set(rawCategories)] 
       return {
         ...state,
         loading: false,
-        questions: payload
+        questions: payload,
+        categories: uniqueCategories,
       }
 
-    case GET_FORM_FAIL:
+    case GET_QUESTIONS_FAIL:
       return {
         ...state,
         loading: false,
-        errorMsg: 'payload'
+        questions: [],
+        categories: [],
+        errorMsg: payload,
       }
 
-    case LOADING:
+    case FORM_LOADING:
       return {
         ...state,
         loading: true,
       }
 
-    case RESET_LOADING:
+    case RESET_FORM_LOADING:
       return {
         ...state,
         loading: false,

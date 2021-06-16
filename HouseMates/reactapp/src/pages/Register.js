@@ -2,20 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { NavLink, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Container from '@material-ui/core/Container'
-import FormControl from '@material-ui/core/FormControl'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Grid from '@material-ui/core/Grid'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import { register, resetErrorMsg } from '../redux/auth/actions'
+import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core'
+import { register } from '../redux/auth/actions'
 
 // Register consists of title, ((confirmation text), or (first name input, last name input, email input, password input, confirm password input, account input, register button and login link)), from top to bottom.
-const Register = ({ isAuthenticated, registrationSuccess, register, resetErrorMsg }) => {
+const Register = ({ isAuthenticated, registrationSuccess, register }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -64,7 +55,7 @@ const Register = ({ isAuthenticated, registrationSuccess, register, resetErrorMs
     if (e.target.value === '') {
       setPasswordError(true)
       setSamePasswordError(false)
-    } else if (e.target.value !== confirmPassword) {
+    } else if (confirmPassword && e.target.value !== confirmPassword) {
       setSamePasswordError(true)
       setPasswordError(false)
     } else {
@@ -109,7 +100,6 @@ const Register = ({ isAuthenticated, registrationSuccess, register, resetErrorMs
     if (account === "") { setAccountError(true) }
 
     if (firstName && lastName && email && password && confirmPassword && !samePasswordError && account) {
-      resetErrorMsg()
       register(firstName, lastName, email, password, confirmPassword)
     }
   }
@@ -123,9 +113,6 @@ const Register = ({ isAuthenticated, registrationSuccess, register, resetErrorMs
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
-        {/* Title */}
-        <Typography component="h1" variant="h6">Registration</Typography>
-
         {registrationSuccess
           ?
           // Confirmation text
@@ -199,7 +186,7 @@ const Register = ({ isAuthenticated, registrationSuccess, register, resetErrorMs
               margin="normal"
               onChange={handlePasswordChange}
               error={passwordError}
-              helperText={passwordError ? "This is a required field" : ""}
+              helperText={passwordError ? "This is a required field" : "Minimum 8 characters with a mixture of lower and upper case letters, numbers and symbols"}
             />
 
             {/* Confirm password input */}
@@ -256,7 +243,7 @@ const Register = ({ isAuthenticated, registrationSuccess, register, resetErrorMs
             {/* Login link */}
             <Grid container justify="flex-end">
               <Grid item>
-                <NavLink to="/login" variant="body2" onClick={resetErrorMsg}>
+                <NavLink to="/login" variant="body2">
                   Already have an account? Login
               </NavLink>
               </Grid>
@@ -275,7 +262,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   register,
-  resetErrorMsg: () => dispatch => dispatch(resetErrorMsg()),
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register)

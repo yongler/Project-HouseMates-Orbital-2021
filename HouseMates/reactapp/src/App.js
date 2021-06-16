@@ -11,11 +11,14 @@ import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
 import ChangePassword from './pages/ChangePassword'
+import DeleteAccount from './pages/DeleteAccount'
 import ResendActivationEmail from './pages/ResendActivationEmail'
 import ResetPassword from './pages/ResetPassword'
 import ResetPasswordConfirm from './pages/ResetPasswordConfirm'
 import RoommateDetail from './pages/RoommateDetail'
 import RoommateForm from './pages/RoommateForm'
+import ProfileForm from './pages/ProfileForm'
+import HousingForm from './pages/HousingForm'
 import Roommates from './pages/Roommates'
 import LayoutTwo from './layout/LayoutTwo'
 import LayoutOne from './layout/LayoutOne'
@@ -38,16 +41,18 @@ const App = () => {
           <Layout>
             <Switch>
               {/* Routes with LayoutOne */}
-              <RouteWrapper path="/login" component={Login} layout={LayoutOne} />
-              <RouteWrapper path="/register" component={Register} layout={LayoutOne} />
-              <RouteWrapper path="/change-password" component={ChangePassword} layout={LayoutOne} />
-              <RouteWrapper path="/reset-password" component={ResetPassword} layout={LayoutOne} />
+              <RouteWrapper path="/login" title={"Login"} component={Login} layout={LayoutOne} />
+              <RouteWrapper path="/delete-account" title={"Delete Account"} component={DeleteAccount} layout={LayoutOne} />
+              <RouteWrapper path="/register" title={"Registration"} component={Register} layout={LayoutOne} />
+              <RouteWrapper path="/change-password" title={"Change Password"} component={ChangePassword} layout={LayoutOne} />
+              <RouteWrapper path="/reset-password" title={"Reset Password"} component={ResetPassword} layout={LayoutOne} />
               <RouteWrapper
                 path="/password/reset/confirm/:uid/:token"
+                title={"Reset Password"}
                 component={ResetPasswordConfirm}
                 layout={LayoutOne} />
-              <RouteWrapper path="/activate/:uid/:token" component={Activate} layout={LayoutOne} />
-              <RouteWrapper path="/resend-activation-email" component={ResendActivationEmail} layout={LayoutOne} />
+              <RouteWrapper path="/activate/:uid/:token" title={"Account Activation"} component={Activate} layout={LayoutOne} />
+              <RouteWrapper path="/resend-activation-email" title={"Resend Activation Email"} component={ResendActivationEmail} layout={LayoutOne} />
 
               {/* Routes with LayoutTwo */}
               <RouteWrapper exact path="/" component={Home} layout={LayoutTwo} />
@@ -55,7 +60,9 @@ const App = () => {
               <RouteWrapper path="/housings" component={Housings} layout={LayoutTwo} />
               <RouteWrapper exact path="/roommates" component={Roommates} layout={LayoutTwo} />
               <RouteWrapper path="/roommates/:id" component={RoommateDetail} layout={LayoutTwo} />
-              <RouteWrapper path="/form" component={RoommateForm} layout={LayoutTwo} />
+              <RouteWrapper path="/roommate-form" component={RoommateForm} layout={LayoutTwo} />
+              <RouteWrapper path="/profile-form" component={ProfileForm} layout={LayoutTwo} />
+              <RouteWrapper path="/housing-form" component={HousingForm} layout={LayoutTwo} />
               <RouteWrapper path="/profile" component={Profile} layout={LayoutTwo} />
             </Switch>
           </Layout>

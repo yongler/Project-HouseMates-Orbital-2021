@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Container from '@material-ui/core/Container'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import { changePassword, resetErrorMsg, resetChangePasswordSuccess } from '../redux/auth/actions'
+import { Button, Container, TextField, Typography } from '@material-ui/core'
+import { changePassword, resetChangePasswordSuccess } from '../redux/auth/actions'
 
 // setPassword consists of current password input, new password input, confirm new password input and reset password button, from top to bottom.
-const ChangePassword = ({ changePasswordSuccess, changePassword, resetErrorMsg, resetChangePasswordSuccess }) => {
+const ChangePassword = ({ changePasswordSuccess, changePassword, resetChangePasswordSuccess }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -49,7 +46,7 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetErrorMsg, 
     if (e.target.value === '') {
       setNewPasswordError(true)
       setSamePasswordError(false)
-    } else if (e.target.value !== confirmNewPassword) {
+    } else if (confirmNewPassword && e.target.value !== confirmNewPassword) {
       setSamePasswordError(true)
       setNewPasswordError(false)
     } else {
@@ -92,7 +89,6 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetErrorMsg, 
     }
 
     if (currentPassword && newPassword && confirmNewPassword && !samePasswordError) {
-      resetErrorMsg()
       changePassword(currentPassword, newPassword, confirmNewPassword)
     }
   }
@@ -108,11 +104,6 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetErrorMsg, 
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
-        {/* Title */}
-        <Typography variant="h6" gutterBottom>
-          Change Password
-        </Typography>
-
         {changePasswordSuccess
           ?
           <div>
@@ -161,7 +152,7 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetErrorMsg, 
               type="password"
               onChange={handleNewPasswordChange}
               error={newPasswordError}
-              helperText={newPasswordError ? "This is a required field" : ""}
+              helperText={newPasswordError ? "This is a required field" : "Minimum 8 characters with a mixture of lower and upper case letters, numbers and symbols"}
             />
 
             {/* Confirm new password input */}
@@ -209,7 +200,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   changePassword,
-  resetErrorMsg: () => dispatch => dispatch(resetErrorMsg()),
   resetChangePasswordSuccess: () => dispatch => dispatch(resetChangePasswordSuccess()),
 }
 

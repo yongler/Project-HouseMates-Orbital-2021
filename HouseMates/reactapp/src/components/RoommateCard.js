@@ -1,16 +1,12 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link } from 'react-router-dom'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
-import Chip from '@material-ui/core/Chip'
-import Typography from '@material-ui/core/Typography'
+import { Link, useHistory } from 'react-router-dom'
+import { Card, CardActionArea, CardContent, CardMedia, Chip, IconButton, Tooltip, Typography } from '@material-ui/core'
+import EditIcon from '@material-ui/icons/Edit'
 import Pic from '../static/mrbean.jpg'
 
-// Roommate consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.
-const Roommate = ({ roommate }) => {
+// RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.
+const RoommateCard = ({ post }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     card: {
@@ -24,23 +20,36 @@ const Roommate = ({ roommate }) => {
     tag: {
       marginRight: 5,
       marginTop: 5,
-  },
+    },
     text: {
       height: 100,
+    },
+    tooltip: {
+      float: 'right',
+      marginRight: 5,
+      marginTop: 5,
     },
   }))
 
   // Hooks
   const classes = useStyles()
+  const history = useHistory()
+
+  const handleClick = () => { history.push('/roommate-form') }
 
   return (
     <Card className={classes.card}>
-      <Link to={`/roommates/${roommate.id}`} style={{ textDecoration: 'none', color: 'black' }}>
+      {/* Edit button */}
+      <Tooltip title="" className={classes.tooltip} onClick={handleClick}>
+        <IconButton style={{ color: "black" }}><EditIcon /></IconButton>
+      </Tooltip>
+
+      <Link to={`/roommates/${post.id}`} style={{ textDecoration: 'none', color: 'black' }}>
         {/* Pic */}
         <CardMedia
           className={classes.media}
           image={Pic}
-          title={roommate.name}
+          title={post.name}
         />
 
         <CardActionArea>
@@ -48,12 +57,12 @@ const Roommate = ({ roommate }) => {
           <CardContent>
             {/* Name */}
             <Typography variant="h5" gutterBottom>
-              {roommate.name}
+              {post.name}
             </Typography>
 
             {/* Age, gender and bio */}
             <Typography variant="body2" color="textSecondary" className={classes.text}>
-              {roommate.age} &middot; {roommate.gender} &middot; {roommate.bio.length > 220 ? roommate.bio.substring(0, 220) + "..." : roommate.bio}
+              {post.age} &middot; {post.gender} &middot; {post.bio.length > 220 ? post.bio.substring(0, 220) + "..." : post.bio}
             </Typography>
 
             <br />
@@ -63,7 +72,7 @@ const Roommate = ({ roommate }) => {
             </Typography>
 
             {/* Top 3 preferred roommate tags */}
-            {roommate.specs.map(spec =>
+            {post.specs.map(spec =>
               <Chip key={spec} label={spec} color="primary" className={classes.tag} />
             )}
           </CardContent>
@@ -73,4 +82,4 @@ const Roommate = ({ roommate }) => {
   )
 }
 
-export default Roommate
+export default RoommateCard

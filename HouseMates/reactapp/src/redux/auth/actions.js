@@ -13,14 +13,16 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  DELETE_ACCOUNT_SUCCESS,
+  DELETE_ACCOUNT_FAIL,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAIL,
   RESET_PASSWORD_CONFIRM_SUCCESS,
   RESET_PASSWORD_CONFIRM_FAIL,
   CHANGE_PASSWORD_SUCCESS,
   CHANGE_PASSWORD_FAIL,
-  LOADING,
-  RESET_LOADING,
+  AUTH_LOADING,
+  RESET_AUTH_LOADING,
   RESET_ERORR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
 } from './types'
@@ -42,9 +44,12 @@ const userDoesNotExistResendActivationEmailErrorMsg = "User does not exists or u
 // Login
 const incorrectPasswordErrorMsg = "Incorrect password"
 
+// Delete account
+const unableToDeleteAccountErrorMsg = "Unable to delete account"
+
 // Reset password
 const unableToResetPasswordErrorMsg = "Unable to reset passowrd"
-const userDoesNotExistResetPasswordErrorMsg = "User does not exists"
+const userDoesNotExistResetPasswordErrorMsg = "User does not exist"
 
 // Reset password confirm
 const expiredResetPasswordTokenErrorMsg = "Expired reset password token"
@@ -213,14 +218,43 @@ export const login = (email, password) =>
 
     // Post request
     try {
-      console.log(body)
-      console.log(config)
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, body, config)
 
       dispatch(loginSuccess(res.data))
       dispatch(checkAuthentication())
     } catch (err) {
       dispatch(loginFail(incorrectPasswordErrorMsg))
+    }
+  }
+
+// Delete account
+export const deleteAccount = (current_password) =>
+  async dispatch => {
+    dispatch(loading())
+
+    // Get access token from local storage
+    const token = localStorage.getItem('access')
+
+    // Request
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${token}`
+      }
+    }
+    const body = JSON.stringify({ current_password })
+
+    // Delete request
+    try {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/auth/users/me/`, body, config)
+
+      dispatch(deleteAccountSuccess())
+    } catch (err) {
+      if (err.response.data.current_password) {
+        dispatch(deleteAccountFail(incorrectPasswordErrorMsg))
+      } else {
+        dispatch(deleteAccountFail(unableToDeleteAccountErrorMsg))
+      }
     }
   }
 
@@ -243,7 +277,7 @@ export const resetPassword = (email) =>
 
       dispatch(resetPasswordSuccess())
     } catch (err) {
-      if (err.response.data.email) {
+      if (err.response.data) {
         dispatch(resetPasswordFail(userDoesNotExistResetPasswordErrorMsg))
       } else {
         dispatch(resetPasswordFail(unableToResetPasswordErrorMsg))
@@ -327,7 +361,7 @@ export const activateFail = errorMsg => ({
 })
 
 export const resendActivationEmailSuccess = () => ({ type: RESEND_ACTIVATION_EMAIL_SUCCESS })
-export const resendActivationEmailFail = errorMsg => ({ 
+export const resendActivationEmailFail = errorMsg => ({
   type: RESEND_ACTIVATION_EMAIL_FAIL,
   payload: errorMsg,
 })
@@ -352,26 +386,32 @@ export const loginFail = errorMsg => ({
 
 export const logout = () => ({ type: LOGOUT })
 
+export const deleteAccountSuccess = () => ({ type: DELETE_ACCOUNT_SUCCESS })
+export const deleteAccountFail = errorMsg => ({ 
+  type: DELETE_ACCOUNT_FAIL,
+  payload: errorMsg, 
+})
+
 export const resetPasswordSuccess = () => ({ type: RESET_PASSWORD_SUCCESS })
-export const resetPasswordFail = errorMsg => ({ 
+export const resetPasswordFail = errorMsg => ({
   type: RESET_PASSWORD_FAIL,
   payload: errorMsg,
 })
 
 export const resetPasswordConfirmSuccess = () => ({ type: RESET_PASSWORD_CONFIRM_SUCCESS })
-export const resetPasswordConfirmFail = errorMsg => ({ 
+export const resetPasswordConfirmFail = errorMsg => ({
   type: RESET_PASSWORD_CONFIRM_FAIL,
   payload: errorMsg,
 })
 
 export const changePasswordSuccess = () => ({ type: CHANGE_PASSWORD_SUCCESS })
-export const changePasswordFail = errorMsg => ({ 
+export const changePasswordFail = errorMsg => ({
   type: CHANGE_PASSWORD_FAIL,
   payload: errorMsg,
 })
 
-export const loading = () => ({ type: LOADING })
-export const resetLoading = () => ({ type: RESET_LOADING })
+export const loading = () => ({ type: AUTH_LOADING })
+export const resetLoading = () => ({ type: RESET_AUTH_LOADING })
 
 export const resetErrorMsg = () => ({ type: RESET_ERORR_MSG })
 export const resetChangePasswordSuccess = () => ({ type: RESET_CHANGE_PASSWORD_SUCCESS })

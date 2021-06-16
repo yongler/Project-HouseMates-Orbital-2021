@@ -2,15 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
-import Container from '@material-ui/core/Container'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import { resendActivationEmail, resetErrorMsg } from '../redux/auth/actions'
+import { Button, Container, Grid, TextField, Typography } from '@material-ui/core'
+import { resendActivationEmail } from '../redux/auth/actions'
 
 // ResendActivationEmail consists of title, and ((confirmation text), or (email input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
-const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationEmail, resetErrorMsg }) => {
+const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationEmail }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -40,7 +36,6 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
   const handleSubmit = e => {
     e.preventDefault()
 
-    resetErrorMsg()
     setEmailError(false)
 
     if (email === "") { setEmailError(true) }
@@ -57,9 +52,6 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
-        {/* Title */}
-        <Typography variant="h6" gutterBottom>Resend Activation Email</Typography>
-
         {resendActivationEmailSuccess
           ?
           // Confirmation text
@@ -121,7 +113,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   resendActivationEmail,
-  resetErrorMsg,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ResendActivationEmail)

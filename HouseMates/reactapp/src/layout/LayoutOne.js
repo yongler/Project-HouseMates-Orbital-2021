@@ -1,14 +1,19 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
-import Box from '@material-ui/core/Box'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Snackbar from '@material-ui/core/Snackbar'
+import { CircularProgress, Snackbar, Typography } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert'
 import Footer from '../components/Footer'
 import Logo from '../static/housemates-logo-with-text-black.svg'
+import { resetErrorMsg } from '../redux/auth/actions'
 
 // LayoutOne consists of logo at the top of the component and footer at the bottom.
-const LayoutOne = ({ children, errorMsg, loading }) => {
+const LayoutOne = ({ children, title, errorMsg, loading, resetErrorMsg }) => {
+  // Handlers
+  const handleClose = () => { 
+    resetErrorMsg() 
+  }
+
+  // Components
   const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />
   }
@@ -16,14 +21,14 @@ const LayoutOne = ({ children, errorMsg, loading }) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       {/* Error message */}
-      {errorMsg &&
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={true}
-        >
-          <Alert severity="error">{errorMsg}</Alert>
-        </Snackbar>
-      }
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={errorMsg}
+        autoHideDuration={3000}
+        onClose={handleClose}
+      >
+        <Alert severity="error">{errorMsg}</Alert>
+      </Snackbar>
 
       {/* Logo */}
       <img
@@ -34,16 +39,14 @@ const LayoutOne = ({ children, errorMsg, loading }) => {
         style={{ marginTop: 50 }}
       />
 
+      {/* Title */}
+      <Typography variant="h6" gutterBottom>{title}</Typography>
+
       {/* Loading spinner or component*/}
-      {loading 
-      ? 
-      <CircularProgress />
-      : 
-      <Fragment>{children}</Fragment>
-      }
+      {loading ? <CircularProgress /> : <Fragment>{children}</Fragment>}
 
       {/* Footer */}
-      <Box mt={8}><Footer /></Box>
+      <div style={{ marginTop: 60 }}><Footer /></div>
     </div>
   )
 }
@@ -53,4 +56,8 @@ const mapStateToProps = state => ({
   loading: state.auth.loading,
 })
 
-export default connect(mapStateToProps)(LayoutOne)
+const mapDispatchToProps = {
+  resetErrorMsg,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LayoutOne)

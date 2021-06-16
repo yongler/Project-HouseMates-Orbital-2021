@@ -2,20 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { NavLink, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Container from '@material-ui/core/Container'
-import FormControl from '@material-ui/core/FormControl'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Grid from '@material-ui/core/Grid'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import { login, resetErrorMsg } from '../redux/auth/actions'
+import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core'
+import { login } from '../redux/auth/actions'
 
 // Login consists of title, email input, password input, account input, login button, and (forgot password and register links), from top to bottom.
-const Login = ({ isAuthenticated, login, resetErrorMsg }) => {
+const Login = ({ isAuthenticated, login }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -64,7 +55,6 @@ const Login = ({ isAuthenticated, login, resetErrorMsg }) => {
     if (account === "") { setAccountError(true) }
 
     if (email && password && account) {
-      resetErrorMsg()
       login(email, password)
     }
   }
@@ -78,9 +68,6 @@ const Login = ({ isAuthenticated, login, resetErrorMsg }) => {
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
-        {/* Title */}
-        <Typography variant="h6" gutterBottom>Login</Typography>
-
         <form noValidate onSubmit={handleSubmit}>
           {/* Email input */}
           <TextField
@@ -146,12 +133,12 @@ const Login = ({ isAuthenticated, login, resetErrorMsg }) => {
           {/* Forgot password and register links */}
           <Grid container>
             <Grid item xs>
-              <NavLink to="/reset-password" variant="body2" onClick={resetErrorMsg}>
+              <NavLink to="/reset-password" variant="body2">
                 Forgot password?
               </NavLink>
             </Grid>
             <Grid item>
-              <NavLink to="/register" variant="body2" onClick={resetErrorMsg}>
+              <NavLink to="/register" variant="body2">
                 Don't have an account? Register now!
               </NavLink>
             </Grid>
@@ -168,7 +155,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   login,
-  resetErrorMsg: () => dispatch => dispatch(resetErrorMsg()),
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

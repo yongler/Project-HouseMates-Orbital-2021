@@ -1,25 +1,12 @@
-import React, { useEffect } from 'react'
-import { makeStyles } from '@material-ui/core'
-import AddIcon from '@material-ui/icons/Add'
-import Container from '@material-ui/core/Container'
-import Fab from '@material-ui/core/Fab'
-import Grid from '@material-ui/core/Grid'
-import Tooltip from '@material-ui/core/Tooltip'
-import Housing from '../components/Housing'
+import React from 'react'
+import { useHistory } from 'react-router-dom'
+import Posts from '../components/Posts'
+import HousingCard from '../components/HousingCard'
 
-// Housings consists of list of Housing and post button
+// Housings consists of list of Roommate and post button.
 const Housings = () => {
-  // Styling
-  const useStyles = makeStyles(theme => ({
-    tooltip: {
-      position: 'fixed',
-      bottom: theme.spacing(2),
-      right: theme.spacing(3),
-    },
-  }))
-
   // Data (hard coded for now)
-  const housings = [
+  const posts = [
     {
       id: 1,
       pic: "housing.jpg",
@@ -47,31 +34,22 @@ const Housings = () => {
   ]
 
   // Hooks
-  const classes = useStyles()
+  const history = useHistory()
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+  // Handlers
+  const handlePostButton = () => { history.push('/housing-form') }
 
   return (
     <div>
-      {/* List of Housing */}
-      <Container>
-        <Grid container spacing={2}>
-          {housings.map(housing => (
-            <Grid item xs={12} key={housing.id}>
-              <Housing housing={housing} />
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      {/* Post button */}
-      <Tooltip title="">
-        <Fab color="primary" className={classes.tooltip}>
-          <AddIcon />
-        </Fab>
-      </Tooltip>
+      <Posts
+        postType={"HousingCard form"}
+        handlePostButton={handlePostButton}
+        PostComponent={HousingCard}
+        xs={12}
+        md={12}
+        lg={12}
+        posts={posts}
+      />
     </div>
   )
 }

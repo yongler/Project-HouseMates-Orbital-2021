@@ -12,14 +12,16 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  DELETE_ACCOUNT_SUCCESS,
+  DELETE_ACCOUNT_FAIL,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAIL,
   RESET_PASSWORD_CONFIRM_SUCCESS,
   RESET_PASSWORD_CONFIRM_FAIL,
   CHANGE_PASSWORD_SUCCESS,
   CHANGE_PASSWORD_FAIL,
-  LOADING,
-  RESET_LOADING,
+  AUTH_LOADING,
+  RESET_AUTH_LOADING,
   RESET_ERORR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
 } from './types'
@@ -33,6 +35,7 @@ const initialState = {
   registrationSuccess: false,
   activationSuccess: false,
   resendActivationEmailSuccess: false,
+  deleteAccountSuccess: false,
   resetPasswordSuccess: false,
   resetPasswordConfirmSuccess: false,
   changePasswordSuccess: false,
@@ -145,6 +148,24 @@ const authReducer =
           user: null,
         }
 
+      case DELETE_ACCOUNT_SUCCESS:
+        return {
+          ...state,
+          access: null,
+          refresh: null,
+          isAuthenticated: false,
+          user: null,
+          deleteAccountSuccess: true,
+          loading: false,
+        }
+
+        case DELETE_ACCOUNT_FAIL:
+          return {
+            ...state,
+            deleteAccountSuccess: false,
+            errorMsg: payload,
+            loading: false
+          }
       case RESET_PASSWORD_SUCCESS:
         return {
           ...state,
@@ -190,13 +211,13 @@ const authReducer =
           loading: false,
         }
 
-      case LOADING:
+      case AUTH_LOADING:
         return {
           ...state,
           loading: true,
         }
 
-      case RESET_LOADING:
+      case RESET_AUTH_LOADING:
         return {
           ...state,
           loading: false,

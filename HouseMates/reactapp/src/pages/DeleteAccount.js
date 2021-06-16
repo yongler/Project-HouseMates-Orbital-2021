@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Container, Grid, TextField, Typography } from '@material-ui/core'
-import { resetPassword } from '../redux/auth/actions'
+import { Button, Grid, Container, TextField, Typography } from '@material-ui/core'
+import { deleteAccount } from '../redux/auth/actions'
 
-// ResetPassword consists of title, and ((confirmation text), or (email input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
-const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
+// DeleteAccount consists of title, and ((confirmation text), or (password input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
+const DeleteAccount = ({ deleteAccountSuccess, deleteAccount }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -24,24 +24,24 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
   const history = useHistory()
 
   // States
-  const [email, setEmail] = useState("")
-  const [emailError, setEmailError] = useState(false)
+  const [password, setPassword] = useState("")
+  const [passwordError, setPasswordError] = useState(false)
 
   // Handlers
-  const handleEmailChange = e => {
-    setEmail(e.target.value)
-    if (e.target.value === "") { setEmailError(true) } else { setEmailError(false) }
+  const handlePasswordChange = e => {
+    setPassword(e.target.value)
+    if (e.target.value === "") { setPasswordError(true) } else { setPasswordError(false) }
   }
   const handleCancel = () => history.go(-1)
-  const handleSubmit = e => {
+  const handleDelete = e => {
     e.preventDefault()
 
-    setEmailError(false)
+    setPasswordError(false)
 
-    if (email === "") { setEmailError(true) }
+    if (password === "") { setPasswordError(true) }
 
-    if (email) {
-      resetPassword(email)
+    if (password) {
+      deleteAccount(password)
     }
   }
 
@@ -52,31 +52,32 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
-        {resetPasswordSuccess
+        {deleteAccountSuccess
           ?
           // Confirmation text
           <div>
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
-              Kindly check your email to reset your password.
+              You have successfully deleted your account.
             </Typography>
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
               You may close this window.
             </Typography>
           </div>
           :
-          <form noValidate onSubmit={handleSubmit}>
-            {/* Email input */}
+          <form noValidate onSubmit={handleDelete}>
+            {/* Password input */}
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              label="Email"
-              name="email"
+              label="Password"
+              name="password"
+              type="password"
               autoFocus
-              onChange={handleEmailChange}
-              error={emailError}
-              helperText={emailError ? "This is a required field" : ""}
+              onChange={handlePasswordChange}
+              error={passwordError}
+              helperText={passwordError ? "This is a required field" : ""}
             />
 
             {/* Cancel and submit buttons */}
@@ -96,7 +97,7 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
                   variant="contained"
                   color="primary"
                 >
-                  Submit
+                  Delete
               </Button>
               </Grid>
             </Grid>
@@ -108,11 +109,11 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
 }
 
 const mapStateToProps = state => ({
-  resetPasswordSuccess: state.auth.resetPasswordSuccess,
+  deleteAccountSuccess: state.auth.deleteAccountSuccess,
 })
 
 const mapDispatchToProps = {
-  resetPassword,
+  deleteAccount,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword)
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteAccount)

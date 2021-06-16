@@ -8,9 +8,7 @@ const Layout = ({ children, checkAuthentication}) => {
     }, [])
 
     return (
-    <div>
-        {children}
-    </div>   
+    <div>{children}</div>   
     )  
 }
 

@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
+import { CircularProgress, Snackbar } from '@material-ui/core'
+import MuiAlert from '@material-ui/lab/Alert'
 import Footer from '../components/Footer'
 import SideNav from '../components/SideNav'
 import NavBar from '../components/NavBar'
 
 // LayoutTwo consists of NavBar on top of the component, SideNav at the side and Footer at the bottom.
-const LayoutTwo = ({ children }) => {
+const LayoutTwo = ({ children, postErrorMsg, postLoading, formErrorMsg, formLoading }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     root: {
@@ -22,9 +24,6 @@ const LayoutTwo = ({ children }) => {
       justifyContent: 'flex-end',
       padding: theme.spacing(0, 1),
       minHeight: theme.mixins.toolbar.minHeight + 8,
-    },
-    flex: {
-      display: 'flex',
     },
     closeSize: {
       minHeight: 100,
@@ -60,6 +59,11 @@ const LayoutTwo = ({ children }) => {
   const handleMouseEnter = () => { setHoverOpen(true) }
   const handleMouseLeave = () => { setHoverOpen(false) }
 
+  // Components
+  const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />
+  }
+
   return (
     <div className={classes.root}>
       {/* NavBar */}
@@ -77,24 +81,57 @@ const LayoutTwo = ({ children }) => {
         handleMouseLeave={handleMouseLeave}
       />
 
-      {/* Component */}
+      {/* Error message */}
+      {postErrorMsg &&
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={true}
+        >
+          <Alert severity="error">{postErrorMsg}</Alert>
+        </Snackbar>
+      }
+
+      {formErrorMsg &&
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={true}
+        >
+          <Alert severity="error">{formErrorMsg}</Alert>
+        </Snackbar>
+      }
+
+      {/* Content */}
       <main className={classes.content}>
         {/* Top padding */}
         <div className={classes.toolbar} />
 
-        <div className={classes.flex}>
+        <div style={{ display: 'flex' }}>
           {/* Side padding */}
           <div className={!menuOpen ? classes.closeSize : classes.openSize} />
 
-          {/* Main content */}
-          {children}
-        </div>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Loading spinner */}
+            {(postLoading || formLoading) && <CircularProgress style={{ marginBottom: 40 }} />}
 
-        {/* Footer */}
-        <Box mt={8}><Footer /></Box>
+            {/* Main content */}
+            <div style={{ width: '100%'}}>{children}</div>
+
+            {/* Footer */}
+            <div style={{ marginTop: 60 }}>
+              <Footer/>
+            </div>
+          </div>
+        </div>
       </main>
-    </div>
+    </div >
   )
 }
 
-export default LayoutTwo
+const mapStateToProps = state => ({
+  postErrorMsg: state.post.errorMsg,
+  postLoading: state.post.loading,
+  formErrorMsg: state.form.errorMsg,
+  formLoading: state.form.loading,
+})
+
+export default connect(mapStateToProps)(LayoutTwo)
