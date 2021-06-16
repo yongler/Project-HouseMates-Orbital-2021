@@ -235,18 +235,14 @@ export const deleteAccount = (current_password) =>
     // Get access token from local storage
     const token = localStorage.getItem('access')
 
-    // Request
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `JWT ${token}`
-      }
-    }
-    const body = JSON.stringify({ current_password })
+    const data = JSON.stringify({ current_password })
 
     // Delete request
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/auth/users/me/`, body, config)
+      await axios.delete(`${process.env.REACT_APP_API_URL}/auth/users/me/`, {data, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${token}`
+      }})
 
       dispatch(deleteAccountSuccess())
     } catch (err) {

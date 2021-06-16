@@ -29,9 +29,10 @@ class Choice(models.Model):
 
 # User filled forms model 
 class Post(models.Model):
+    owner = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, null=True)
     post_form_type = models.ForeignKey(Form, on_delete=models.CASCADE)
     selected_choices = models.JSONField(default=list)
-    owner = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, null=True)
+    score_list = models.JSONField(default=list)
 
     def __str__(self):
         return str(self.id) 
