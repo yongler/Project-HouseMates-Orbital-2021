@@ -136,6 +136,9 @@ const Form = ({ categories, questions, getQuestions, formType }) => {
     })
   }
 
+
+
+
   const handleConfirmation = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const handleRedirect = () => {
@@ -162,14 +165,14 @@ const Form = ({ categories, questions, getQuestions, formType }) => {
           onChange={e => handleChange(e)}
           value={formFields[question.question_text]}
         >
-          {/* {question.choices.map(choice => (
+          {question.choices.map(choice => (
             <FormControlLabel
               value={choice.choice_text}
               control={<Radio color="primary" />}
               label={choice.choice_text}
               key={choice.id}
             />
-          ))} */}
+          ))}
         </RadioGroup >
       </FormControl >
     )
@@ -188,14 +191,14 @@ const Form = ({ categories, questions, getQuestions, formType }) => {
           onChange={e => handleChange(e)}
           value={formFields[question.question_text]}
         >
-          {/* {question.choices.map(choice => (
+          {question.choices.map(choice => (
             <FormControlLabel
               value={choice.choice_text}
               control={<Checkbox color="primary" />}
               label={choice.choice_text}
               key={choice.id}
             />
-          ))} */}
+          ))}
         </FormGroup>
       </FormControl>
     )

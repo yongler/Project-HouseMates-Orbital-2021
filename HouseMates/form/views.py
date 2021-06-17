@@ -49,6 +49,9 @@ class PostView(viewsets.ModelViewSet):
 		form_type = self.request.query_params.get('form_type')
 		if form_type is not None:
 			queryset = queryset.filter(post_form_type=form_type)
+		owner = self.request.query_params.get('owner')
+		if owner is not None:
+			queryset = queryset.filter(owner=owner)
 		return queryset
 
 class ChoiceView(viewsets.ModelViewSet):
