@@ -11,6 +11,7 @@ import {
   DELETE_POST_FAIL,
   POST_LOADING,
   RESET_POST_LOADING,
+  RESET_CREATE_POST_SUCCESS,
 } from './types'
 
 const initialState = {
@@ -18,6 +19,7 @@ const initialState = {
   posts: [],
   post: null,
   errorMsg: '',
+  createPostSuccess: false,
 }
 
 const postReducer = (state = initialState, action) => {
@@ -56,6 +58,7 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        createPostSuccess: true,
       }
 
     case CREATE_POST_FAIL:
@@ -63,6 +66,7 @@ const postReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         errorMsg: payload,
+        createPostSuccess: false,
       }
 
     case EDIT_POST_SUCCESS:
@@ -101,6 +105,12 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+      }
+
+    case RESET_CREATE_POST_SUCCESS:
+      return {
+        ...state,
+        createPostSuccess: false,
       }
 
     default:

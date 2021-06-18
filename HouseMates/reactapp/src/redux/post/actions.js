@@ -12,6 +12,7 @@ import {
   DELETE_POST_FAIL,
   POST_LOADING,
   RESET_POST_LOADING,
+  RESET_CREATE_POST_SUCCESS,
 } from './types'
 
 // Error messages
@@ -188,3 +189,5 @@ export const deletePostFail = errorMsg => ({
 
 export const loading = () => ({ type: POST_LOADING })
 export const resetLoading = () => ({ type: RESET_POST_LOADING })
+
+export const resetCreatePostSuccess = () => ({ type: RESET_CREATE_POST_SUCCESS })

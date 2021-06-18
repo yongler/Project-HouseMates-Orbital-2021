@@ -19,6 +19,7 @@ const formReducer = (state = initialState, action) => {
     case GET_QUESTIONS_SUCCESS:
       const rawCategories = payload.map(question => question.category)
       const uniqueCategories = [...new Set(rawCategories)] 
+      uniqueCategories.push("Confirmation")
       return {
         ...state,
         loading: false,

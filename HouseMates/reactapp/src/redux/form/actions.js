@@ -6,6 +6,8 @@ import {
   RESET_FORM_LOADING,
 } from './types'
 
+
+// Error messages
 const unableToLoadQuestionsErrorMsg = "Unable to load questions"
 
 // Async Action Createors
@@ -26,12 +28,10 @@ export const getQuestions = (formType) =>
 
     // Get request
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/question-list/${formType}/`, config)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/question-list/?form_type=${formType}`, config)
 
       dispatch(getQuestionsSuccess(res.data))
     } catch (err) {
-      console.log(err)
-      console.log(err.response)
       dispatch(getQuestionsFail(unableToLoadQuestionsErrorMsg))
     }
   }

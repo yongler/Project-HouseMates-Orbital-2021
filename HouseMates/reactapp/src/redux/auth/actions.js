@@ -143,6 +143,8 @@ export const resendActivationEmail = (email) =>
 // Load user
 export const loadUser = () =>
   async dispatch => {
+    dispatch(loading())
+    
     // Get access token from local storage
     const token = localStorage.getItem('access')
 

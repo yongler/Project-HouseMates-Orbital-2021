@@ -98,12 +98,14 @@ const authReducer =
         return {
           ...state,
           user: payload,
+          loading: false,
         }
 
       case LOAD_USER_FAIL:
         return {
           ...state,
           user: null,
+          loading: false,
         }
 
       case CHECK_AUTHENTICATION_SUCCESS:

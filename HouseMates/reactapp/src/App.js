@@ -64,6 +64,7 @@ const App = () => {
               <RouteWrapper path="/profile-form" component={ProfileForm} layout={LayoutTwo} />
               <RouteWrapper path="/housing-form" component={HousingForm} layout={LayoutTwo} />
               <RouteWrapper path="/profile" component={Profile} layout={LayoutTwo} />
+              <RouteWrapper path="*" component={Home} layout={LayoutTwo} />
             </Switch>
           </Layout>
         </BrowserRouter>
