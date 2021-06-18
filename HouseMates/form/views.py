@@ -23,9 +23,9 @@ from .models import Question, Choice, Post, Selected_choice, Form
 # class QuestionView(generics.ListAPIView):
 class QuestionView(viewsets.ModelViewSet):
 	# authentication_classes = (SessionAuthentication, BasicAuthentication, JWTAuthentication)
-	# permission_classes = [
-    #     permissions.IsAuthenticatedOrReadOnly,
-    # ]
+	permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+    ]
 
 	serializer_class = QuestionSerializer
 
@@ -38,9 +38,9 @@ class QuestionView(viewsets.ModelViewSet):
 
 class PostView(viewsets.ModelViewSet):
 	# authentication_classes = (SessionAuthentication, BasicAuthentication, JWTAuthentication)
-	# permission_classes = [
-    #     permissions.IsAuthenticatedOrReadOnly,
-    # ]
+	permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+    ]
 
 	serializer_class = PostSerializer
 

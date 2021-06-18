@@ -33,6 +33,7 @@ class Post(models.Model):
     post_form_type = models.ForeignKey(Form, on_delete=models.CASCADE)
     selected_choices = models.JSONField(default=list)
     score_list = models.JSONField(default=list)
+    total_score = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.id) 
