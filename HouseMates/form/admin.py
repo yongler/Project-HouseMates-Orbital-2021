@@ -44,9 +44,10 @@ class QuestionAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     fieldsets = [
+                 (None, {'fields': ['owner']}),
                  (None, {'fields': ['post_form_type']}),
                  (None, {'fields': ['selected_choices']}),
-                 (None, {'fields': ['owner']}),
+                 (None, {'fields': ['score_list']}),
                  ]
 
     # inlines = [SelectedChoiceInline]

@@ -1,8 +1,7 @@
 # Project-HouseMates-Orbital-2021
 
-Create virtual environment
-
 After pull/clone:
+Create virtual environment
 npm install (in reactapp directory)
 pip3 install -r requirements.txt
 

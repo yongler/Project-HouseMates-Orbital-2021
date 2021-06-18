@@ -1,15 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
 
 // Confirmation dialog
 const Confirmation = ({ createPostSuccess, loading, open, handleCancel, handleSubmit, handleClose }) => {
-    // States
-    // const [thankYou, setThankYou] = useState(false)
-
-    // Handlers
-    // const handleSubmit = () => setThankYou(true)
-
     return (
         <Dialog open={open}>
             <DialogTitle>Confirmation</DialogTitle>

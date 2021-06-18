@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import permissions, viewsets, generics
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
@@ -8,11 +10,22 @@ from .serializers import QuestionSerializer, PostSerializer, SelectedChoiceSeria
 
 from .models import Question, Choice, Post, Selected_choice, Form
 
+
+# class APIRoot(generics.GenericAPIView):
+# 	authentication_classes = (SessionAuthentication, BasicAuthentication, JWTAuthentication)
+# 	permission_classes = [
+#         permissions.IsAuthenticatedOrReadOnly,
+#     ]
+
+# 	serializer_class = QuestionSerializer
+
+
 # class QuestionView(generics.ListAPIView):
 class QuestionView(viewsets.ModelViewSet):
-	permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly,
-    ]
+	# authentication_classes = (SessionAuthentication, BasicAuthentication, JWTAuthentication)
+	# permission_classes = [
+    #     permissions.IsAuthenticatedOrReadOnly,
+    # ]
 
 	serializer_class = QuestionSerializer
 
@@ -24,6 +37,11 @@ class QuestionView(viewsets.ModelViewSet):
 		return queryset
 
 class PostView(viewsets.ModelViewSet):
+	# authentication_classes = (SessionAuthentication, BasicAuthentication, JWTAuthentication)
+	# permission_classes = [
+    #     permissions.IsAuthenticatedOrReadOnly,
+    # ]
+
 	serializer_class = PostSerializer
 
 	def get_queryset(self):
@@ -31,6 +49,9 @@ class PostView(viewsets.ModelViewSet):
 		form_type = self.request.query_params.get('form_type')
 		if form_type is not None:
 			queryset = queryset.filter(post_form_type=form_type)
+		owner = self.request.query_params.get('owner')
+		if owner is not None:
+			queryset = queryset.filter(owner=owner)
 		return queryset
 
 class ChoiceView(viewsets.ModelViewSet):

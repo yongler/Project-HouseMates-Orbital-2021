@@ -93,6 +93,9 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
     })
   }
 
+
+
+
   const handleConfirmation = () => setOpen(true)
   const handleCancel = () => setOpen(false)
   const handleSubmit = () => { createPost(formType, formFields, user.id) }

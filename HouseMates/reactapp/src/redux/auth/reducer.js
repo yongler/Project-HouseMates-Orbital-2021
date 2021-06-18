@@ -24,12 +24,12 @@ import {
   RESET_AUTH_LOADING,
   RESET_ERORR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
-} from './types'
+} from "./types";
 
 // Initial states
 const initialState = {
-  access: localStorage.getItem('access'),
-  refresh: localStorage.getItem('refresh'),
+  access: localStorage.getItem("access"),
+  refresh: localStorage.getItem("refresh"),
   isAuthenticated: false,
   user: null,
   registrationSuccess: false,
@@ -39,9 +39,9 @@ const initialState = {
   resetPasswordSuccess: false,
   resetPasswordConfirmSuccess: false,
   changePasswordSuccess: false,
-  errorMsg: '',
+  errorMsg: "",
   loading: false,
-}
+};
 
 // Reducer
 const authReducer =
@@ -241,5 +241,6 @@ const authReducer =
         return state
     }
   }
+};
 
-export default authReducer
+export default authReducer;
