@@ -96,33 +96,34 @@ const Profile = ({ user }) => {
             }
           />
 
-        <CardContent className={classes.content}>
-          {/* Profile pic */}
-          {console.log(user.profile_pic)}
-          <Avatar className={classes.avatar} src={user.profile_pic} />
+          <CardContent className={classes.content}>
+            {/* Profile pic */}
+            {console.log(user.profile_pic)}
+            <Avatar className={classes.avatar} src={user.profile_pic} />
 
             {/* Name */}
             <Typography variant="h5" style={{ marginBottom: 20 }}>
               {user.first_name} {user.last_name}
             </Typography>
 
-          {/* List of settings */}
-          <div style={{ width: "100%" }}>
-            {accordions.map((accordion) => (
-              <Accordion key={accordion}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>{accordion.summary}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <List style={{ width: "100%" }}>
-                    {accordion.details.map((detail) => detail)}
-                  </List>
-                </AccordionDetails>
-              </Accordion>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            {/* List of settings */}
+            <div style={{ width: "100%" }}>
+              {accordions.map((accordion) => (
+                <Accordion key={accordion}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography>{accordion.summary}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <List style={{ width: "100%" }}>
+                      {accordion.details.map((detail) => detail)}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      }
     </div>
   );
 };
