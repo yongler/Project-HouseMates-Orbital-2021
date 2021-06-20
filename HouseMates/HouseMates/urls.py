@@ -6,6 +6,8 @@ urlpatterns = [
     # path("", TemplateView.as_view(template_name="index.html")),
     path("admin/", admin.site.urls),
     path("form/", include("form.urls")),
+
+    path("accounts/", include("accounts.urls")),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
     # path('auth/', include('djoser.social.urls')),

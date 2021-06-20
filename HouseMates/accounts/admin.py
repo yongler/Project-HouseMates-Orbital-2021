@@ -15,8 +15,11 @@ admin.site.index_title = "Welcome to the HouseMates admin area"
 
 
 class CustomUserAdmin(admin.ModelAdmin):
-    fieldsets = [(None, {'fields': ['question_text']}),
-                 (None, {'fields': ['category']})]
+    fieldsets = [(None, {'fields': ['first_name']}),
+                 (None, {'fields': ['last_name']}),
+                 (None, {'fields': ['email']}),
+                 (None, {'fields': ['profile_pic']}),
+                 ]
     # inlines = [ChoiceInline]
 
 
