@@ -25,6 +25,7 @@ import LayoutOne from './layout/LayoutOne'
 import RouteWrapper from './layout/RouteWrapper'
 import Layout from './hocs/Layout'
 import store from './redux/store'
+import EditForm from './pages/EditForm'
 
 const App = () => {
   // Styling;
@@ -63,7 +64,9 @@ const App = () => {
               <RouteWrapper path="/roommate-form" component={RoommateForm} layout={LayoutTwo} />
               <RouteWrapper path="/profile-form" component={ProfileForm} layout={LayoutTwo} />
               <RouteWrapper path="/housing-form" component={HousingForm} layout={LayoutTwo} />
+              <RouteWrapper path="/edit-form/:id" component={EditForm} layout={LayoutTwo} />
               <RouteWrapper path="/profile" component={Profile} layout={LayoutTwo} />
+              <RouteWrapper path="*" component={Home} layout={LayoutTwo} />
             </Switch>
           </Layout>
         </BrowserRouter>

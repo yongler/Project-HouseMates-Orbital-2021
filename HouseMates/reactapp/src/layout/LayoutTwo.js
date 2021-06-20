@@ -6,9 +6,16 @@ import MuiAlert from '@material-ui/lab/Alert'
 import Footer from '../components/Footer'
 import SideNav from '../components/SideNav'
 import NavBar from '../components/NavBar'
+import { resetFormErrorMsg } from '../redux/form/actions'
+import { resetPostErrorMsg } from '../redux/post/actions'
 
 // LayoutTwo consists of NavBar on top of the component, SideNav at the side and Footer at the bottom.
-const LayoutTwo = ({ children, postErrorMsg, postLoading, formErrorMsg, formLoading }) => {
+const LayoutTwo = ({
+  children,
+  formErrorMsg, formLoading, postErrorMsg, postLoading,
+  resetFormErrorMsg, resetPostErrorMsg,
+}) => {
+
   // Styling
   const useStyles = makeStyles(theme => ({
     root: {
@@ -55,9 +62,15 @@ const LayoutTwo = ({ children, postErrorMsg, postLoading, formErrorMsg, formLoad
   const drawerOpen = menuOpen || (!menuOpen && hoverOpen)
 
   // Handlers
+  // SideNav
   const handleMenuButton = () => { setMenuOpen(!menuOpen) }
   const handleMouseEnter = () => { setHoverOpen(true) }
   const handleMouseLeave = () => { setHoverOpen(false) }
+  // Error message
+  const handleClose = () => {
+    resetPostErrorMsg()
+    resetFormErrorMsg()
+  }
 
   // Components
   const Alert = (props) => {
@@ -65,73 +78,74 @@ const LayoutTwo = ({ children, postErrorMsg, postLoading, formErrorMsg, formLoad
   }
 
   return (
-    <div className={classes.root}>
-      {/* NavBar */}
-      <NavBar
-        handleMenuButton={handleMenuButton}
-      />
-
-      {/* SideNav */}
-      <SideNav
-        drawerWidth={drawerWidth}
-        menuOpen={menuOpen}
-        hoverOpen={hoverOpen}
-        drawerOpen={drawerOpen}
-        handleMouseEnter={handleMouseEnter}
-        handleMouseLeave={handleMouseLeave}
-      />
-
-      {/* Error message */}
-      {postErrorMsg &&
+    <div>
+      {/* Error messages */}
+      {(postErrorMsg || formErrorMsg) &&
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={true}
+          open={postErrorMsg || formErrorMsg}
+          autoHideDuration={5000}
+          onClose={handleClose}
         >
-          <Alert severity="error">{postErrorMsg}</Alert>
-        </Snackbar>
-      }
+          <Alert severity="error">{postErrorMsg ? postErrorMsg : formErrorMsg}</Alert>
+        </Snackbar>}
 
-      {formErrorMsg &&
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={true}
-        >
-          <Alert severity="error">{formErrorMsg}</Alert>
-        </Snackbar>
-      }
+      <div className={classes.root}>
+        {/* NavBar */}
+        <NavBar
+          handleMenuButton={handleMenuButton}
+        />
 
-      {/* Content */}
-      <main className={classes.content}>
-        {/* Top padding */}
-        <div className={classes.toolbar} />
+        {/* SideNav */}
+        <SideNav
+          drawerWidth={drawerWidth}
+          menuOpen={menuOpen}
+          hoverOpen={hoverOpen}
+          drawerOpen={drawerOpen}
+          handleMouseEnter={handleMouseEnter}
+          handleMouseLeave={handleMouseLeave}
+        />
 
-        <div style={{ display: 'flex' }}>
-          {/* Side padding */}
-          <div className={!menuOpen ? classes.closeSize : classes.openSize} />
+        {/* Content */}
+        <main className={classes.content}>
+          {/* Top padding */}
+          <div className={classes.toolbar} />
 
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Loading spinner */}
-            {(postLoading || formLoading) && <CircularProgress style={{ marginBottom: 40 }} />}
+          <div style={{ display: 'flex' }}>
+            {/* Side padding */}
+            <div className={!menuOpen ? classes.closeSize : classes.openSize} />
 
-            {/* Main content */}
-            <div style={{ width: '100%'}}>{children}</div>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              {/* Loading spinner */}
+              {(postLoading || formLoading) && <CircularProgress style={{ marginBottom: 40 }} />}
 
-            {/* Footer */}
-            <div style={{ marginTop: 60 }}>
-              <Footer/>
+              {/* Main content */}
+              <div style={{ width: '100%' }}>{children}</div>
+
+              {/* Footer */}
+              <div style={{ marginTop: 60 }}>
+                <Footer />
+              </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div >
+        </main>
+      </div >
+    </div>
   )
 }
 
+
+// Redux
 const mapStateToProps = state => ({
-  postErrorMsg: state.post.errorMsg,
-  postLoading: state.post.loading,
-  formErrorMsg: state.form.errorMsg,
-  formLoading: state.form.loading,
+  formErrorMsg: state.form.formErrorMsg,
+  formLoading: state.form.formLoading,
+  postErrorMsg: state.post.postErrorMsg,
+  postLoading: state.post.postLoading,
 })
 
-export default connect(mapStateToProps)(LayoutTwo)
+const mapDispatchToProps = {
+  resetFormErrorMsg,
+  resetPostErrorMsg,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LayoutTwo)

@@ -11,13 +11,21 @@ import {
   DELETE_POST_FAIL,
   POST_LOADING,
   RESET_POST_LOADING,
+  RESET_POST_ERROR_MSG,
+  RESET_CREATE_POST_SUCCESS,
+  RESET_EDIT_POST_SUCCESS,
+  RESET_DELETE_POST_SUCCESS,
 } from './types'
 
 const initialState = {
-  loading: false,
+  postLoading: false,
   posts: [],
+  postsType: [],
   post: null,
-  errorMsg: '',
+  postErrorMsg: '',
+  createPostSuccess: false,
+  editPostSuccess: false,
+  deletePostSuccess: false,
 }
 
 const postReducer = (state = initialState, action) => {
@@ -27,80 +35,111 @@ const postReducer = (state = initialState, action) => {
     case GET_POST_LIST_SUCCESS:
       return {
         ...state,
-        loading: false,
-        posts: payload,
+        postLoading: false,
+        posts: payload.posts,
+        postsType: payload.formType,
       }
 
     case GET_POST_LIST_FAIL:
       return {
         ...state,
-        loading: false,
-        errorMsg: payload,
+        postLoading: false,
+        postErrorMsg: payload,
       }
 
     case GET_POST_DETAIL_SUCCESS:
       return {
         ...state,
-        loading: false,
+        postLoading: false,
         post: payload,
       }
 
     case GET_POST_DETAIL_FAIL:
       return {
         ...state,
-        loading: false,
-        errorMsg: payload,
+        postLoading: false,
+        postErrorMsg: payload,
       }
 
     case CREATE_POST_SUCCESS:
       return {
         ...state,
-        loading: false,
+        postLoading: false,
+        createPostSuccess: true,
       }
 
     case CREATE_POST_FAIL:
       return {
         ...state,
-        loading: false,
-        errorMsg: payload,
+        postLoading: false,
+        postErrorMsg: payload,
+        createPostSuccess: false,
       }
 
     case EDIT_POST_SUCCESS:
       return {
         ...state,
-        loading: false,
+        postLoading: false,
+        editPostSuccess: true,
       }
 
     case EDIT_POST_FAIL:
       return {
         ...state,
-        loading: false,
-        errorMsg: payload,
+        postLoading: false,
+        postErrorMsg: payload,
+        editPostSuccess: false,
       }
 
     case DELETE_POST_SUCCESS:
       return {
         ...state,
-        loading: false,
+        postLoading: false,
+        deletePostSuccess: true,
       }
 
     case DELETE_POST_FAIL:
       return {
         ...state,
-        loading: false,
-        errorMsg: payload,
+        postLoading: false,
+        postErrorMsg: payload,
+        deletePostFail: false,
       }
 
     case POST_LOADING:
       return {
         ...state,
-        loading: true,
+        postLoading: true,
       }
 
     case RESET_POST_LOADING:
       return {
         ...state,
-        loading: false,
+        postLoading: false,
+      }
+
+    case RESET_POST_ERROR_MSG:
+      return {
+        ...state,
+        postErrorMsg: '',
+      }
+
+    case RESET_CREATE_POST_SUCCESS:
+      return {
+        ...state,
+        createPostSuccess: false,
+      }
+      
+    case RESET_EDIT_POST_SUCCESS:
+      return {
+        ...state,
+        editPostSuccess: false,
+      }
+
+    case RESET_DELETE_POST_SUCCESS:
+      return {
+        ...state,
+        deletePostSuccess: false,
       }
 
     default:

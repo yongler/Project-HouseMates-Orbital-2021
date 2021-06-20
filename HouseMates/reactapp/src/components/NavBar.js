@@ -115,6 +115,7 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
     logout();
     history.push("/login");
   };
+  const handleClick = () => { history.push('/dashboard') }
 
   return (
     <div>
@@ -138,10 +139,12 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
             width="45"
             height="45"
             className={classes.logo}
+            onClick={handleClick}
+            style={{ cursor: 'pointer' }}
           />
 
           {/* Title */}
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.title} onClick={handleClick} style={{ cursor: 'pointer' }}>
             HouseMates
           </Typography>
 

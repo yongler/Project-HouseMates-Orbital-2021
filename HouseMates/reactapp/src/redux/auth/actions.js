@@ -23,10 +23,10 @@ import {
   CHANGE_PASSWORD_FAIL,
   AUTH_LOADING,
   RESET_AUTH_LOADING,
-  RESET_ERORR_MSG,
+  RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
   CHANGE_PROFILE_PIC_SUCCESS,
-  CHANGE_PROFILE_PIC_FAIL,
+  CHANGE_PROFILE_PIC_FAIL
 } from "./types";
 
 // Error messages
@@ -65,7 +65,7 @@ const newPasswordTooWeakErrorMsg = "New password too weak";
 // Register
 export const register =
   (first_name, last_name, email, password, re_password) => async (dispatch) => {
-    dispatch(loading());
+    dispatch(authLoading());
 
     // Request
     const config = {
@@ -103,7 +103,7 @@ export const register =
 
 // Activate
 export const activate = (uid, token) => async (dispatch) => {
-  dispatch(loading());
+  dispatch(authLoading());
 
   // Request
   const config = {
@@ -133,7 +133,7 @@ export const activate = (uid, token) => async (dispatch) => {
 
 // Resend activation email
 export const resendActivationEmail = (email) => async (dispatch) => {
-  dispatch(loading());
+  dispatch(authLoading());
 
   // Request
   const config = {
@@ -161,6 +161,8 @@ export const resendActivationEmail = (email) => async (dispatch) => {
 
 // Load user
 export const loadUser = () => async (dispatch) => {
+  dispatch(authLoading());
+
   // Get access token from local storage
   const token = localStorage.getItem("access");
 
@@ -229,7 +231,7 @@ export const checkAuthentication = () => async (dispatch) => {
 
 // Login
 export const login = (email, password) => async (dispatch) => {
-  dispatch(loading());
+  dispatch(authLoading());
 
   // Request
   const config = {
@@ -256,7 +258,7 @@ export const login = (email, password) => async (dispatch) => {
 
 // Delete account
 export const deleteAccount = (current_password) => async (dispatch) => {
-  dispatch(loading());
+  dispatch(authLoading());
 
   // Get access token from local storage
   const token = localStorage.getItem("access");
@@ -274,6 +276,7 @@ export const deleteAccount = (current_password) => async (dispatch) => {
     });
 
     dispatch(deleteAccountSuccess());
+    dispatch(logout());
   } catch (err) {
     if (err.response.data.current_password) {
       dispatch(deleteAccountFail(incorrectPasswordErrorMsg));
@@ -285,7 +288,7 @@ export const deleteAccount = (current_password) => async (dispatch) => {
 
 // Reset password
 export const resetPassword = (email) => async (dispatch) => {
-  dispatch(loading());
+  dispatch(authLoading());
 
   // Request
   const config = {
@@ -316,7 +319,7 @@ export const resetPassword = (email) => async (dispatch) => {
 // Reset password confirm
 export const resetPasswordConfirm =
   (uid, token, new_password, re_new_password) => async (dispatch) => {
-    dispatch(loading());
+    dispatch(authLoading());
 
     // Request
     const config = {
@@ -349,7 +352,7 @@ export const resetPasswordConfirm =
 // Change password
 export const changePassword =
   (current_password, new_password, re_new_password) => async (dispatch) => {
-    dispatch(loading());
+    dispatch(authLoading());
 
     const token = localStorage.getItem("access");
 
@@ -389,8 +392,8 @@ export const changePassword =
 // Change Profile Picture
 export const changeProfilePic = (picture) => async (dispatch) => {
   const token = localStorage.getItem("access");
-  
-  dispatch(loading());
+
+  dispatch(authLoading());
 
   // Request
   const config = {
@@ -419,23 +422,23 @@ export const changeProfilePic = (picture) => async (dispatch) => {
 
 // Action Creators
 export const registerSuccess = () => ({ type: REGISTER_SUCCESS });
-export const registerFail = (errorMsg) => ({
+export const registerFail = (authErrorMsg) => ({
   type: REGISTER_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
 });
 
 export const activateSuccess = () => ({ type: ACTIVATE_SUCCESS });
-export const activateFail = (errorMsg) => ({
+export const activateFail = (authErrorMsg) => ({
   type: ACTIVATE_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
 });
 
 export const resendActivationEmailSuccess = () => ({
   type: RESEND_ACTIVATION_EMAIL_SUCCESS,
 });
-export const resendActivationEmailFail = (errorMsg) => ({
+export const resendActivationEmailFail = (authErrorMsg) => ({
   type: RESEND_ACTIVATION_EMAIL_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
 });
 
 export const loadUserSuccess = (user) => ({
@@ -455,43 +458,44 @@ export const loginSuccess = (tokens) => ({
   type: LOGIN_SUCCESS,
   payload: tokens,
 });
-export const loginFail = (errorMsg) => ({
+export const loginFail = (authErrorMsg) => ({
   type: LOGIN_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
 });
 
 export const logout = () => ({ type: LOGOUT });
 
 export const deleteAccountSuccess = () => ({ type: DELETE_ACCOUNT_SUCCESS });
-export const deleteAccountFail = (errorMsg) => ({
+export const deleteAccountFail = (authErrorMsg) => ({
   type: DELETE_ACCOUNT_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
 });
 
 export const resetPasswordSuccess = () => ({ type: RESET_PASSWORD_SUCCESS });
-export const resetPasswordFail = (errorMsg) => ({
+export const resetPasswordFail = (authErrorMsg) => ({
   type: RESET_PASSWORD_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
 });
 
 export const resetPasswordConfirmSuccess = () => ({
   type: RESET_PASSWORD_CONFIRM_SUCCESS,
 });
-export const resetPasswordConfirmFail = (errorMsg) => ({
+export const resetPasswordConfirmFail = (authErrorMsg) => ({
   type: RESET_PASSWORD_CONFIRM_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
 });
 
 export const changePasswordSuccess = () => ({ type: CHANGE_PASSWORD_SUCCESS });
-export const changePasswordFail = (errorMsg) => ({
+export const changePasswordFail = (authErrorMsg) => ({
   type: CHANGE_PASSWORD_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
 });
 
-export const loading = () => ({ type: AUTH_LOADING });
-export const resetLoading = () => ({ type: RESET_AUTH_LOADING });
+export const authLoading = () => ({ type: AUTH_LOADING });
+export const resetAuthLoading = () => ({ type: RESET_AUTH_LOADING });
 
-export const resetErrorMsg = () => ({ type: RESET_ERORR_MSG });
+export const resetAuthErrorMsg = () => ({ type: RESET_AUTH_ERROR_MSG });
+
 export const resetChangePasswordSuccess = () => ({
   type: RESET_CHANGE_PASSWORD_SUCCESS,
 });
