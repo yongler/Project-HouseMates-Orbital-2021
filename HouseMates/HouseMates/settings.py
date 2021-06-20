@@ -150,7 +150,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "reactapp/build/static")]
 # STATIC_ROOT = os.path.join(BASE_DIR, "/static")
 STATIC_ROOT = os.path.join(BASE_DIR, "reactapp/static")
 
-MEDIA_URL = 'accounts/images/'
+MEDIA_URL = 'images/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "reactapp/static/images")
 

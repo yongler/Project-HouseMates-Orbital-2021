@@ -48,6 +48,7 @@ class PostAdmin(admin.ModelAdmin):
                  (None, {'fields': ['post_form_type']}),
                  (None, {'fields': ['selected_choices']}),
                  (None, {'fields': ['score_list']}),
+                 (None, {'fields': ['total_score']}),
                  ]
 
     # inlines = [SelectedChoiceInline]

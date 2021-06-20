@@ -177,6 +177,7 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
                 <Avatar
                   className={classes.profilePic}
                   onClick={handleMenuOpen}
+                  src={user.profile_pic}
                 />
               </div>
 

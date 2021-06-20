@@ -18,6 +18,9 @@ import {
 } from "@material-ui/core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import CreateIcon from "@material-ui/icons/Create";
+import Badge from "@material-ui/core/Badge";
+import {changeProfilePic} from '../redux/auth/actions'
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({ user }) => {
@@ -61,7 +64,7 @@ const Profile = ({ user }) => {
         </ListItem>,
         <ListItem
           button
-          onClick={handleDeleteAccount}
+          onClick={handleDeleteAccount} 
           style={{ width: "100%" }}
         >
           <ListItemText primary="Delete Account" />
@@ -78,6 +81,10 @@ const Profile = ({ user }) => {
   const handleBack = () => {
     history.go(-1);
   };
+
+  const handleClick = picture => {
+    changeProfilePic(picture);
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -97,8 +104,20 @@ const Profile = ({ user }) => {
 
         <CardContent className={classes.content}>
           {/* Profile pic */}
-          {console.log(user.profile_pic)}
-          <Avatar className={classes.avatar} src={user.profile_pic} />
+          <Badge
+            overlap="circle"
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            badgeContent={
+              <IconButton onClick={handleClick}>
+                <CreateIcon />
+              </IconButton>
+            }
+          >
+            <Avatar className={classes.avatar} src={user.profile_pic} />
+          </Badge>
 
           {/* Name */}
           <Typography variant="h5" style={{ marginBottom: 20 }}>
@@ -130,4 +149,4 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps, {changeProfilePic})(Profile);
