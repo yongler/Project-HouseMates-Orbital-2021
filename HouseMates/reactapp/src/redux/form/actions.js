@@ -30,10 +30,11 @@ export const getQuestions = (formType) =>
     // Get request
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/question-list/?form_type=${formType}`, config)
+      console.log('get questions')
 
       dispatch(getQuestionsSuccess(formType, res.data))
     } catch (err) {
-      dispatch(getQuestionsFail(unableToLoadQuestionsErrorMsg))
+      dispatch(getQuestionsFail(formType, unableToLoadQuestionsErrorMsg))
     }
   }
 
@@ -42,11 +43,11 @@ export const getQuestions = (formType) =>
 // Action Creators
 export const getQuestionsSuccess = (formType, questions) => ({
   type: GET_QUESTIONS_SUCCESS,
-  payload: { formType, questions},
+  payload: { formType, questions },
 })
-export const getQuestionsFail = formErrorMsg => ({
+export const getQuestionsFail = (formType, formErrorMsg) => ({
   type: GET_QUESTIONS_FAIL,
-  payload: formErrorMsg,
+  payload: { formType, formErrorMsg },
 })
 
 export const formLoading = () => ({ type: FORM_LOADING })

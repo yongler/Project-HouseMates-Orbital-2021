@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { CircularProgress, Snackbar, Typography } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert'
@@ -44,8 +44,11 @@ const LayoutOne = ({ children, title, authErrorMsg, authLoading, resetAuthErrorM
       {/* Title */}
       <Typography variant="h6" gutterBottom>{title}</Typography>
 
-      {/* Loading spinner or component*/}
-      {authLoading ? <CircularProgress /> : <Fragment>{children}</Fragment>}
+      {/* Loading spinner */}
+      {authLoading && <CircularProgress />}
+
+      {/* Content */}
+      {children}
 
       {/* Footer */}
       <div style={{ marginTop: 60 }}><Footer /></div>

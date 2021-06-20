@@ -80,24 +80,14 @@ const LayoutTwo = ({
   return (
     <div>
       {/* Error messages */}
-      {postErrorMsg &&
+      {(postErrorMsg || formErrorMsg) &&
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={postErrorMsg}
-          autoHideDuration={3000}
+          open={postErrorMsg || formErrorMsg}
+          autoHideDuration={5000}
           onClose={handleClose}
         >
-          <Alert severity="error">{postErrorMsg}</Alert>
-        </Snackbar>}
-
-      {formErrorMsg &&
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={formErrorMsg}
-          autoHideDuration={3000}
-          onClose={handleClose}
-        >
-          <Alert severity="error">{formErrorMsg}</Alert>
+          <Alert severity="error">{postErrorMsg ? postErrorMsg : formErrorMsg}</Alert>
         </Snackbar>}
 
       <div className={classes.root}>

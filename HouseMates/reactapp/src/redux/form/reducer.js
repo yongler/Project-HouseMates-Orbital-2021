@@ -49,33 +49,30 @@ const formReducer = (state = initialState, action) => {
       }
 
     case GET_QUESTIONS_FAIL:
-      switch (payload.formType) {
-        case 7:
-          return {
-            ...state,
-            formLoading: false,
-            roommateQuestions: [],
-            roommateCategories: [],
-          }
-
-        case 8:
-          return {
-            ...state,
-            formLoading: false,
-            housingQuestions: [],
-            housingCategories: [],
-          }
-
-        case 9:
-          return {
-            ...state,
-            formLoading: false,
-            profileQuestions: [],
-            profileCategories: [],
-          }
-
-        default:
-          return state
+      if (payload.formType.toString() === "7") {
+        return {
+          ...state,
+          formLoading: false,
+          roommateQuestions: [],
+          roommateCategories: [],
+          formErrorMsg: payload.formErrorMsg,
+        }
+      } else if (payload.formType.toString() === "8") {
+        return {
+          ...state,
+          formLoading: false,
+          housingQuestions: [],
+          housingCategories: [],
+          formErrorMsg: payload.formErrorMsg,
+        }
+      } else {
+        return {
+          ...state,
+          formLoading: false,
+          profileQuestions: [],
+          profileCategories: [],
+          formErrorMsg: payload.formErrorMsg,
+        }
       }
 
     case FORM_LOADING:
