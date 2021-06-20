@@ -4,13 +4,13 @@ import { CircularProgress, Snackbar, Typography } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert'
 import Footer from '../components/Footer'
 import Logo from '../static/housemates-logo-with-text-black.svg'
-import { resetErrorMsg } from '../redux/auth/actions'
+import { resetAuthErrorMsg } from '../redux/auth/actions'
 
 // LayoutOne consists of logo at the top of the component and footer at the bottom.
-const LayoutOne = ({ children, title, errorMsg, loading, resetErrorMsg }) => {
+const LayoutOne = ({ children, title, authErrorMsg, authLoading, resetAuthErrorMsg }) => {
   // Handlers
   const handleClose = () => { 
-    resetErrorMsg() 
+    resetAuthErrorMsg() 
   }
 
   // Components
@@ -25,11 +25,11 @@ const LayoutOne = ({ children, title, errorMsg, loading, resetErrorMsg }) => {
       {/* Error message */}
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={errorMsg}
+        open={authErrorMsg}
         autoHideDuration={3000}
         onClose={handleClose}
       >
-        <Alert severity="error">{errorMsg}</Alert>
+        <Alert severity="error">{authErrorMsg}</Alert>
       </Snackbar>
 
       {/* Logo */}
@@ -45,7 +45,7 @@ const LayoutOne = ({ children, title, errorMsg, loading, resetErrorMsg }) => {
       <Typography variant="h6" gutterBottom>{title}</Typography>
 
       {/* Loading spinner or component*/}
-      {loading ? <CircularProgress /> : <Fragment>{children}</Fragment>}
+      {authLoading ? <CircularProgress /> : <Fragment>{children}</Fragment>}
 
       {/* Footer */}
       <div style={{ marginTop: 60 }}><Footer /></div>
@@ -54,12 +54,12 @@ const LayoutOne = ({ children, title, errorMsg, loading, resetErrorMsg }) => {
 };
 
 const mapStateToProps = (state) => ({
-  errorMsg: state.auth.errorMsg,
-  loading: state.auth.loading,
+  authErrorMsg: state.auth.authErrorMsg,
+  authLoading: state.auth.authLoading,
 });
 
 const mapDispatchToProps = {
-  resetErrorMsg,
+  resetAuthErrorMsg,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LayoutOne)

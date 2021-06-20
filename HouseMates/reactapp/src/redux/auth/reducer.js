@@ -22,7 +22,7 @@ import {
   CHANGE_PASSWORD_FAIL,
   AUTH_LOADING,
   RESET_AUTH_LOADING,
-  RESET_ERORR_MSG,
+  RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
 } from "./types";
 
@@ -39,8 +39,8 @@ const initialState = {
   resetPasswordSuccess: false,
   resetPasswordConfirmSuccess: false,
   changePasswordSuccess: false,
-  errorMsg: "",
-  loading: false,
+  authErrorMsg: "",
+  authLoading: false,
 };
 
 // Reducer
@@ -53,59 +53,59 @@ const authReducer =
         return {
           ...state,
           registrationSuccess: true,
-          loading: false,
+          authLoading: false,
         }
 
       case REGISTER_FAIL:
         return {
           ...state,
           registrationSuccess: false,
-          errorMsg: payload,
-          loading: false,
+          authErrorMsg: payload,
+          authLoading: false,
         }
 
       case ACTIVATE_SUCCESS:
         return {
           ...state,
           activationSuccess: true,
-          loading: false,
+          authLoading: false,
         }
 
       case ACTIVATE_FAIL:
         return {
           ...state,
           activationSuccess: false,
-          errorMsg: payload,
-          loading: false,
+          authErrorMsg: payload,
+          authLoading: false,
         }
 
       case RESEND_ACTIVATION_EMAIL_SUCCESS:
         return {
           ...state,
           resendActivationEmailSuccess: true,
-          loading: false,
+          authLoading: false,
         }
 
       case RESEND_ACTIVATION_EMAIL_FAIL:
         return {
           ...state,
           resendActivationEmailSuccess: false,
-          errorMsg: payload,
-          loading: false,
+          authErrorMsg: payload,
+          authLoading: false,
         }
 
       case LOAD_USER_SUCCESS:
         return {
           ...state,
           user: payload,
-          loading: false,
+          authLoading: false,
         }
 
       case LOAD_USER_FAIL:
         return {
           ...state,
           user: null,
-          loading: false,
+          authLoading: false,
         }
 
       case CHECK_AUTHENTICATION_SUCCESS:
@@ -127,7 +127,7 @@ const authReducer =
           ...state,
           access: payload.access,
           refresh: payload.refresh,
-          loading: false,
+          authLoading: false,
         }
 
       case LOGIN_FAIL:
@@ -135,8 +135,8 @@ const authReducer =
           ...state,
           access: null,
           refresh: null,
-          errorMsg: payload,
-          loading: false,
+          authErrorMsg: payload,
+          authLoading: false,
         }
 
       case LOGOUT:
@@ -153,82 +153,79 @@ const authReducer =
       case DELETE_ACCOUNT_SUCCESS:
         return {
           ...state,
-          access: null,
-          refresh: null,
-          isAuthenticated: false,
-          user: null,
           deleteAccountSuccess: true,
-          loading: false,
+          authLoading: false,
         }
 
-        case DELETE_ACCOUNT_FAIL:
-          return {
-            ...state,
-            deleteAccountSuccess: false,
-            errorMsg: payload,
-            loading: false
-          }
+      case DELETE_ACCOUNT_FAIL:
+        return {
+          ...state,
+          deleteAccountSuccess: false,
+          authErrorMsg: payload,
+          authLoading: false
+        }
+        
       case RESET_PASSWORD_SUCCESS:
         return {
           ...state,
           resetPasswordSuccess: true,
-          loading: false,
+          authLoading: false,
         }
 
       case RESET_PASSWORD_FAIL:
         return {
           ...state,
           resetPasswordSuccess: false,
-          errorMsg: payload,
-          loading: false,
+          authErrorMsg: payload,
+          authLoading: false,
         }
 
       case RESET_PASSWORD_CONFIRM_SUCCESS:
         return {
           ...state,
           resetPasswordConfirmSuccess: true,
-          loading: false,
+          authLoading: false,
         }
 
       case RESET_PASSWORD_CONFIRM_FAIL:
         return {
           ...state,
           resetPasswordConfirmSuccess: false,
-          errorMsg: payload,
-          loading: false,
+          authErrorMsg: payload,
+          authLoading: false,
         }
 
       case CHANGE_PASSWORD_SUCCESS:
         return {
           ...state,
           changePasswordSuccess: true,
-          loading: false,
+          authLoading: false,
         }
 
       case CHANGE_PASSWORD_FAIL:
         return {
           ...state,
           changePasswordSuccess: false,
-          errorMsg: payload,
-          loading: false,
+          authErrorMsg: payload,
+          authLoading: false,
         }
 
       case AUTH_LOADING:
         return {
           ...state,
-          loading: true,
+          authLoading: true,
         }
 
       case RESET_AUTH_LOADING:
         return {
           ...state,
-          loading: false,
+          authLoading: false,
         }
 
-      case RESET_ERORR_MSG:
+      case RESET_AUTH_ERROR_MSG:
         return {
           ...state,
-          errorMsg: '',
+          authErrorMsg: '',
         }
 
       case RESET_CHANGE_PASSWORD_SUCCESS:
@@ -241,6 +238,5 @@ const authReducer =
         return state
     }
   }
-};
 
-export default authReducer;
+export default authReducer

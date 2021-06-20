@@ -4,6 +4,7 @@ import {
   GET_QUESTIONS_FAIL,
   FORM_LOADING,
   RESET_FORM_LOADING,
+  RESET_FORM_ERROR_MSG,
 } from './types'
 
 
@@ -13,7 +14,7 @@ const unableToLoadQuestionsErrorMsg = "Unable to load questions"
 // Async Action Createors
 export const getQuestions = (formType) =>
   async dispatch => {
-    dispatch(loading())
+    dispatch(formLoading())
 
     // Get access token from local storage
     const token = localStorage.getItem('access')
@@ -30,7 +31,7 @@ export const getQuestions = (formType) =>
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/question-list/?form_type=${formType}`, config)
 
-      dispatch(getQuestionsSuccess(res.data))
+      dispatch(getQuestionsSuccess(formType, res.data))
     } catch (err) {
       dispatch(getQuestionsFail(unableToLoadQuestionsErrorMsg))
     }
@@ -39,14 +40,16 @@ export const getQuestions = (formType) =>
 
 
 // Action Creators
-export const getQuestionsSuccess = questions => ({
+export const getQuestionsSuccess = (formType, questions) => ({
   type: GET_QUESTIONS_SUCCESS,
-  payload: questions,
+  payload: { formType, questions},
 })
-export const getQuestionsFail = error => ({
+export const getQuestionsFail = formErrorMsg => ({
   type: GET_QUESTIONS_FAIL,
-  payload: error,
+  payload: formErrorMsg,
 })
 
-export const loading = () => ({ type: FORM_LOADING })
-export const resetLoading = () => ({ type: RESET_FORM_LOADING })
+export const formLoading = () => ({ type: FORM_LOADING })
+export const resetFormLoading = () => ({ type: RESET_FORM_LOADING })
+
+export const resetFormErrorMsg = () => ({ type: RESET_FORM_ERROR_MSG })

@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Redirect, useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, Radio, RadioGroup, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
 import Confirmation from './Confirmation'
 import { getQuestions } from '../redux/form/actions'
-import { createPost, resetCreatePostSuccess } from '../redux/post/actions'
+import { createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
 
 // Form consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
-const Form = ({ categories, questions, loading, user, getQuestions, createPost, resetCreatePostSuccess, formType }) => {
+const Form = ({
+  isAuthenticated, user,
+  roommateQuestions, roommateCategories,
+  housingQuestions, housingCategories,
+  profileQuestions, profileCategories,
+  createPostSuccess, editPostSuccess,
+  getQuestions, 
+  createPost, resetCreatePostSuccess, 
+  editPost, resetEditPostSuccess,
+  formType, initialFormFields, id,
+}) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     backButton: {
@@ -41,7 +51,7 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
   const completed = category => {
     return questions
       .filter(question => question.category === categories[category])
-      .reduce((prev, curr) => prev && formFields[categories[category]] && formFields[categories[category]][curr.id], true)
+      .reduce((prev, curr) => prev && formFields[category] && formFields[category][curr.id], true)
   }
 
   // States
@@ -50,6 +60,8 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
   const [maxCategory, setMaxCategory] = useState(0)
   const [categoryCompleted, setCategoryCompleted] = useState({})
   const [open, setOpen] = useState(false)
+  const [questions, setQuestions] = useState([])
+  const [categories, setCategories] = useState([])
 
   // Handlers
   const handleNext = () => {
@@ -66,19 +78,22 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
   const handleStep = (category) => () =>
     category <= maxCategory ? setCurrentCategory(category) : null
 
-  const handleChange = (e, category) => {
+  const handleChange = (e, category, questionText) => {
     setFormFields({
       ...formFields,
       [category]: {
         ...formFields[category],
-        [e.target.name]: e.target.value,
+        [e.target.name]: {
+          question: e.target.name,
+          choice: e.target.value,
+        },
       }
     })
   }
-  const handleMultipleChange = (e, category) => {
+  const handleMultipleChange = (e, category, questionText) => {
     const name = e.target.name
     const newValue = e.target.value
-    var value = formFields[category] && formFields[category][name] ? formFields[category][name] : []
+    var value = formFields[category] && formFields[category][name] ? formFields[category][name].choice : []
     if (value && value.includes(newValue)) {
       value.splice(value.indexOf(newValue), 1)
     } else {
@@ -88,27 +103,66 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
       ...formFields,
       [category]: {
         ...formFields[category],
-        [e.target.name]: value,
+        [e.target.name]: {
+          question: e.target.name,
+          choice: value,
+        },
       }
     })
   }
 
-
-
-
   const handleConfirmation = () => setOpen(true)
   const handleCancel = () => setOpen(false)
-  const handleSubmit = () => { createPost(formType, formFields, user.id) }
-  const handleClose = () => { 
+  const handleSubmit = () => {
+    const data = Object.values(formFields).map(category => Object.values(category))
+    if (id) { editPost(id, formType, data, user.id) } else { createPost(formType, data, user.id) }
+  }
+  const handleClose = () => {
     resetCreatePostSuccess()
+    resetEditPostSuccess()
     setOpen(false)
-    history.push('/roommates') 
+    history.push('/roommates')
   }
 
+  // componentDidMount
   useEffect(() => {
     window.scrollTo(0, 0)
-    getQuestions(formType)
+
+    if (formType === 7 && roommateQuestions.length === 0 ||
+      formType === 8 && housingQuestions.length === 0 ||
+      formType === 9 && profileQuestions.length === 0
+    ) {
+      getQuestions(formType)
+    } else {
+      if (formType === 7) {
+        setQuestions(roommateQuestions)
+        setCategories(roommateCategories)
+      } else if (formType === 8) {
+        setQuestions(housingQuestions)
+        setCategories(housingCategories)
+      } else {
+        setQuestions(profileQuestions)
+        setCategories(profileCategories)
+      }
+    }
   }, [])
+
+  useEffect(() => {
+    setQuestions(roommateQuestions)
+    setCategories(roommateCategories)
+  }, [roommateQuestions, formType === 7 ? questions : null])
+  useEffect(() => {
+    setQuestions(housingQuestions)
+    setCategories(housingCategories)
+  }, [housingQuestions, formType === 8 ? questions : null])
+  useEffect(() => {
+    setQuestions(profileQuestions)
+    setCategories(profileCategories)
+  }, [profileQuestions, formType === 9 ? questions : null])
+
+  useEffect(() => {
+    if (initialFormFields) setFormFields(initialFormFields)
+  }, [initialFormFields])
 
   // Components
   const SingleChoiceQuestion = ({ question }) => {
@@ -121,8 +175,12 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
 
         {/* List of choices */}
         < RadioGroup
-          onChange={e => handleChange(e, question.category)}
-          value={formFields[question.category] ? formFields[question.category][question.id] : null}
+          onChange={e => handleChange(e, currentCategory, question.question_text)}
+          value={
+            formFields[currentCategory] && formFields[currentCategory][question.id]
+              ? formFields[currentCategory][question.id].choice
+              : null
+          }
           name={question.id}
         >
           {question.choice_set.map(choice => (
@@ -153,10 +211,16 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
               name={question.id}
               value={choice}
               control={<Checkbox color="primary" />}
-              checked={formFields[question.category] && formFields[question.category][question.id] ? formFields[question.category][question.id].includes(choice) : false}
+              checked={
+                formFields[currentCategory] &&
+                  formFields[currentCategory][question.id] &&
+                  formFields[currentCategory][question.id].choice
+                  ? formFields[currentCategory][question.id].choice.includes(choice)
+                  : false
+              }
               label={choice}
               key={choice}
-              onChange={e => handleMultipleChange(e, question.category)}
+              onChange={e => handleMultipleChange(e, currentCategory, question.question_text)}
             />
           ))}
         </FormGroup>
@@ -195,7 +259,7 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {categories
           .filter(category => category !== "Confirmation")
-          .map(category => (
+          .map((category, categoryIndex) => (
             <div style={{ display: 'flex', flexDirection: 'column' }} className={classes.category} key={category}>
               {/* Category */}
               <div><Typography variant="h6">{category}</Typography></div>
@@ -215,13 +279,19 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
                         {question.question_type === "Multiple choice"
                           ?
                           <Typography variant="body1" gutterBottom>
-                            {formFields[question.category] && formFields[question.category][question.id]
-                              ? formFields[question.category][question.id]
+                            {formFields[categoryIndex] &&
+                              formFields[categoryIndex][question.id] &&
+                              formFields[categoryIndex][question.id].choice
+                              ? formFields[categoryIndex][question.id].choice
                                 .reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')
                               : null}
                           </Typography>
                           :
-                          <Typography variant="body1" gutterBottom>{formFields[question.category] ? formFields[question.category][question.id] : null}</Typography>
+                          <Typography variant="body1" gutterBottom>
+                            {formFields[categoryIndex] && formFields[categoryIndex][question.id]
+                              ? formFields[categoryIndex][question.id].choice
+                              : null}
+                          </Typography>
                         }
                       </Grid>
                     </Grid>
@@ -232,7 +302,8 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
       </div>
 
       {/* Back and submit buttons */}
-      {!loading &&
+      {
+        // !loading &&
         <Box mt={10}>
           <Button onClick={handleBack} className={classes.backButton}>
             Back
@@ -270,7 +341,8 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
       </div>
 
       {/* Back and next buttons */}
-      {!loading &&
+      {
+        // !loading &&
         <Box mt={10}>
           <Button
             disabled={currentCategory === 0}
@@ -294,6 +366,9 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
   const confirmationDialog =
     <Confirmation
       open={open}
+      confirmationText={"Are you sure you want to submit?"}
+      thankYouText={"Thank you for your submission!"}
+      success={id ? editPostSuccess : createPostSuccess}
       handleCancel={handleCancel}
       handleSubmit={handleSubmit}
       handleClose={handleClose}
@@ -301,28 +376,42 @@ const Form = ({ categories, questions, loading, user, getQuestions, createPost, 
 
   return (
     <Paper className={classes.paper}>
-      {stepper}
+      {questions.length !== 0 && categories.length !== 0
+        ?
+        <>
+          {stepper}
 
-      <div>
-        {currentCategory === categories.length - 1 ? summary : questionsBasedOnCategory}
-      </div>
+          <div>
+            {currentCategory === categories.length - 1 ? summary : questionsBasedOnCategory}
+          </div>
 
-      {confirmationDialog}
+          {confirmationDialog}
+        </>
+        :
+        null}
     </Paper>
   )
 }
 
 const mapStateToProps = (state) => ({
-  questions: state.form.questions,
-  categories: state.form.categories,
-  loading: state.form.loading,
+  isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
+  roommateQuestions: state.form.roommateQuestions,
+  roommateCategories: state.form.roommateCategories,
+  housingQuestions: state.form.housingQuestions,
+  housingCategories: state.form.housingCategories,
+  profileQuestions: state.form.profileQuestions,
+  profileCategories: state.form.profileCategories,
+  createPostSuccess: state.post.createPostSuccess,
+  editPostSuccess: state.post.editPostSuccess,
 })
 
 const mapDispatchToProps = {
   getQuestions,
   createPost,
+  editPost,
   resetCreatePostSuccess,
+  resetEditPostSuccess,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form)

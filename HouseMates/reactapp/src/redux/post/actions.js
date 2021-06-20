@@ -12,7 +12,10 @@ import {
   DELETE_POST_FAIL,
   POST_LOADING,
   RESET_POST_LOADING,
+  RESET_POST_ERROR_MSG,
   RESET_CREATE_POST_SUCCESS,
+  RESET_EDIT_POST_SUCCESS,
+  RESET_DELETE_POST_SUCCESS,
 } from './types'
 
 // Error messages
@@ -23,9 +26,9 @@ const editPostErrorMsg = "Unable to edit post"
 const deletePostErrorMsg = "Unable to delete post"
 
 // Async actions creators
-export const getPostList = () =>
+export const getPostList = formType =>
   async dispatch => {
-    dispatch(loading())
+    dispatch(postLoading())
 
     // Get access token from local storage
     const token = localStorage.getItem('access')
@@ -40,9 +43,9 @@ export const getPostList = () =>
 
     // Get request
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/post-list/`, config)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/post-list/?form_type=${formType}`, config)
 
-      dispatch(getPostListSuccess(res.data))
+      dispatch(getPostListSuccess(formType, res.data))
     } catch (err) {
       dispatch(getPostListFail(getPostListErrorMsg))
     }
@@ -50,7 +53,7 @@ export const getPostList = () =>
 
 export const getPostDetail = id =>
   async dispatch => {
-    dispatch(loading())
+    dispatch(postLoading())
 
     // Get access token from local storage
     const token = localStorage.getItem('access')
@@ -65,7 +68,7 @@ export const getPostDetail = id =>
 
     // Get request
     try {
-      const res = axios.get(`${process.env.REACT_APP_API_URL}/form/post-detail/${id}/`, config)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/post-list/${id}/`, config)
 
       dispatch(getPostDetailSuccess(res.data))
     } catch (err) {
@@ -75,7 +78,7 @@ export const getPostDetail = id =>
 
 export const createPost = (post_form_type, selected_choices, owner) =>
   async dispatch => {
-    dispatch(loading())
+    dispatch(postLoading())
 
     // Get access token from local storage
     const token = localStorage.getItem('access')
@@ -101,7 +104,7 @@ export const createPost = (post_form_type, selected_choices, owner) =>
 
 export const editPost = (id, post_form_type, selected_choices, owner) =>
   async dispatch => {
-    dispatch(loading())
+    dispatch(postLoading())
 
     // Get access token from local storage
     const token = localStorage.getItem('access')
@@ -127,7 +130,7 @@ export const editPost = (id, post_form_type, selected_choices, owner) =>
 
 export const deletePost = id =>
   async dispatch => {
-    dispatch(loading())
+    dispatch(postLoading())
 
     // Get access token from local storage
     const token = localStorage.getItem('access')
@@ -151,43 +154,47 @@ export const deletePost = id =>
   }
 
 // Action Creators
-export const getPostListSuccess = posts => ({
+export const getPostListSuccess = (formType, posts) => ({
   type: GET_POST_LIST_SUCCESS,
-  payload: posts,
+  payload: { formType, posts },
 })
-export const getPostListFail = errorMsg => ({
+export const getPostListFail = postErrorMsg => ({
   type: GET_POST_LIST_FAIL,
-  payload: errorMsg,
+  payload: postErrorMsg,
 })
 
 export const getPostDetailSuccess = post => ({
   type: GET_POST_DETAIL_SUCCESS,
   payload: post,
 })
-export const getPostDetailFail = errorMsg => ({
+export const getPostDetailFail = postErrorMsg => ({
   type: GET_POST_DETAIL_FAIL,
-  payload: errorMsg,
+  payload: postErrorMsg,
 })
 
 export const createPostSuccess = () => ({ type: CREATE_POST_SUCCESS })
-export const createPostFail = errorMsg => ({
+export const createPostFail = postErrorMsg => ({
   type: CREATE_POST_FAIL,
-  payload: errorMsg,
+  payload: postErrorMsg,
 })
 
 export const editPostSuccess = () => ({ type: EDIT_POST_SUCCESS })
-export const editPostFail = errorMsg => ({
+export const editPostFail = postErrorMsg => ({
   type: EDIT_POST_FAIL,
-  payload: errorMsg,
+  payload: postErrorMsg,
 })
 
 export const deletePostSuccess = () => ({ type: DELETE_POST_SUCCESS })
-export const deletePostFail = errorMsg => ({
+export const deletePostFail = postErrorMsg => ({
   type: DELETE_POST_FAIL,
-  payload: errorMsg,
+  payload: postErrorMsg,
 })
 
-export const loading = () => ({ type: POST_LOADING })
-export const resetLoading = () => ({ type: RESET_POST_LOADING })
+export const postLoading = () => ({ type: POST_LOADING })
+export const resetPostLoading = () => ({ type: RESET_POST_LOADING })
+
+export const resetPostErrorMsg = () => ({ type: RESET_POST_ERROR_MSG })
 
 export const resetCreatePostSuccess = () => ({ type: RESET_CREATE_POST_SUCCESS })
+export const resetEditPostSuccess = () => ({ type: RESET_EDIT_POST_SUCCESS })
+export const resetDeletePostSuccess = () => ({ type: RESET_DELETE_POST_SUCCESS })
