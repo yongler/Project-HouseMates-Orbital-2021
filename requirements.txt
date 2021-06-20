@@ -25,6 +25,7 @@ MarkupSafe==2.0.1
 mypy-extensions==0.4.3
 oauthlib==3.1.0
 pathspec==0.8.1
+Pillow==8.2.0
 pipreqs==0.4.10
 pycparser==2.20
 PyJWT==2.1.0

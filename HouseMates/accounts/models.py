@@ -78,7 +78,8 @@ class CustomUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)  # a admin user; non super-user
     is_admin = models.BooleanField(default=False)
-    
+    profile_pic = models.ImageField(default="default_pic.jpg", null=True, blank=True)
+
     # is_tenant = models.BooleanField(default=True)
     # is_host = models.BooleanField(default=False)
 
@@ -91,6 +92,12 @@ class CustomUser(AbstractBaseUser):
 
     @staticmethod
     def has_perm(perm, obj=None):
+        # "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+    
+    @staticmethod
+    def has_perms(perm, obj=None):
         # "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
         return True

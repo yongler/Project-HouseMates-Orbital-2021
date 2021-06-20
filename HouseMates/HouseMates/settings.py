@@ -150,9 +150,13 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "reactapp/build/static")]
 # STATIC_ROOT = os.path.join(BASE_DIR, "/static")
 STATIC_ROOT = os.path.join(BASE_DIR, "reactapp/static")
 
+MEDIA_URL = 'accounts/images/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "reactapp/static/images")
+
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -183,11 +187,17 @@ DJOSER = {
     # 'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
     "SERIALIZERS": {
-        "user_create": "accounts.serializers.UserCreateSerializer",
-        "user": "accounts.serializers.UserCreateSerializer",
-        "current_user": "accounts.serializers.UserCreateSerializer",
+        "user_create": "accounts.serializers.userProfileSerializer",
+        "user": "accounts.serializers.userProfileSerializer",
+        "current_user": "accounts.serializers.userProfileSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
+    # "PERMISSIONS": {
+    #     'user': ['rest_framework.permissions.AllowAny'],
+    #     'user_list': ['rest_framework.permissions.AllowAny'],
+    #     # 'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+    #     # 'user_list': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+    # }
 }
 
 # Default primary key field type
@@ -196,3 +206,4 @@ DJOSER = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_CREDENTIALS = True 
+
