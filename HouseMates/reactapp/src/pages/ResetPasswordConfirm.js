@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -86,10 +86,6 @@ const ResetPasswordConfirm = ({ authLoading, resetPasswordConfirmSuccess, resetP
     e.preventDefault()
     history.push('/login') 
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   return (
     <Container maxWidth="xs">

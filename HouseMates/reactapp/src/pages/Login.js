@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { NavLink, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -58,10 +58,6 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
       login(email, password)
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   if (isAuthenticated) { return <Redirect to="/dashboard" /> }
 

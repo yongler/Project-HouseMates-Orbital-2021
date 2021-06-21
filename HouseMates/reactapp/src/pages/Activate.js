@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { NavLink, useHistory, useParams } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -33,11 +33,6 @@ const Activate = ({ authLoading, activationSuccess, activate }) => {
     e.preventDefault()
     history.push('/login')
   }
-
-  // componentDidMount
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   return (
     <Container maxWidth="xs">

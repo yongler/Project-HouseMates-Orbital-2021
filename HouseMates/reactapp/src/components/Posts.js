@@ -28,7 +28,6 @@ const Posts = ({
 
   // componentDidMount
   useEffect(() => {
-    window.scrollTo(0, 0)
     getPostList(postType)
   }, [])
 

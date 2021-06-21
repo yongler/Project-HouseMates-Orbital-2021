@@ -1,11 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 // Empty for now
 const Dashboard = () => {
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
-
     return (
         <div>
             User Dashboard

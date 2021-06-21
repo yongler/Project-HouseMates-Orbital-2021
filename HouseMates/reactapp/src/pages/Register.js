@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { NavLink, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -103,10 +103,6 @@ const Register = ({ isAuthenticated, authLoading, registrationSuccess, register 
       register(firstName, lastName, email, password, confirmPassword)
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   if (isAuthenticated) { return <Redirect to="/" /> }
 

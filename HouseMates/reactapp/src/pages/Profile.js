@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -67,7 +67,7 @@ const Profile = ({ user }) => {
           onClick={handleDeleteAccount} 
           style={{ width: "100%" }}
         >
-          <ListItemText primary="Delete Account" />
+          <ListItemText primary="Delete account" />
         </ListItem>,
       ],
     },
@@ -85,10 +85,6 @@ const Profile = ({ user }) => {
   const handleClick = picture => {
     changeProfilePic(picture);
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <div className={classes.card}>

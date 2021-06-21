@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -44,11 +44,7 @@ const ResendActivationEmail = ({ authLoading, resendActivationEmailSuccess, rese
       resendActivationEmail(email)
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
+  
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>

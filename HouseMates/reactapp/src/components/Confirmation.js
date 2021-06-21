@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
 
 // Confirmation dialog
-const Confirmation = ({ 
-  postLoading, 
+const Confirmation = ({
+  postLoading,
   open, confirmationText, thankYouText, success,
-  handleCancel, handleSubmit, handleClose 
+  handleCancel, handleSubmit, handleClose
 }) => {
 
   return (
@@ -18,29 +18,43 @@ const Confirmation = ({
         ?
         <>
           {/* Thank you text */}
-          <DialogContent><Typography variant="body1">{thankYouText}</Typography></DialogContent>
+          <DialogContent>
+            <Typography variant="body1">{thankYouText}</Typography>
+          </DialogContent>
 
           {/* Close button */}
           <DialogActions>
-            <Button variant="contained" color="primary" type="submit" onClick={handleClose}>Close</Button>
+            <Button autoFocus variant="contained" color="primary" type="submit" onClick={handleClose}>Close</Button>
           </DialogActions>
         </>
         :
-        <>
-          {/* Confirmation text */}
-          <DialogContent><Typography variant="body1">{confirmationText}</Typography></DialogContent>
+        <div>
+          <DialogContent>
+            {/* Confirmation text */}
+            <Typography variant="body1">{confirmationText}</Typography>
 
-          {postLoading
-            ?
-            // Loading spinner
-            <CircularProgress />
-            :
-            // Yes and no buttons
-            <DialogActions>
-              <Button variant="contained" onClick={handleCancel}>No</Button>
-              <Button variant="contained" color="primary" type="submit" onClick={handleSubmit}>Yes</Button>
-            </DialogActions>}
-        </>}
+            {/* Loading spinner */}
+            {postLoading &&
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <CircularProgress style={{ marginTop: 10, marginBottom: 10 }} />
+              </div>
+            }
+          </DialogContent>
+
+          {/* Yes and no buttons */}
+          <DialogActions>
+            <Button variant="contained" onClick={handleCancel}>No</Button>
+            <Button
+              color="primary"
+              disabled={postLoading}
+              onClick={handleSubmit}
+              type="submit"
+              variant="contained"
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </div>}
     </Dialog>
   )
 }

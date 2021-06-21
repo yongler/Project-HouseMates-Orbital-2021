@@ -1,9 +1,10 @@
 import React from 'react'
 import Form from '../components/Form'
+import { PROFILE_FORM } from '../globalConstants'
 
 const ProfileForm = () => {
   return (
-    <Form formType={7}/>
+    <Form formType={PROFILE_FORM}/>
   )
 }
 

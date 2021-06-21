@@ -30,14 +30,10 @@ export const getPostList = formType =>
   async dispatch => {
     dispatch(postLoading())
 
-    // Get access token from local storage
-    const token = localStorage.getItem('access')
-
     // Request
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `JWT ${token}`,
       }
     }
 
@@ -55,14 +51,10 @@ export const getPostDetail = id =>
   async dispatch => {
     dispatch(postLoading())
 
-    // Get access token from local storage
-    const token = localStorage.getItem('access')
-
     // Draft request
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `JWT ${token}`,
       }
     }
 

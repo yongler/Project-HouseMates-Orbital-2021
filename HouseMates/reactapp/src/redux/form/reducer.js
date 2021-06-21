@@ -1,3 +1,4 @@
+import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM } from '../../globalConstants';
 import {
   GET_QUESTIONS_SUCCESS,
   GET_QUESTIONS_FAIL,
@@ -25,14 +26,14 @@ const formReducer = (state = initialState, action) => {
       const rawCategories = payload.questions.map(question => question.category)
       const uniqueCategories = [...new Set(rawCategories)]
       uniqueCategories.push("Confirmation")
-      if (payload.formType.toString() === "1") {
+      if (payload.formType === ROOMMATE_FORM) {
         return {
           ...state,
           formLoading: false,
           roommateQuestions: payload.questions,
           roommateCategories: uniqueCategories,
         }
-      } else if (payload.formType.toString() === "2") {
+      } else if (payload.formType === HOUSING_FORM) {
         return {
           ...state,
           formLoading: false,
@@ -49,7 +50,7 @@ const formReducer = (state = initialState, action) => {
       }
 
     case GET_QUESTIONS_FAIL:
-      if (payload.formType.toString() === "1") {
+      if (payload.formType === ROOMMATE_FORM) {
         return {
           ...state,
           formLoading: false,
@@ -57,7 +58,7 @@ const formReducer = (state = initialState, action) => {
           roommateCategories: [],
           formErrorMsg: payload.formErrorMsg,
         }
-      } else if (payload.formType.toString() === "2") {
+      } else if (payload.formType === HOUSING_FORM) {
         return {
           ...state,
           formLoading: false,

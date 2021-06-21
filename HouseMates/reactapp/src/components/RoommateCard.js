@@ -8,25 +8,26 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Pic from '../static/mrbean.jpg'
 import { deletePost, getPostList, resetDeletePostSuccess } from '../redux/post/actions'
 import Confirmation from '../components/Confirmation'
+import { ROOMMATE_FORM } from '../globalConstants'
 
 // RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.
 const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSuccess, getPostList }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     card: {
-      maxWidth: 345,
+      width: 345,
       cursor: 'pointer',
       alignSelf: 'center',
     },
     media: {
-      height: 140,
+      height: 160,
     },
     tag: {
       marginRight: 5,
       marginTop: 5,
     },
     text: {
-      height: 100,
+      height: 150,
     },
     edit: {
       float: 'right',
@@ -54,7 +55,7 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
   const handleSubmit = () => { deletePost(post.id) }
   const handleClose = () => { 
     resetDeletePostSuccess()
-    getPostList(7)
+    getPostList(ROOMMATE_FORM)
     setOpen(false)
   }
 
@@ -110,7 +111,7 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
       <Confirmation
         open={open}
         confirmationText={"Are you sure you want to delete?"}
-        thankYouText={"You deleted your post"}
+        thankYouText={"You have successfully deleted your post"}
         success={deletePostSuccess}
         handleCancel={handleCancel}
         handleSubmit={handleSubmit}
