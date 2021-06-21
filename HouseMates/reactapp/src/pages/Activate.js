@@ -6,7 +6,7 @@ import { Button, Container, Grid, Typography } from '@material-ui/core'
 import { activate } from '../redux/auth/actions'
 
 // Activate consists of title and activate button, from top to bottom.
-const Activate = ({ activationSuccess, activate }) => {
+const Activate = ({ authLoading, activationSuccess, activate }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -25,13 +25,16 @@ const Activate = ({ activationSuccess, activate }) => {
   const { uid, token } = useParams()
 
   // Handlers
-  const handleActivation = (e) => {
+  const handleActivation = e => {
     e.preventDefault()
-
     activate(uid, token)
   }
-  const handleRedirect = () => { history.push('/login') }
+  const handleRedirect = e => {
+    e.preventDefault()
+    history.push('/login')
+  }
 
+  // componentDidMount
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -41,34 +44,35 @@ const Activate = ({ activationSuccess, activate }) => {
       <div className={classes.paper}>
         {activationSuccess
           ?
-          <div>
+          <form onSubmit={handleRedirect}>
             {/* Confirmation text */}
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
               You have successfully activated your account.
             </Typography>
 
             {/* Login button */}
-            < Button
+            <Button
+              autoFocus
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
-              onClick={handleRedirect}
               className={classes.button}
             >
               Proceed to Login
             </Button>
-          </div>
+          </form>
           :
-          <div>
+          <form onSubmit={handleActivation}>
             {/* Activate button */}
-            < Button
+            <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
-              onClick={handleActivation}
               className={classes.button}
+              disabled={authLoading}
+              autoFocus
             >
               Activate
             </Button>
@@ -78,10 +82,10 @@ const Activate = ({ activationSuccess, activate }) => {
               <Grid item>
                 <NavLink to="/resend-activation-email" variant="body2">
                   Resend activation email
-              </NavLink>
+                </NavLink>
               </Grid>
             </Grid>
-          </div>
+          </form>
         }
       </div>
     </Container >
@@ -89,6 +93,7 @@ const Activate = ({ activationSuccess, activate }) => {
 }
 
 const mapStateToProps = state => ({
+  authLoading: state.auth.authLoading,
   activationSuccess: state.auth.activationSuccess,
 })
 

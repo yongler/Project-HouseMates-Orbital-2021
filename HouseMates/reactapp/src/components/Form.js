@@ -14,8 +14,8 @@ const Form = ({
   housingQuestions, housingCategories,
   profileQuestions, profileCategories,
   createPostSuccess, editPostSuccess,
-  getQuestions, 
-  createPost, resetCreatePostSuccess, 
+  getQuestions,
+  createPost, resetCreatePostSuccess,
   editPost, resetEditPostSuccess,
   formType, initialFormFields, id,
 }) => {
@@ -128,16 +128,16 @@ const Form = ({
   useEffect(() => {
     window.scrollTo(0, 0)
 
-    if (formType === 7 && roommateQuestions.length === 0 ||
-      formType === 8 && housingQuestions.length === 0 ||
-      formType === 9 && profileQuestions.length === 0
+    if (formType === 1 && roommateQuestions.length === 0 ||
+      formType === 2 && housingQuestions.length === 0 ||
+      formType === 3 && profileQuestions.length === 0
     ) {
       getQuestions(formType)
     } else {
-      if (formType === 7) {
+      if (formType === 1) {
         setQuestions(roommateQuestions)
         setCategories(roommateCategories)
-      } else if (formType === 8) {
+      } else if (formType === 2) {
         setQuestions(housingQuestions)
         setCategories(housingCategories)
       } else {
@@ -150,15 +150,15 @@ const Form = ({
   useEffect(() => {
     setQuestions(roommateQuestions)
     setCategories(roommateCategories)
-  }, [roommateQuestions, formType === 7 ? questions : null])
+  }, [roommateQuestions, formType === 1 ? questions : null])
   useEffect(() => {
     setQuestions(housingQuestions)
     setCategories(housingCategories)
-  }, [housingQuestions, formType === 8 ? questions : null])
+  }, [housingQuestions, formType === 2 ? questions : null])
   useEffect(() => {
     setQuestions(profileQuestions)
     setCategories(profileCategories)
-  }, [profileQuestions, formType === 9 ? questions : null])
+  }, [profileQuestions, formType === 3 ? questions : null])
 
   useEffect(() => {
     if (initialFormFields) setFormFields(initialFormFields)
@@ -326,7 +326,7 @@ const Form = ({
           .filter(question => question.category === categories[currentCategory])
           .map(question => (
             <Box mt={5} key={question.id}>
-              {question.question_type === "Single choice"
+              {question.question_type === "SingleChoice"
                 ?
                 <SingleChoiceQuestion question={question} />
                 :
@@ -375,10 +375,10 @@ const Form = ({
     />
 
   return (
-    <Paper className={classes.paper}>
+    <>
       {questions.length !== 0 && categories.length !== 0
         ?
-        <>
+        <Paper className={classes.paper}>
           {stepper}
 
           <div>
@@ -386,10 +386,10 @@ const Form = ({
           </div>
 
           {confirmationDialog}
-        </>
+        </Paper>
         :
         null}
-    </Paper>
+    </>
   )
 }
 

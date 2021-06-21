@@ -1,48 +1,46 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
 
 // Confirmation dialog
 const Confirmation = ({ 
-  createPostSuccess, deletePostSuccess, postLoading, 
+  postLoading, 
   open, confirmationText, thankYouText, success,
-  handleCancel, handleSubmit, handleClose }) => {
+  handleCancel, handleSubmit, handleClose 
+}) => {
+
   return (
     <Dialog open={open}>
+      {/* Confirmation title */}
       <DialogTitle>Confirmation</DialogTitle>
 
       {success
         ?
-        <Box>
-          <DialogContent>
-            <Typography variant="body1">{thankYouText}</Typography>
-          </DialogContent>
+        <>
+          {/* Thank you text */}
+          <DialogContent><Typography variant="body1">{thankYouText}</Typography></DialogContent>
 
+          {/* Close button */}
           <DialogActions>
-            <Button variant="contained" color="primary" type="submit" onClick={handleClose}>
-              Close
-            </Button>
+            <Button variant="contained" color="primary" type="submit" onClick={handleClose}>Close</Button>
           </DialogActions>
-        </Box>
+        </>
         :
-        <Box>
-          <DialogContent>
-            <Typography variant="body1">{confirmationText}</Typography>
-          </DialogContent>
+        <>
+          {/* Confirmation text */}
+          <DialogContent><Typography variant="body1">{confirmationText}</Typography></DialogContent>
 
           {postLoading
             ?
+            // Loading spinner
             <CircularProgress />
             :
+            // Yes and no buttons
             <DialogActions>
               <Button variant="contained" onClick={handleCancel}>No</Button>
-              <Button variant="contained" color="primary" type="submit" onClick={handleSubmit}>
-                Yes
-              </Button>
-            </DialogActions>
-          }
-        </Box>
-      }
+              <Button variant="contained" color="primary" type="submit" onClick={handleSubmit}>Yes</Button>
+            </DialogActions>}
+        </>}
     </Dialog>
   )
 }

@@ -6,7 +6,7 @@ import { Button, Container, TextField, Typography } from '@material-ui/core'
 import { changePassword, resetChangePasswordSuccess } from '../redux/auth/actions'
 
 // setPassword consists of current password input, new password input, confirm new password input and reset password button, from top to bottom.
-const ChangePassword = ({ changePasswordSuccess, changePassword, resetChangePasswordSuccess }) => {
+const ChangePassword = ({ authLoading, changePasswordSuccess, changePassword, resetChangePasswordSuccess }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -92,7 +92,8 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetChangePass
       changePassword(currentPassword, newPassword, confirmNewPassword)
     }
   }
-  const handleRedirect = () => { 
+  const handleRedirect = e => { 
+    e.preventDefault()
     history.go(-1) 
     resetChangePasswordSuccess()
   }
@@ -106,7 +107,7 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetChangePass
       <div className={classes.paper}>
         {changePasswordSuccess
           ?
-          <div>
+          <form onSubmit={handleRedirect}>
             {/* Confirmation text */}
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
               You have successfully changed your password.
@@ -118,12 +119,11 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetChangePass
               fullWidth
               variant="contained"
               color="primary"
-              onClick={handleRedirect}
               className={classes.button}
             >
               Back to Profile
             </Button>
-          </div>
+          </form>
       :
           <form noValidate onSubmit={handleSubmit}>
             {/* Current password input */}
@@ -182,6 +182,7 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetChangePass
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={authLoading}
             >
               Change Password
           </Button>
@@ -195,6 +196,7 @@ const ChangePassword = ({ changePasswordSuccess, changePassword, resetChangePass
 }
 
 const mapStateToProps = state => ({
+  authLoading: state.auth.authLoading,
   changePasswordSuccess: state.auth.changePasswordSuccess,
 })
 

@@ -6,7 +6,7 @@ import { Button, Container, Grid, TextField, Typography } from '@material-ui/cor
 import { resendActivationEmail } from '../redux/auth/actions'
 
 // ResendActivationEmail consists of title, and ((confirmation text), or (email input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
-const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationEmail }) => {
+const ResendActivationEmail = ({ authLoading, resendActivationEmailSuccess, resendActivationEmail }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -83,6 +83,7 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
             <Grid container spacing={2} className={classes.buttons}>
               <Grid item xs={12} sm={6}>
                 <Button
+                  type="button"
                   fullWidth
                   onClick={handleCancel}
                 >
@@ -95,6 +96,7 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
                   fullWidth
                   variant="contained"
                   color="primary"
+                  disabled={authLoading}
                 >
                   Submit
               </Button>
@@ -108,6 +110,7 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
 }
 
 const mapStateToProps = state => ({
+  authLoading: state.auth.authLoading,
   resendActivationEmailSuccess: state.auth.resendActivationEmailSuccess,
 })
 

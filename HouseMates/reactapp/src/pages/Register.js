@@ -6,7 +6,7 @@ import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, MenuI
 import { register } from '../redux/auth/actions'
 
 // Register consists of title, ((confirmation text), or (first name input, last name input, email input, password input, confirm password input, account input, register button and login link)), from top to bottom.
-const Register = ({ isAuthenticated, registrationSuccess, register }) => {
+const Register = ({ isAuthenticated, authLoading, registrationSuccess, register }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -236,6 +236,7 @@ const Register = ({ isAuthenticated, registrationSuccess, register }) => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={authLoading}
             >
               Register
             </Button>
@@ -257,6 +258,7 @@ const Register = ({ isAuthenticated, registrationSuccess, register }) => {
 
 const mapStateToProps = state => ({ 
   isAuthenticated: state.auth.isAuthenticated,
+  authLoading: state.auth.authLoading,
   registrationSuccess: state.auth.registrationSuccess,
 })
 
