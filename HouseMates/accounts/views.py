@@ -4,7 +4,7 @@ from .models import CustomUser
 from .permissions import IsOwnerProfileOrReadOnly
 from .serializers import userProfileSerializer
 
-# Create your views here.
+# Create your views here.   
 
 class UserProfileListCreateView(ListCreateAPIView):
     queryset=CustomUser.objects.all()

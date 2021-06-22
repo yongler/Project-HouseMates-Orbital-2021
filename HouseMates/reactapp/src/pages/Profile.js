@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -20,10 +20,19 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreateIcon from "@material-ui/icons/Create";
 import Badge from "@material-ui/core/Badge";
-import {changeProfilePic} from '../redux/auth/actions'
+
+import { changeProfilePic } from "../redux/auth/actions";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 // Profile consists of profile pic, name and list of settings.
-const Profile = ({ user }) => {
+const Profile = ({ user, changeProfilePic}) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -64,7 +73,7 @@ const Profile = ({ user }) => {
         </ListItem>,
         <ListItem
           button
-          onClick={handleDeleteAccount} 
+          onClick={handleDeleteAccount}
           style={{ width: "100%" }}
         >
           <ListItemText primary="Delete Account" />
@@ -82,17 +91,36 @@ const Profile = ({ user }) => {
     history.go(-1);
   };
 
-  const handleClick = picture => {
-    changeProfilePic(picture);
-  }
+  // profile picture
+  const [open, setOpen] = useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleCapture = ({ target }) => {
+    setSelectedFile(target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    changeProfilePic(selectedFile);
+    setOpen(false);
+  };
+
+  //  useEffect
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className={classes.card}>
-      {user &&
+      {user && (
         <Card>
           {/* Back button */}
           <CardHeader
@@ -103,22 +131,55 @@ const Profile = ({ user }) => {
             }
           />
 
-        <CardContent className={classes.content}>
-          {/* Profile pic */}
-          <Badge
-            overlap="circle"
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            badgeContent={
-              <IconButton onClick={handleClick}>
-                <CreateIcon />
-              </IconButton>
-            }
-          >
-            <Avatar className={classes.avatar} src={user.profile_pic} />
-          </Badge>
+          <CardContent className={classes.content}>
+            {/* Profile pic */}
+            <Badge
+              overlap="circle"
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              badgeContent={
+                <IconButton onClick={handleClickOpen}>
+                  <CreateIcon />
+                </IconButton>
+              }
+            >
+              <Avatar className={classes.avatar} src={user.profile_pic} />
+            </Badge>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                Edit Profile Picture
+              </DialogTitle>
+              <DialogContent>
+                <Button
+                  variant="contained"
+                  component="label"
+                  // startIcon={<CloudUploadIcon />}
+                >
+                  {/* Upload File */}
+                  <input
+                    type="file"
+                    id="image"
+                    accept="image/png, image/jpeg"
+                    onChange={handleCapture}
+                  />
+                </Button>
+              </DialogContent>
+
+              <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={() => handleSubmit()} color="primary">
+                  Save
+                </Button>
+              </DialogActions>
+            </Dialog>
 
             {/* Name */}
             <Typography variant="h5" style={{ marginBottom: 20 }}>
@@ -142,7 +203,7 @@ const Profile = ({ user }) => {
             </div>
           </CardContent>
         </Card>
-      }
+      )}
     </div>
   );
 };
@@ -151,4 +212,4 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps, {changeProfilePic})(Profile);
+export default connect(mapStateToProps, { changeProfilePic })(Profile);

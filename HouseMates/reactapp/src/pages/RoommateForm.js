@@ -3,7 +3,7 @@ import Form from '../components/Form'
 
 const RoommateForm = () => {
   return (
-    <Form formType={7} />
+    <Form formType={2} />
   )
 }
 

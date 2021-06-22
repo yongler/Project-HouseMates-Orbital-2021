@@ -25,14 +25,14 @@ const formReducer = (state = initialState, action) => {
       const rawCategories = payload.questions.map(question => question.category)
       const uniqueCategories = [...new Set(rawCategories)]
       uniqueCategories.push("Confirmation")
-      if (payload.formType.toString() === "7") {
+      if (payload.formType.toString() === "2") {
         return {
           ...state,
           formLoading: false,
           roommateQuestions: payload.questions,
           roommateCategories: uniqueCategories,
         }
-      } else if (payload.formType.toString() === "8") {
+      } else if (payload.formType.toString() === "3") {
         return {
           ...state,
           formLoading: false,
@@ -49,7 +49,7 @@ const formReducer = (state = initialState, action) => {
       }
 
     case GET_QUESTIONS_FAIL:
-      if (payload.formType.toString() === "7") {
+      if (payload.formType.toString() === "2") {
         return {
           ...state,
           formLoading: false,
@@ -57,7 +57,7 @@ const formReducer = (state = initialState, action) => {
           roommateCategories: [],
           formErrorMsg: payload.formErrorMsg,
         }
-      } else if (payload.formType.toString() === "8") {
+      } else if (payload.formType.toString() === "3") {
         return {
           ...state,
           formLoading: false,

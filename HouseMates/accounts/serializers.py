@@ -11,7 +11,17 @@ from .models import CustomUser
 #         fields = ('id', 'email', 'first_name', 'last_name', 'password')
 
 class userProfileSerializer(serializers.ModelSerializer):
-    # user=serializers.StringRelatedField(read_only=True)
+    # profile_pic = serializers.SerializerMethodField()
+
     class Meta:
         model=CustomUser
         fields = ('id', 'first_name', 'last_name', 'profile_pic')
+
+    # def get_profile_pic(self, CustomUser):
+    #     request = self.context.get('request')
+    
+    #     if CustomUser.profile_pic and hasattr(CustomUser.profile_pic, 'url'):
+    #            photo_url = CustomUser.profile_pic.url
+    #            return request.build_absolute_uri(photo_url)
+    #     else:
+    #         return None
