@@ -26,22 +26,14 @@ const formReducer = (state = initialState, action) => {
       const rawCategories = payload.questions.map(question => question.category)
       const uniqueCategories = [...new Set(rawCategories)]
       uniqueCategories.push("Confirmation")
-<<<<<<< HEAD
-      if (payload.formType.toString() === "2") {
-=======
       if (payload.formType === ROOMMATE_FORM) {
->>>>>>> 14d7751b217a8a2e8d9c3a4befa85b28a3f57771
         return {
           ...state,
           formLoading: false,
           roommateQuestions: payload.questions,
           roommateCategories: uniqueCategories,
         }
-<<<<<<< HEAD
-      } else if (payload.formType.toString() === "3") {
-=======
       } else if (payload.formType === HOUSING_FORM) {
->>>>>>> 14d7751b217a8a2e8d9c3a4befa85b28a3f57771
         return {
           ...state,
           formLoading: false,
@@ -58,11 +50,7 @@ const formReducer = (state = initialState, action) => {
       }
 
     case GET_QUESTIONS_FAIL:
-<<<<<<< HEAD
-      if (payload.formType.toString() === "2") {
-=======
       if (payload.formType === ROOMMATE_FORM) {
->>>>>>> 14d7751b217a8a2e8d9c3a4befa85b28a3f57771
         return {
           ...state,
           formLoading: false,
@@ -70,11 +58,7 @@ const formReducer = (state = initialState, action) => {
           roommateCategories: [],
           formErrorMsg: payload.formErrorMsg,
         }
-<<<<<<< HEAD
-      } else if (payload.formType.toString() === "3") {
-=======
       } else if (payload.formType === HOUSING_FORM) {
->>>>>>> 14d7751b217a8a2e8d9c3a4befa85b28a3f57771
         return {
           ...state,
           formLoading: false,

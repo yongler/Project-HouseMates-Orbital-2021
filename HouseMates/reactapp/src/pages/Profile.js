@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
-=======
-import React from "react";
->>>>>>> 14d7751b217a8a2e8d9c3a4befa85b28a3f57771
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -102,7 +98,6 @@ const Profile = ({ user, changeProfilePic}) => {
     setOpen(true);
   };
 
-<<<<<<< HEAD
   const handleClose = () => {
     setOpen(false);
   };
@@ -123,8 +118,6 @@ const Profile = ({ user, changeProfilePic}) => {
     window.scrollTo(0, 0);
   }, []);
 
-=======
->>>>>>> 14d7751b217a8a2e8d9c3a4befa85b28a3f57771
   return (
     <div className={classes.card}>
       {user && (
