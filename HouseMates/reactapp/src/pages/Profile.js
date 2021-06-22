@@ -1,7 +1,7 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
-import { connect } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import React from "react"
+import { useHistory } from "react-router-dom"
+import { connect } from "react-redux"
+import { makeStyles } from "@material-ui/core/styles"
 import {
   Accordion,
   AccordionSummary,
@@ -15,12 +15,12 @@ import {
   ListItem,
   ListItemText,
   Typography,
-} from "@material-ui/core";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import CreateIcon from "@material-ui/icons/Create";
-import Badge from "@material-ui/core/Badge";
-import {changeProfilePic} from '../redux/auth/actions'
+} from "@material-ui/core"
+import ArrowBackIcon from "@material-ui/icons/ArrowBack"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import CreateIcon from "@material-ui/icons/Create"
+import Badge from "@material-ui/core/Badge"
+import { changeProfilePic } from '../redux/auth/actions'
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({ user }) => {
@@ -41,14 +41,18 @@ const Profile = ({ user }) => {
       marginLeft: 23,
       marginRight: 23,
     },
-  }));
+  }))
+  
+  // Hooks
+  const classes = useStyles()
+  const history = useHistory()
 
-  const handleChangePassword = () => {
-    history.push("/change-password");
-  };
-  const handleDeleteAccount = () => {
-    history.push("/delete-account");
-  };
+  // Handlers
+  const handleBack = () => { history.go(-1) }
+  const handleChangeProfilePic = picture => { changeProfilePic(picture) }
+  const handleChangePassword = () => { history.push("/change-password") }
+  const handleDeleteAccount = () => { history.push("/delete-account") }
+  const handleEditProfile = () => { history.push("/edit-profile") }
 
   // Content
   const accordions = [
@@ -64,27 +68,21 @@ const Profile = ({ user }) => {
         </ListItem>,
         <ListItem
           button
-          onClick={handleDeleteAccount} 
+          onClick={handleDeleteAccount}
           style={{ width: "100%" }}
         >
           <ListItemText primary="Delete account" />
         </ListItem>,
+        <ListItem
+          button
+          onClick={handleEditProfile}
+          style={{ width: "100%" }}
+        >
+          <ListItemText primary="Edit profile" />
+        </ListItem>,
       ],
     },
-  ];
-
-  // Hooks
-  const classes = useStyles();
-  const history = useHistory();
-
-  // Handlers
-  const handleBack = () => {
-    history.go(-1);
-  };
-
-  const handleClick = picture => {
-    changeProfilePic(picture);
-  }
+  ]
 
   return (
     <div className={classes.card}>
@@ -99,22 +97,22 @@ const Profile = ({ user }) => {
             }
           />
 
-        <CardContent className={classes.content}>
-          {/* Profile pic */}
-          <Badge
-            overlap="circle"
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            badgeContent={
-              <IconButton onClick={handleClick}>
-                <CreateIcon />
-              </IconButton>
-            }
-          >
-            <Avatar className={classes.avatar} src={user.profile_pic} />
-          </Badge>
+          <CardContent className={classes.content}>
+            {/* Profile pic */}
+            <Badge
+              overlap="circle"
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              badgeContent={
+                <IconButton onClick={handleChangeProfilePic}>
+                  <CreateIcon />
+                </IconButton>
+              }
+            >
+              <Avatar className={classes.avatar} src={user.profile_pic} />
+            </Badge>
 
             {/* Name */}
             <Typography variant="h5" style={{ marginBottom: 20 }}>
@@ -140,11 +138,15 @@ const Profile = ({ user }) => {
         </Card>
       }
     </div>
-  );
-};
+  )
+}
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
-});
+})
 
-export default connect(mapStateToProps, {changeProfilePic})(Profile);
+const mapDispatchToProps = {
+  changeProfilePic,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)

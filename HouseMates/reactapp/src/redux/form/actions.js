@@ -16,14 +16,10 @@ export const getQuestions = (formType) =>
   async dispatch => {
     dispatch(formLoading())
 
-    // Get access token from local storage
-    const token = localStorage.getItem('access')
-
     // Request
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `JWT ${token}`
       }
     }
 
