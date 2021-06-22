@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { NavLink, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -6,7 +6,7 @@ import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, MenuI
 import { register } from '../redux/auth/actions'
 
 // Register consists of title, ((confirmation text), or (first name input, last name input, email input, password input, confirm password input, account input, register button and login link)), from top to bottom.
-const Register = ({ isAuthenticated, registrationSuccess, register }) => {
+const Register = ({ isAuthenticated, authLoading, registrationSuccess, register }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -103,10 +103,6 @@ const Register = ({ isAuthenticated, registrationSuccess, register }) => {
       register(firstName, lastName, email, password, confirmPassword)
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   if (isAuthenticated) { return <Redirect to="/" /> }
 
@@ -236,6 +232,7 @@ const Register = ({ isAuthenticated, registrationSuccess, register }) => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={authLoading}
             >
               Register
             </Button>
@@ -257,6 +254,7 @@ const Register = ({ isAuthenticated, registrationSuccess, register }) => {
 
 const mapStateToProps = state => ({ 
   isAuthenticated: state.auth.isAuthenticated,
+  authLoading: state.auth.authLoading,
   registrationSuccess: state.auth.registrationSuccess,
 })
 

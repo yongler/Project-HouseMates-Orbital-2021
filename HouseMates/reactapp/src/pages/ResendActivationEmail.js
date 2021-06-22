@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -6,7 +6,7 @@ import { Button, Container, Grid, TextField, Typography } from '@material-ui/cor
 import { resendActivationEmail } from '../redux/auth/actions'
 
 // ResendActivationEmail consists of title, and ((confirmation text), or (email input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
-const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationEmail }) => {
+const ResendActivationEmail = ({ authLoading, resendActivationEmailSuccess, resendActivationEmail }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -44,11 +44,7 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
       resendActivationEmail(email)
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
+  
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
@@ -83,6 +79,7 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
             <Grid container spacing={2} className={classes.buttons}>
               <Grid item xs={12} sm={6}>
                 <Button
+                  type="button"
                   fullWidth
                   onClick={handleCancel}
                 >
@@ -95,6 +92,7 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
                   fullWidth
                   variant="contained"
                   color="primary"
+                  disabled={authLoading}
                 >
                   Submit
               </Button>
@@ -108,6 +106,7 @@ const ResendActivationEmail = ({ resendActivationEmailSuccess, resendActivationE
 }
 
 const mapStateToProps = state => ({
+  authLoading: state.auth.authLoading,
   resendActivationEmailSuccess: state.auth.resendActivationEmailSuccess,
 })
 

@@ -53,8 +53,7 @@ const RoommateDetail = ({ post, roommateCategories, getPostDetail, getQuestions 
 
   // componentDidMount
   useEffect(() => {
-    window.scrollTo(0, 0)
-    if (roommateCategories.length === 0) { getQuestions(7) }
+    if (roommateCategories.length === 0) { getQuestions(1) }
     getPostDetail(id)
   }, [])
 

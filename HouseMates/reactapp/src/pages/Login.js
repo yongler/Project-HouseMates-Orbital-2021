@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { NavLink, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -6,7 +6,7 @@ import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, MenuI
 import { login } from '../redux/auth/actions'
 
 // Login consists of title, email input, password input, account input, login button, and (forgot password and register links), from top to bottom.
-const Login = ({ isAuthenticated, login }) => {
+const Login = ({ isAuthenticated, authLoading, login }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -58,10 +58,6 @@ const Login = ({ isAuthenticated, login }) => {
       login(email, password)
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   if (isAuthenticated) { return <Redirect to="/dashboard" /> }
 
@@ -126,6 +122,7 @@ const Login = ({ isAuthenticated, login }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={authLoading}
           >
             Login
           </Button>
@@ -151,6 +148,7 @@ const Login = ({ isAuthenticated, login }) => {
 
 const mapStateToProps = state => ({ 
   isAuthenticated: state.auth.isAuthenticated,
+  authLoading: state.auth.authLoading,
 })
 
 const mapDispatchToProps = {

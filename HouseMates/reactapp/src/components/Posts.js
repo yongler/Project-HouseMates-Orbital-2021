@@ -6,7 +6,10 @@ import AddIcon from '@material-ui/icons/Add'
 import { getPostList } from '../redux/post/actions'
 
 // Posts consists of list of Roommate and post button.
-const Posts = ({ postType, handlePostButton, PostComponent, xs, md, lg, posts, postsType, getPostList }) => {
+const Posts = ({ 
+  postType, handlePostButton, PostComponent, xs, md, lg, posts, postsType, 
+  postLoading, getPostList 
+}) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     tooltip: {
@@ -25,7 +28,6 @@ const Posts = ({ postType, handlePostButton, PostComponent, xs, md, lg, posts, p
 
   // componentDidMount
   useEffect(() => {
-    window.scrollTo(0, 0)
     getPostList(postType)
   }, [])
 
@@ -46,10 +48,13 @@ const Posts = ({ postType, handlePostButton, PostComponent, xs, md, lg, posts, p
           </Container>
         </>
         :
-        <div style={{ textAlign: 'center' }}>
-          {/* No post */}
-          <Typography variant="subtitle1">No post.</Typography>
-        </div>
+        <>
+          {!postLoading &&
+            <div style={{ textAlign: 'center' }}>
+              {/* No post */}
+              <Typography variant="subtitle1">No post.</Typography>
+            </div>}
+        </>
       }
 
       {/* Post button */}
@@ -63,6 +68,7 @@ const Posts = ({ postType, handlePostButton, PostComponent, xs, md, lg, posts, p
 const mapStateToProps = state => ({
   posts: state.post.posts,
   postsType: state.post.postsType,
+  postLoading: state.post.postLoading,
 })
 
 const mapDispatchToProps = {

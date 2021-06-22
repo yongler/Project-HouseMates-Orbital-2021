@@ -30,7 +30,6 @@ export const getQuestions = (formType) =>
     // Get request
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/question-list/?form_type=${formType}`, config)
-      console.log('get questions')
 
       dispatch(getQuestionsSuccess(formType, res.data))
     } catch (err) {

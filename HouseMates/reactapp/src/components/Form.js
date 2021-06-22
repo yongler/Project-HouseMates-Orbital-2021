@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Redirect, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, Radio, RadioGroup, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
 import Confirmation from './Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
+import { MULTIPLE_CHOICE, SINGLE_CHOICE } from '../globalConstants'
 
 // Form consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 const Form = ({
@@ -14,8 +15,8 @@ const Form = ({
   housingQuestions, housingCategories,
   profileQuestions, profileCategories,
   createPostSuccess, editPostSuccess,
-  getQuestions, 
-  createPost, resetCreatePostSuccess, 
+  getQuestions,
+  createPost, resetCreatePostSuccess,
   editPost, resetEditPostSuccess,
   formType, initialFormFields, id,
 }) => {
@@ -74,11 +75,14 @@ const Form = ({
     newCategoryCompleted[currentCategory] = true
     setCategoryCompleted(newCategoryCompleted)
   }
-  const handleBack = () => setCurrentCategory((prev) => prev - 1)
+  const handleBack = () => {
+    window.scrollTo(0, 0)
+    setCurrentCategory((prev) => prev - 1)
+  }
   const handleStep = (category) => () =>
     category <= maxCategory ? setCurrentCategory(category) : null
 
-  const handleChange = (e, category, questionText) => {
+  const handleChange = (e, category) => {
     setFormFields({
       ...formFields,
       [category]: {
@@ -90,7 +94,7 @@ const Form = ({
       }
     })
   }
-  const handleMultipleChange = (e, category, questionText) => {
+  const handleMultipleChange = (e, category) => {
     const name = e.target.name
     const newValue = e.target.value
     var value = formFields[category] && formFields[category][name] ? formFields[category][name].choice : []
@@ -111,7 +115,7 @@ const Form = ({
     })
   }
 
-  const handleConfirmation = () => setOpen(true)
+  const handleConfirmation = () => { setOpen(true) }
   const handleCancel = () => setOpen(false)
   const handleSubmit = () => {
     const data = Object.values(formFields).map(category => Object.values(category))
@@ -126,18 +130,16 @@ const Form = ({
 
   // componentDidMount
   useEffect(() => {
-    window.scrollTo(0, 0)
-
-    if (formType === 7 && roommateQuestions.length === 0 ||
-      formType === 8 && housingQuestions.length === 0 ||
-      formType === 9 && profileQuestions.length === 0
+    if (formType === 1 && roommateQuestions.length === 0 ||
+      formType === 2 && housingQuestions.length === 0 ||
+      formType === 3 && profileQuestions.length === 0
     ) {
       getQuestions(formType)
     } else {
-      if (formType === 7) {
+      if (formType === 1) {
         setQuestions(roommateQuestions)
         setCategories(roommateCategories)
-      } else if (formType === 8) {
+      } else if (formType === 2) {
         setQuestions(housingQuestions)
         setCategories(housingCategories)
       } else {
@@ -150,19 +152,25 @@ const Form = ({
   useEffect(() => {
     setQuestions(roommateQuestions)
     setCategories(roommateCategories)
-  }, [roommateQuestions, formType === 7 ? questions : null])
+  }, [roommateQuestions, formType === 1 ? questions : null])
   useEffect(() => {
     setQuestions(housingQuestions)
     setCategories(housingCategories)
-  }, [housingQuestions, formType === 8 ? questions : null])
+  }, [housingQuestions, formType === 2 ? questions : null])
   useEffect(() => {
     setQuestions(profileQuestions)
     setCategories(profileCategories)
-  }, [profileQuestions, formType === 9 ? questions : null])
+  }, [profileQuestions, formType === 3 ? questions : null])
 
   useEffect(() => {
-    if (initialFormFields) setFormFields(initialFormFields)
-  }, [initialFormFields])
+    if (initialFormFields) {
+      setFormFields(initialFormFields)
+      const allCompleted = categories
+        .reduce((prev, curr, index) => ({ ...prev, [index]: true }), {})
+      setCategoryCompleted(allCompleted)
+      setMaxCategory(categories.length)
+    }
+  }, [initialFormFields, categories])
 
   // Components
   const SingleChoiceQuestion = ({ question }) => {
@@ -276,7 +284,7 @@ const Form = ({
 
                       {/* User input */}
                       <Grid item xs={6}>
-                        {question.question_type === "Multiple choice"
+                        {question.question_type === MULTIPLE_CHOICE
                           ?
                           <Typography variant="body1" gutterBottom>
                             {formFields[categoryIndex] &&
@@ -305,16 +313,21 @@ const Form = ({
       {
         // !loading &&
         <Box mt={10}>
-          <Button onClick={handleBack} className={classes.backButton}>
-            Back
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleConfirmation}
-          >
-            Submit
-          </Button>
+            <Button
+              className={classes.backButton}
+              onClick={handleBack}
+              type="button"
+            >
+              Back
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={handleConfirmation}
+            >
+              Submit
+            </Button>
         </Box>
       }
     </div>
@@ -326,7 +339,7 @@ const Form = ({
           .filter(question => question.category === categories[currentCategory])
           .map(question => (
             <Box mt={5} key={question.id}>
-              {question.question_type === "Single choice"
+              {question.question_type === SINGLE_CHOICE
                 ?
                 <SingleChoiceQuestion question={question} />
                 :
@@ -344,21 +357,21 @@ const Form = ({
       {
         // !loading &&
         <Box mt={10}>
-          <Button
-            disabled={currentCategory === 0}
-            onClick={handleBack}
-            className={classes.backButton}
-          >
-            Back
-          </Button>
-          <Button
-            disabled={!completed(currentCategory)}
-            variant="contained"
-            color="primary"
-            onClick={handleNext}
-          >
-            Next
-          </Button>
+            <Button
+              disabled={currentCategory === 0}
+              onClick={handleBack}
+              className={classes.backButton}
+            >
+              Back
+            </Button>
+            <Button
+              disabled={!completed(currentCategory)}
+              variant="contained"
+              color="primary"
+              onClick={handleNext}
+            >
+              Next
+            </Button>
         </Box>
       }
     </Box>
@@ -375,10 +388,10 @@ const Form = ({
     />
 
   return (
-    <Paper className={classes.paper}>
+    <>
       {questions.length !== 0 && categories.length !== 0
         ?
-        <>
+        <Paper className={classes.paper}>
           {stepper}
 
           <div>
@@ -386,10 +399,10 @@ const Form = ({
           </div>
 
           {confirmationDialog}
-        </>
+        </Paper>
         :
         null}
-    </Paper>
+    </>
   )
 }
 

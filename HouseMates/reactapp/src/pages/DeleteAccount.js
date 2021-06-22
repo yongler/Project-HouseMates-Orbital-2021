@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -6,7 +6,7 @@ import { Button, Grid, Container, TextField, Typography } from '@material-ui/cor
 import { deleteAccount } from '../redux/auth/actions'
 
 // DeleteAccount consists of title, and ((confirmation text), or (password input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
-const DeleteAccount = ({ deleteAccountSuccess, deleteAccount }) => {
+const DeleteAccount = ({ authLoading, deleteAccountSuccess, deleteAccount }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -44,10 +44,6 @@ const DeleteAccount = ({ deleteAccountSuccess, deleteAccount }) => {
       deleteAccount(password)
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   return (
     <Container maxWidth="xs">
@@ -96,6 +92,7 @@ const DeleteAccount = ({ deleteAccountSuccess, deleteAccount }) => {
                   fullWidth
                   variant="contained"
                   color="primary"
+                  disabled={authLoading}
                 >
                   Delete
               </Button>
@@ -109,6 +106,7 @@ const DeleteAccount = ({ deleteAccountSuccess, deleteAccount }) => {
 }
 
 const mapStateToProps = state => ({
+  authLoading: state.auth.authLoading,
   deleteAccountSuccess: state.auth.deleteAccountSuccess,
 })
 

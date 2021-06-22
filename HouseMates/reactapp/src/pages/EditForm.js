@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import Form from '../components/Form'
 import { getPostDetail } from '../redux/post/actions'
+import { ROOMMATE_FORM } from '../globalConstants'
 
 const EditForm = ({ post, getPostDetail }) => {
   // Hooks
@@ -10,10 +11,7 @@ const EditForm = ({ post, getPostDetail }) => {
   const [initialFormFields, setInitialFormFields] = useState({})
 
   // componentDidMount
-  useEffect(() => {
-    window.scroll(0, 0)
-    getPostDetail(id)
-  }, [])
+  useEffect(() => { getPostDetail(id) }, [])
 
   useEffect(() => {
     const categories = post?.selected_choices
@@ -27,7 +25,7 @@ const EditForm = ({ post, getPostDetail }) => {
   return (
     <div>
       <Form
-        formType={7}
+        formType={ROOMMATE_FORM}
         initialFormFields={initialFormFields}
         id={id}
       />

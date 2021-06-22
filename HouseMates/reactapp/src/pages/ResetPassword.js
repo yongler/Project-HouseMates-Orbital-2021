@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -6,7 +6,7 @@ import { Button, Container, Grid, TextField, Typography } from '@material-ui/cor
 import { resetPassword } from '../redux/auth/actions'
 
 // ResetPassword consists of title, and ((confirmation text), or (email input and (cancel and submit buttons), dependent of submission)), from top to bottom. 
-const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
+const ResetPassword = ({ authLoading, resetPasswordSuccess, resetPassword }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -45,10 +45,6 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
     }
   }
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
@@ -83,6 +79,7 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
             <Grid container spacing={2} className={classes.buttons}>
               <Grid item xs={12} sm={6}>
                 <Button
+                  type="button"
                   fullWidth
                   onClick={handleCancel}
                 >
@@ -95,6 +92,7 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
                   fullWidth
                   variant="contained"
                   color="primary"
+                  disabled={authLoading}
                 >
                   Submit
               </Button>
@@ -108,6 +106,7 @@ const ResetPassword = ({ resetPasswordSuccess, resetPassword }) => {
 }
 
 const mapStateToProps = state => ({
+  authLoading: state.auth.authLoading,
   resetPasswordSuccess: state.auth.resetPasswordSuccess,
 })
 

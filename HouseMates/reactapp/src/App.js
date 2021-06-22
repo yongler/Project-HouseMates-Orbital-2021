@@ -28,7 +28,7 @@ import store from './redux/store'
 import EditForm from './pages/EditForm'
 
 const App = () => {
-  // Styling;
+  // Styling
   const theme = createMuiTheme({
     palette: {
       primary: indigo,

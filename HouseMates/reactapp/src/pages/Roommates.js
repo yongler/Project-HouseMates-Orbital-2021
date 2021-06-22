@@ -2,6 +2,7 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import Posts from '../components/Posts'
 import RoommateCard from '../components/RoommateCard'
+import { ROOMMATE_FORM } from '../globalConstants'
 
 // Roommates consists of list of RoommateCard and post button.
 const Roommates = () => {
@@ -14,7 +15,7 @@ const Roommates = () => {
   return (
     <div>
       <Posts
-        postType={7}
+        postType={ROOMMATE_FORM}
         handlePostButton={handlePostButton}
         PostComponent={RoommateCard}
         xs={12}
