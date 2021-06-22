@@ -391,31 +391,30 @@ export const changePassword =
 
 // Change Profile Picture
 export const changeProfilePic = (picture) => async (dispatch) => {
-  const token = localStorage.getItem("access");
+  var formData = new FormData();
+  formData.append("profile_pic", picture);
 
-  dispatch(authLoading());
+  const token = localStorage.getItem("access");
 
   // Request
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
       Authorization: `JWT ${token}`,
     },
   };
-  const body = JSON.stringify({
-    picture,
-  });
 
-  // Post request
+  // patch request
   try {
-    await axios.post(
+    await axios.patch(
       `${process.env.REACT_APP_API_URL}/auth/users/me/`,
-      body,
+      formData,
       config
     );
 
-    dispatch(changeProfilePicSuccess());
+    dispatch(changeProfilePicSuccess(picture));
   } catch (err) {
+    console.log(err)
     dispatch(changeProfilePicFail(err));
   }
 };
@@ -500,8 +499,9 @@ export const resetChangePasswordSuccess = () => ({
   type: RESET_CHANGE_PASSWORD_SUCCESS,
 });
 
-export const changeProfilePicSuccess = () => ({
+export const changeProfilePicSuccess = (picture) => ({
   type: CHANGE_PROFILE_PIC_SUCCESS,
+  payload: picture.name
 });
 export const changeProfilePicFail = (errorMsg) => ({
   type: CHANGE_PROFILE_PIC_FAIL,

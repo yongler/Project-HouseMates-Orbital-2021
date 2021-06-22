@@ -1,7 +1,7 @@
-import React from "react"
-import { useHistory } from "react-router-dom"
-import { connect } from "react-redux"
-import { makeStyles } from "@material-ui/core/styles"
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   Accordion,
   AccordionSummary,
@@ -21,9 +21,14 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import CreateIcon from "@material-ui/icons/Create"
 import Badge from "@material-ui/core/Badge"
 import { changeProfilePic } from '../redux/auth/actions'
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 // Profile consists of profile pic, name and list of settings.
-const Profile = ({ user }) => {
+const Profile = ({ user, changeProfilePic}) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -49,10 +54,16 @@ const Profile = ({ user }) => {
 
   // Handlers
   const handleBack = () => { history.go(-1) }
-  const handleChangeProfilePic = picture => { changeProfilePic(picture) }
   const handleChangePassword = () => { history.push("/change-password") }
   const handleDeleteAccount = () => { history.push("/delete-account") }
   const handleEditProfile = () => { history.push("/edit-profile") }
+  const handleClickOpen = () => { setOpen(true); };
+  const handleClose = () => { setOpen(false); };
+  const handleCapture = ({ target }) => { setSelectedFile(target.files[0]); };
+  const handleSubmit = () => {
+    changeProfilePic(selectedFile);
+    setOpen(false);
+  };
 
   // Content
   const accordions = [
@@ -84,9 +95,17 @@ const Profile = ({ user }) => {
     },
   ]
 
+  // Hooks
+  const classes = useStyles();
+  const history = useHistory();
+
+  // States
+  const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
   return (
     <div className={classes.card}>
-      {user &&
+      {user && (
         <Card>
           {/* Back button */}
           <CardHeader
@@ -106,13 +125,46 @@ const Profile = ({ user }) => {
                 horizontal: "right",
               }}
               badgeContent={
-                <IconButton onClick={handleChangeProfilePic}>
+                <IconButton onClick={handleClickOpen}>
                   <CreateIcon />
                 </IconButton>
               }
             >
               <Avatar className={classes.avatar} src={user.profile_pic} />
             </Badge>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                Edit Profile Picture
+              </DialogTitle>
+              <DialogContent>
+                <Button
+                  variant="contained"
+                  component="label"
+                  // startIcon={<CloudUploadIcon />}
+                >
+                  {/* Upload File */}
+                  <input
+                    type="file"
+                    id="image"
+                    accept="image/png, image/jpeg"
+                    onChange={handleCapture}
+                  />
+                </Button>
+              </DialogContent>
+
+              <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={() => handleSubmit()} color="primary">
+                  Save
+                </Button>
+              </DialogActions>
+            </Dialog>
 
             {/* Name */}
             <Typography variant="h5" style={{ marginBottom: 20 }}>
@@ -136,7 +188,7 @@ const Profile = ({ user }) => {
             </div>
           </CardContent>
         </Card>
-      }
+      )}
     </div>
   )
 }

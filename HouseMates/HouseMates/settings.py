@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "form.apps.FormConfig",
-    "accounts",
+    "accounts.apps.AccountsConfig",
     "rest_framework_simplejwt",
     "corsheaders",
 ]

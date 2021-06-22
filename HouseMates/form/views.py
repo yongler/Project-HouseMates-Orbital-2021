@@ -7,48 +7,31 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from .serializers import QuestionSerializer, PostSerializer, SelectedChoiceSerializer, ChoiceSerializer, FormSerializer
+from rest_framework import filters
 
 from .models import Question, Choice, Post, Selected_choice, Form
 
-
-# class APIRoot(generics.GenericAPIView):
-# 	authentication_classes = (SessionAuthentication, BasicAuthentication, JWTAuthentication)
-# 	permission_classes = [
-#         permissions.IsAuthenticatedOrReadOnly,
-#     ]
-
-# 	serializer_class = QuestionSerializer
-
-
 # class QuestionView(generics.ListAPIView):
 class QuestionView(viewsets.ModelViewSet):
-	# authentication_classes = (SessionAuthentication, BasicAuthentication, JWTAuthentication)
-	# permission_classes = [
-    #     permissions.IsAuthenticatedOrReadOnly,
-    # ]
-
 	serializer_class = QuestionSerializer
 
 	def get_queryset(self):
 		queryset = Question.objects.all()
 		form_type = self.request.query_params.get('form_type')
 		if form_type is not None:
-			queryset = queryset.filter(question_form_type=form_type)
+			queryset = queryset.filter(question_form_type__form_type=form_type)
 		return queryset
 
 class PostView(viewsets.ModelViewSet):
-	# authentication_classes = (SessionAuthentication, BasicAuthentication, JWTAuthentication)
-	# permission_classes = [
-    #     permissions.IsAuthenticatedOrReadOnly,
-    # ]
-
 	serializer_class = PostSerializer
+	# filter_backends = [filters.SearchFilter]
+	# search_fields = ['^post_form_type']
 
 	def get_queryset(self):
 		queryset = Post.objects.all()
 		form_type = self.request.query_params.get('form_type')
 		if form_type is not None:
-			queryset = queryset.filter(post_form_type=form_type)
+			queryset = queryset.filter(post_form_type__form_type=form_type)
 		owner = self.request.query_params.get('owner')
 		if owner is not None:
 			queryset = queryset.filter(owner=owner)

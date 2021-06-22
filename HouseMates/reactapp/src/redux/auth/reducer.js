@@ -24,6 +24,8 @@ import {
   RESET_AUTH_LOADING,
   RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
+  CHANGE_PROFILE_PIC_SUCCESS,
+  CHANGE_PROFILE_PIC_FAIL
 } from "./types";
 
 // Initial states
@@ -149,7 +151,7 @@ const authReducer =
           isAuthenticated: false,
           user: null,
         }
-
+      
       case DELETE_ACCOUNT_SUCCESS:
         return {
           ...state,
@@ -232,6 +234,21 @@ const authReducer =
         return {
           ...state,
           changePasswordSuccess: false,
+        }
+
+      case CHANGE_PROFILE_PIC_SUCCESS:
+        const updatedUser = {...state.user};
+        updatedUser.profile_pic = "http://localhost:8000/images/" + payload;
+
+        return {
+          ...state, 
+          user: updatedUser 
+        }
+
+      case CHANGE_PROFILE_PIC_FAIL:
+        console.log("change pic fail")
+        return {
+          ...state,
         }
 
       default:

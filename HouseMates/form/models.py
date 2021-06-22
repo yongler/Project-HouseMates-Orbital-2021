@@ -36,7 +36,7 @@ class Post(models.Model):
     total_score = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.id) 
+        return str(self.id)
 
 class Selected_choice(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
