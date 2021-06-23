@@ -15,20 +15,16 @@ import {
   ListItem,
   ListItemText,
   Typography,
-} from "@material-ui/core";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import CreateIcon from "@material-ui/icons/Create";
-import Badge from "@material-ui/core/Badge";
-
-import { changeProfilePic } from "../redux/auth/actions";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+} from "@material-ui/core"
+import ArrowBackIcon from "@material-ui/icons/ArrowBack"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import CreateIcon from "@material-ui/icons/Create"
+import Badge from "@material-ui/core/Badge"
+import { changeProfilePic } from '../redux/auth/actions'
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 // Profile consists of profile pic, name and list of settings.
@@ -50,13 +46,27 @@ const Profile = ({ user, changeProfilePic}) => {
       marginLeft: 23,
       marginRight: 23,
     },
-  }));
+  }))
+  
+  // Hooks
+  const classes = useStyles()
+  const history = useHistory()
 
-  const handleChangePassword = () => {
-    history.push("/change-password");
-  };
-  const handleDeleteAccount = () => {
-    history.push("/delete-account");
+  // States
+  const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  // Handlers
+  const handleBack = () => { history.go(-1) }
+  const handleChangePassword = () => { history.push("/change-password") }
+  const handleDeleteAccount = () => { history.push("/delete-account") }
+  const handleEditProfile = () => { history.push("/edit-profile") }
+  const handleClickOpen = () => { setOpen(true); };
+  const handleClose = () => { setOpen(false); };
+  const handleCapture = ({ target }) => { setSelectedFile(target.files[0]); };
+  const handleSubmit = () => {
+    changeProfilePic(selectedFile);
+    setOpen(false);
   };
 
   // Content
@@ -78,45 +88,16 @@ const Profile = ({ user, changeProfilePic}) => {
         >
           <ListItemText primary="Delete account" />
         </ListItem>,
+        <ListItem
+          button
+          onClick={handleEditProfile}
+          style={{ width: "100%" }}
+        >
+          <ListItemText primary="Edit profile" />
+        </ListItem>,
       ],
     },
-  ];
-
-  // Hooks
-  const classes = useStyles();
-  const history = useHistory();
-
-  // Handlers
-  const handleBack = () => {
-    history.go(-1);
-  };
-
-  // profile picture
-  const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleCapture = ({ target }) => {
-    setSelectedFile(target.files[0]);
-  };
-
-  const handleSubmit = () => {
-    changeProfilePic(selectedFile);
-    setOpen(false);
-  };
-
-  //  useEffect
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  ]
 
   return (
     <div className={classes.card}>
@@ -205,11 +186,15 @@ const Profile = ({ user, changeProfilePic}) => {
         </Card>
       )}
     </div>
-  );
-};
+  )
+}
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
-});
+})
 
-export default connect(mapStateToProps, { changeProfilePic })(Profile);
+const mapDispatchToProps = {
+  changeProfilePic,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)

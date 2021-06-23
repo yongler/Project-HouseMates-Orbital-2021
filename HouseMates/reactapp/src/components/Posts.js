@@ -60,14 +60,16 @@ const Posts = ({
       }
 
       {/* Post button */}
-      <Tooltip title="" onClick={handlePostButton}>
-        <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
-      </Tooltip>
+      {user &&
+        <Tooltip title="" onClick={handlePost}>
+          <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
+        </Tooltip>}
     </div>
   )
 }
 
 const mapStateToProps = state => ({
+  user: state.auth.user,
   posts: state.post.posts,
   postsType: state.post.postsType,
   postLoading: state.post.postLoading,

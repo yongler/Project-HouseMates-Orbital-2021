@@ -5,12 +5,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Avatar, Card, CardContent, CardHeader, Chip, Fab, IconButton, Tooltip, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import Pic from '../static/mrbean.jpg'
 import { getPostDetail } from '../redux/post/actions'
 import { getQuestions } from '../redux/form/actions'
+import { ROOMMATE_FORM } from '../globalConstants'
 
 // RoommateDetail consists of profile pic, name, categories of tags and post button.
-const RoommateDetail = ({ post, roommateCategories, getPostDetail, getQuestions }) => {
+const RoommateDetail = ({ user, post, roommateCategories, getPostDetail, getQuestions }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     avatar: {
@@ -49,17 +49,17 @@ const RoommateDetail = ({ post, roommateCategories, getPostDetail, getQuestions 
 
   // Handlers
   const handleBack = () => { history.go(-1) }
-  const handleClick = () => { history.push("/form") }
+  const handleClick = () => { history.push("/roommate-form") }
 
   // componentDidMount
   useEffect(() => {
-    if (roommateCategories.length === 0) { getQuestions(1) }
+    if (roommateCategories.length === 0) { getQuestions(ROOMMATE_FORM) }
     getPostDetail(id)
   }, [])
 
   return (
     <div className={classes.card}>
-      {post && post.id.toString() === id.toString()
+      {post?.id.toString() === id.toString()
         ?
         <>
           <Card>
@@ -68,10 +68,10 @@ const RoommateDetail = ({ post, roommateCategories, getPostDetail, getQuestions 
 
             <CardContent className={classes.content}>
               {/* Profile pic */}
-              <Avatar className={classes.avatar} src={Pic} />
+              <Avatar className={classes.avatar} src={post.owner.profile_pic} />
 
               {/* Name */}
-              <Typography variant="h5">{id} {post.owner.first_name} {post.owner.last_name}</Typography>
+              <Typography variant="h5">{post.owner.first_name} {post.owner.last_name}</Typography>
 
               {/* Text */}
               <Typography variant="body2" color="textSecondary" className={classes.category}>
@@ -104,9 +104,10 @@ const RoommateDetail = ({ post, roommateCategories, getPostDetail, getQuestions 
           </Card >
 
           {/* Post button */}
-          <Tooltip title="" onClick={handleClick}>
+          {user &&
+            <Tooltip title="" onClick={handleClick}>
             <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
-          </Tooltip>
+          </Tooltip>}
         </>
         :
         null
@@ -116,6 +117,7 @@ const RoommateDetail = ({ post, roommateCategories, getPostDetail, getQuestions 
 }
 
 const mapPropsToState = state => ({
+  user: state.auth.user,
   post: state.post.post,
   roommateCategories: state.form.roommateCategories,
 })

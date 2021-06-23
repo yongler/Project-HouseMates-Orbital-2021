@@ -10,13 +10,13 @@ const Roommates = () => {
   const history = useHistory()
 
   // Handlers
-  const handlePostButton = () => { history.push('/roommate-form') }
+  const handlePost = () => { history.push('/roommate-form') }
 
   return (
     <div>
       <Posts
         postType={ROOMMATE_FORM}
-        handlePostButton={handlePostButton}
+        handlePost={handlePost}
         PostComponent={RoommateCard}
         xs={12}
         md={6}

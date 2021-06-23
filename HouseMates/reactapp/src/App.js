@@ -62,7 +62,7 @@ const App = () => {
               <RouteWrapper exact path="/roommates" component={Roommates} layout={LayoutTwo} />
               <RouteWrapper path="/roommates/:id" component={RoommateDetail} layout={LayoutTwo} />
               <RouteWrapper path="/roommate-form" component={RoommateForm} layout={LayoutTwo} />
-              <RouteWrapper path="/profile-form" component={ProfileForm} layout={LayoutTwo} />
+              <RouteWrapper path="/edit-profile" component={ProfileForm} layout={LayoutTwo} />
               <RouteWrapper path="/housing-form" component={HousingForm} layout={LayoutTwo} />
               <RouteWrapper path="/edit-form/:id" component={EditForm} layout={LayoutTwo} />
               <RouteWrapper path="/profile" component={Profile} layout={LayoutTwo} />

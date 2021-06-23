@@ -6,7 +6,7 @@ import { Button, Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLa
 import Confirmation from './Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
-import { MULTIPLE_CHOICE, SINGLE_CHOICE } from '../globalConstants'
+import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE } from '../globalConstants'
 
 // Form consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 const Form = ({
@@ -119,7 +119,11 @@ const Form = ({
   const handleCancel = () => setOpen(false)
   const handleSubmit = () => {
     const data = Object.values(formFields).map(category => Object.values(category))
-    if (id) { editPost(id, formType, data, user.id) } else { createPost(formType, data, user.id) }
+    const userObj = {
+      first_name: user.first_name,
+      last_name: user.last_name,
+    }
+    if (id) { editPost(id, formType, data, userObj) } else { createPost(formType, data, userObj) }
   }
   const handleClose = () => {
     resetCreatePostSuccess()
@@ -130,16 +134,16 @@ const Form = ({
 
   // componentDidMount
   useEffect(() => {
-    if (formType === 1 && roommateQuestions.length === 0 ||
-      formType === 2 && housingQuestions.length === 0 ||
-      formType === 3 && profileQuestions.length === 0
+    if (formType === ROOMMATE_FORM && roommateQuestions.length === 0 ||
+      formType === HOUSING_FORM && housingQuestions.length === 0 ||
+      formType === PROFILE_FORM && profileQuestions.length === 0
     ) {
       getQuestions(formType)
     } else {
-      if (formType === 1) {
+      if (formType === ROOMMATE_FORM) {
         setQuestions(roommateQuestions)
         setCategories(roommateCategories)
-      } else if (formType === 2) {
+      } else if (formType === HOUSING_FORM) {
         setQuestions(housingQuestions)
         setCategories(housingCategories)
       } else {
@@ -152,15 +156,15 @@ const Form = ({
   useEffect(() => {
     setQuestions(roommateQuestions)
     setCategories(roommateCategories)
-  }, [roommateQuestions, formType === 1 ? questions : null])
+  }, [roommateQuestions, formType === ROOMMATE_FORM ? questions : null])
   useEffect(() => {
     setQuestions(housingQuestions)
     setCategories(housingCategories)
-  }, [housingQuestions, formType === 2 ? questions : null])
+  }, [housingQuestions, formType === HOUSING_FORM ? questions : null])
   useEffect(() => {
     setQuestions(profileQuestions)
     setCategories(profileCategories)
-  }, [profileQuestions, formType === 3 ? questions : null])
+  }, [profileQuestions, formType === PROFILE_FORM ? questions : null])
 
   useEffect(() => {
     if (initialFormFields) {
@@ -311,7 +315,6 @@ const Form = ({
 
       {/* Back and submit buttons */}
       {
-        // !loading &&
         <Box mt={10}>
             <Button
               className={classes.backButton}
@@ -355,7 +358,6 @@ const Form = ({
 
       {/* Back and next buttons */}
       {
-        // !loading &&
         <Box mt={10}>
             <Button
               disabled={currentCategory === 0}
