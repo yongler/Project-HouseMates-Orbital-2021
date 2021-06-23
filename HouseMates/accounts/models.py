@@ -76,7 +76,7 @@ class CustomUser(AbstractBaseUser):
     first_name = models.CharField(("first name"), max_length=30)
     last_name = models.CharField(("last name"), max_length=30)
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)  # a admin user; non super-user
+    is_staff = models.BooleanField(default=False)  # an admin user; non super-user
     is_admin = models.BooleanField(default=False)
     profile_pic = models.ImageField(default="default_pic.jpg", null=True, blank=True)
 

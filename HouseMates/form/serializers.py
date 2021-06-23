@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models import Question, Choice, Post, Selected_choice, Form
 from accounts.serializers import userProfileSerializer
 
+
 # Admin blank forms model serializers
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,19 +22,15 @@ class QuestionSerializer(serializers.ModelSerializer):
 class FormSerializer(serializers.ModelSerializer):
     class Meta:
         model = Form
-        fields = '__all__'
+        fields = ['form_type']
 
 # User filled forms model serializers
 class PostSerializer(serializers.ModelSerializer):
-    post_form_type = serializers.SerializerMethodField()
     owner = userProfileSerializer()
 
     class Meta:
         model = Post
         fields = '__all__'
-
-    def get_post_form_type(self, instance):
-        return instance.post_form_type.form_type
 
 
 class SelectedChoiceSerializer(serializers.ModelSerializer):

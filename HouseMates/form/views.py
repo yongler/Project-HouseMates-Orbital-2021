@@ -19,23 +19,27 @@ class QuestionView(viewsets.ModelViewSet):
 		queryset = Question.objects.all()
 		form_type = self.request.query_params.get('form_type')
 		if form_type is not None:
-			queryset = queryset.filter(question_form_type__form_type=form_type)
+			queryset = queryset.filter(question_form_type=form_type)
 		return queryset
 
 class PostView(viewsets.ModelViewSet):
 	serializer_class = PostSerializer
-	# filter_backends = [filters.SearchFilter]
-	# search_fields = ['^post_form_type']
+	filter_backends = [filters.SearchFilter]
+	search_fields = ['selected_choices__question']
+	# search_fields = ['owner__first_name', 'owner__last_name', 'selected_choices']
 
 	def get_queryset(self):
 		queryset = Post.objects.all()
 		form_type = self.request.query_params.get('form_type')
 		if form_type is not None:
-			queryset = queryset.filter(post_form_type__form_type=form_type)
+			queryset = queryset.filter(post_form_type=form_type)
 		owner = self.request.query_params.get('owner')
 		if owner is not None:
 			queryset = queryset.filter(owner=owner)
 		return queryset
+	
+	def perform_create(self, serializer):
+		serializer.save(owner=self.request.user)
 
 class ChoiceView(viewsets.ModelViewSet):
 	queryset = Choice.objects.all()
