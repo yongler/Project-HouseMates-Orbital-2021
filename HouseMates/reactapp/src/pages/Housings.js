@@ -38,13 +38,13 @@ const Housings = () => {
   const history = useHistory()
 
   // Handlers
-  const handlePostButton = () => { history.push('/housing-form') }
+  const handlePost = () => { history.push('/housing-form') }
 
   return (
     <div>
       <Posts
         postType={HOUSING_FORM}
-        handlePostButton={handlePostButton}
+        handlePost={handlePost}
         PostComponent={HousingCard}
         xs={12}
         md={12}

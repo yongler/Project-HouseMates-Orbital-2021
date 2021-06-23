@@ -6,9 +6,9 @@ import AddIcon from '@material-ui/icons/Add'
 import { getPostList } from '../redux/post/actions'
 
 // Posts consists of list of Roommate and post button.
-const Posts = ({ 
-  postType, handlePostButton, PostComponent, xs, md, lg, posts, postsType, 
-  postLoading, getPostList 
+const Posts = ({
+  user, postType, handlePost, PostComponent, xs, md, lg, posts, postsType,
+  postLoading, getPostList
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
@@ -58,14 +58,16 @@ const Posts = ({
       }
 
       {/* Post button */}
-      <Tooltip title="" onClick={handlePostButton}>
-        <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
-      </Tooltip>
+      {user &&
+        <Tooltip title="" onClick={handlePost}>
+          <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
+        </Tooltip>}
     </div>
   )
 }
 
 const mapStateToProps = state => ({
+  user: state.auth.user,
   posts: state.post.posts,
   postsType: state.post.postsType,
   postLoading: state.post.postLoading,

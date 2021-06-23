@@ -5,13 +5,12 @@ import { Link, useHistory } from 'react-router-dom'
 import { Card, CardActionArea, CardContent, CardMedia, Chip, IconButton, Tooltip, Typography } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
-import Pic from '../static/mrbean.jpg'
 import { deletePost, getPostList, resetDeletePostSuccess } from '../redux/post/actions'
 import Confirmation from '../components/Confirmation'
 import { ROOMMATE_FORM } from '../globalConstants'
 
-// RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.
-const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSuccess, getPostList }) => {
+// RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.fUSER
+const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePostSuccess, getPostList }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     card: {
@@ -39,6 +38,9 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
       marginRight: -15,
       marginTop: 5,
     },
+    icon: {
+      color: 'black',
+    },
   }))
 
   // Hooks
@@ -52,8 +54,8 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
   const handleEdit = () => { history.push(`/edit-form/${post.id}`) }
   const handleOpenConfirmationDialog = () => { setOpen(true) }
   const handleCancel = () => { setOpen(false) }
-  const handleSubmit = () => { deletePost(post.id) }
-  const handleClose = () => { 
+  const handleDelete = () => { deletePost(post.id) }
+  const handleClose = () => {
     resetDeletePostSuccess()
     getPostList(ROOMMATE_FORM)
     setOpen(false)
@@ -62,21 +64,26 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
   return (
     <>
       <Card className={classes.card}>
-        {/* Edit button */}
-        <Tooltip title="" className={classes.edit} onClick={handleEdit}>
-          <IconButton style={{ color: "black" }}><EditIcon /></IconButton>
-        </Tooltip>
+        {user?.id === post.owner.id &&
+          <>
+            {/* Edit button */}
+            < Tooltip title="" className={classes.edit} onClick={handleEdit}>
+              <IconButton className={classes.icon}><EditIcon /></IconButton>
+            </Tooltip>
 
-        <Tooltip title="" className={classes.delete} onClick={handleOpenConfirmationDialog}>
-          <IconButton style={{ color: "black" }}><DeleteIcon /></IconButton>
-        </Tooltip>
+            {/* Delete button */}
+            <Tooltip title="" className={classes.delete} onClick={handleOpenConfirmationDialog}>
+              <IconButton className={classes.icon}><DeleteIcon /></IconButton>
+            </Tooltip>
+          </>
+        }
 
         <Link to={`/roommates/${post.id}`} style={{ textDecoration: 'none', color: 'black' }}>
           {/* Pic */}
           <CardMedia
             className={classes.media}
-            image={Pic}
-            title={post.name}
+            image={post.owner.profile_pic}
+            title={post.owner.first_name + " " + post.owner.last_name}
           />
 
           <CardActionArea>
@@ -89,7 +96,7 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
 
               {/* Age, gender and bio */}
               <Typography variant="body2" color="textSecondary" className={classes.text}>
-                {/* {post.age} &middot; {post.gender} &middot; {post.bio.length > 220 ? post.bio.substring(0, 220) + "..." : post.bio} */}
+                {/* {post.age} &middot; {post.gender} &middot; {post?.bio?.length > 220 ? post.bio.substring(0, 220) + "..." : post.bio} */}
               </Typography>
 
               <br />
@@ -99,8 +106,8 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
               </Typography>
 
               {/* Top 3 preferred roommate tags */}
-              {/* {post.specs.map(spec => */}
-              {/* <Chip key={spec} label={spec} color="primary" className={classes.tag} /> */}
+              {/* {post?.specs.map(spec => */}
+                {/* <Chip key={spec} label={spec} color="primary" className={classes.tag} /> */}
               {/* )} */}
             </CardContent>
           </CardActionArea>
@@ -114,7 +121,7 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
         thankYouText={"You have successfully deleted your post"}
         success={deletePostSuccess}
         handleCancel={handleCancel}
-        handleSubmit={handleSubmit}
+        handleSubmit={handleDelete}
         handleClose={handleClose}
       />
     </>
@@ -122,8 +129,8 @@ const RoommateCard = ({ post, deletePostSuccess, deletePost, resetDeletePostSucc
 }
 
 const mapStateToProps = state => ({
+  user: state.auth.user,
   deletePostSuccess: state.post.deletePostSuccess,
-
 })
 
 const mapDispatchToProps = {

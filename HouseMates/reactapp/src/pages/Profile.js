@@ -52,6 +52,10 @@ const Profile = ({ user, changeProfilePic}) => {
   const classes = useStyles()
   const history = useHistory()
 
+  // States
+  const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
   // Handlers
   const handleBack = () => { history.go(-1) }
   const handleChangePassword = () => { history.push("/change-password") }
@@ -94,37 +98,6 @@ const Profile = ({ user, changeProfilePic}) => {
       ],
     },
   ]
-
-  // Hooks
-  const classes = useStyles();
-  const history = useHistory();
-
-  // States
-  const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleCapture = ({ target }) => {
-    setSelectedFile(target.files[0]);
-  };
-
-  const handleSubmit = () => {
-    changeProfilePic(selectedFile);
-    setOpen(false);
-  };
-
-  //  useEffect
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <div className={classes.card}>
