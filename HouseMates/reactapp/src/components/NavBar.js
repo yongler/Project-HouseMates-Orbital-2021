@@ -1,19 +1,34 @@
-import React, { useState, Fragment } from 'react'
-import { useHistory, Link } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { makeStyles, fade } from '@material-ui/core/styles'
-import { AppBar, Avatar, Button, IconButton, InputBase, Menu, MenuItem, Paper, Toolbar, Typography } from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu'
-import SearchIcon from '@material-ui/icons/Search'
-import { logout } from '../redux/auth/actions'
-import Logo from '../static/housemates-logo-without-text-white.svg'
+import React, { useState, Fragment } from "react";
+import { useHistory, Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { makeStyles, fade } from "@material-ui/core/styles";
+import {
+  AppBar,
+  Avatar,
+  Button,
+  IconButton,
+  InputBase,
+  Menu,
+  MenuItem,
+  Paper,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
+import { logout } from "../redux/auth/actions";
+import Logo from "../static/housemates-logo-without-text-white.svg";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import SearchBar from "material-ui-search-bar";
+import {searchPost} from "../redux/post/actions";
+import { ROOMMATE_FORM } from '../globalConstants'
+
 
 export const light = {
   palette: {
-    // primary: indigo,
+    // primary: indigo,cd H
     type: "light",
   },
 };
@@ -25,7 +40,7 @@ export const dark = {
 };
 
 // NavBar consists of menu button, logo, title, search bar, and welcome text and profile pic, or login and register buttons, dependent of user authentication, from left to right.
-const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
+const NavBar = ({ handleMenuButton, isAuthenticated, logout, user, searchPost }) => {
   // Styling (from left to right)
   const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -98,6 +113,8 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
 
   // States
   const [anchorEl, setAnchorEl] = useState(null);
+	const [data, setData] = useState({ search: '' });
+
 
   // Handlers
   const handleMenuOpen = (e) => {
@@ -115,7 +132,21 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
     logout();
     history.push("/login");
   };
-  const handleClick = () => { history.push('/dashboard') }
+  const handleClick = () => {
+    history.push("/dashboard");
+  };
+
+	// const handleSearch = (e) => {
+	// 	history.push({
+	// 		pathname: '/search/',
+	// 		search: '?search=' + data.search,
+	// 	});
+	// 	window.location.reload();
+	// };
+  
+  const handleSearch = (searchItem) => {
+    searchPost(ROOMMATE_FORM, searchItem);
+  };
 
   return (
     <div>
@@ -140,18 +171,28 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
             height="45"
             className={classes.logo}
             onClick={handleClick}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           />
 
           {/* Title */}
-          <Typography variant="h6" className={classes.title} onClick={handleClick} style={{ cursor: 'pointer' }}>
+          <Typography
+            variant="h6"
+            className={classes.title}
+            onClick={handleClick}
+            style={{ cursor: "pointer" }}
+          >
             HouseMates
           </Typography>
 
           <div className={classes.grow} />
 
           {/* Search bar */}
-          <div className={classes.search}>
+          <SearchBar
+            value={data.search}
+            onChange={(newValue) => setData({ search: newValue })}
+            onRequestSearch={() => handleSearch(data.search)}
+          />
+          {/* <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -165,7 +206,7 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
             />
           </div>
 
-          <div className={classes.grow} />
+          <div className={classes.grow} /> */}
 
           {/* Welcome text and profile pic, or login and register buttons */}
           {isAuthenticated && user ? (
@@ -233,4 +274,4 @@ const mapDispatchToProps = {
   logout: () => (dispatch) => dispatch(logout()),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavBar);
+export default connect(mapStateToProps, mapDispatchToProps, {searchPost})(NavBar);

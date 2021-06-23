@@ -15,6 +15,8 @@ import {
   RESET_CREATE_POST_SUCCESS,
   RESET_EDIT_POST_SUCCESS,
   RESET_DELETE_POST_SUCCESS,
+  SEARCH_POST_SUCCESS,
+  SEARCH_POST_FAIL
 } from './types'
 
 const initialState = {
@@ -26,6 +28,7 @@ const initialState = {
   createPostSuccess: false,
   editPostSuccess: false,
   deletePostSuccess: false,
+  searchPostSuccess: false,
 }
 
 const postReducer = (state = initialState, action) => {
@@ -140,6 +143,22 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         deletePostSuccess: false,
+      }
+
+    case SEARCH_POST_SUCCESS:
+      return {
+        ...state,
+        postLoading: false,
+        searchPostSuccess: true,
+        searchedPost: payload
+      }
+
+    case SEARCH_POST_FAIL:
+      return {
+        ...state,
+        postLoading: false,
+        postErrorMsg: payload,
+        searchPostFail: false,
       }
 
     default:

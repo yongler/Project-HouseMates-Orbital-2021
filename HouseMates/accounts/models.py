@@ -79,7 +79,7 @@ class CustomUser(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)  # an admin user; non super-user
     is_admin = models.BooleanField(default=False)
     profile_pic = models.ImageField(default="default_pic.jpg", null=True, blank=True)
-
+    bio = models.CharField(default='', max_length=500)
     # is_tenant = models.BooleanField(default=True)
     # is_host = models.BooleanField(default=False)
 

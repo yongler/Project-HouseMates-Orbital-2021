@@ -25,8 +25,8 @@ class QuestionView(viewsets.ModelViewSet):
 class PostView(viewsets.ModelViewSet):
 	serializer_class = PostSerializer
 	filter_backends = [filters.SearchFilter]
-	search_fields = ['selected_choices__question']
-	# search_fields = ['owner__first_name', 'owner__last_name', 'selected_choices']
+	# search_fields = ['selected_choices__question']
+	search_fields = ['owner__first_name', 'owner__last_name']
 
 	def get_queryset(self):
 		queryset = Post.objects.all()

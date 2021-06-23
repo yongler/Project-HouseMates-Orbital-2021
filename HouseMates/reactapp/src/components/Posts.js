@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 import { Container, Fab, Grid, Tooltip, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import { getPostList } from '../redux/post/actions'
+import { getPostList, searchPost } from '../redux/post/actions'
 
 // Posts consists of list of Roommate and post button.
 const Posts = ({ 
   postType, handlePostButton, PostComponent, xs, md, lg, posts, postsType, 
-  postLoading, getPostList 
+  postLoading, getPostList, searchedPost
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
@@ -31,15 +31,17 @@ const Posts = ({
     getPostList(postType)
   }, [])
 
+  const postToRender = searchPost ? searchPost : posts
+
   return (
     <div>
-      {postType === postsType && posts.length !== 0
+      {postType === postsType && postToRender.length !== 0
         ?
         <>
           {/* List of posts */}
           <Container>
             <Grid container spacing={2}>
-              {posts.map(post => (
+              {postToRender.map(post => (
                 <Grid item xs={xs} md={md} lg={lg} key={post.id} className={classes.grid}>
                   <PostComponent post={post} />
                 </Grid>
@@ -69,6 +71,7 @@ const mapStateToProps = state => ({
   posts: state.post.posts,
   postsType: state.post.postsType,
   postLoading: state.post.postLoading,
+  searchedPost: state.post.searchedPost,
 })
 
 const mapDispatchToProps = {

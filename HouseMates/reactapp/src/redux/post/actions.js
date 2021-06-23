@@ -16,6 +16,8 @@ import {
   RESET_CREATE_POST_SUCCESS,
   RESET_EDIT_POST_SUCCESS,
   RESET_DELETE_POST_SUCCESS,
+  SEARCH_POST_SUCCESS,
+  SEARCH_POST_FAIL
 } from './types'
 
 // Error messages
@@ -24,6 +26,8 @@ const getPostDetailErrorMsg = "Unable to load post"
 const createPostErrorMsg = "Unable to submit form"
 const editPostErrorMsg = "Unable to edit post"
 const deletePostErrorMsg = "Unable to delete post"
+const searchPostErrorMsg = "Unable to search post"
+
 
 // Async actions creators
 export const getPostList = formType =>
@@ -145,6 +149,26 @@ export const deletePost = id =>
     }
   }
 
+  export const searchPost = (formType, searchItem) => async dispatch => {
+    dispatch(postLoading())
+
+    // Request
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+
+    // Get request
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/post-list/?form_type=${formType}&search=${searchItem}`, config)
+
+      dispatch(searchPostSuccess(res.data))
+    } catch (err) {
+      dispatch(searchPostFail(searchPostErrorMsg))
+    }
+  }
+
 // Action Creators
 export const getPostListSuccess = (formType, posts) => ({
   type: GET_POST_LIST_SUCCESS,
@@ -190,3 +214,9 @@ export const resetPostErrorMsg = () => ({ type: RESET_POST_ERROR_MSG })
 export const resetCreatePostSuccess = () => ({ type: RESET_CREATE_POST_SUCCESS })
 export const resetEditPostSuccess = () => ({ type: RESET_EDIT_POST_SUCCESS })
 export const resetDeletePostSuccess = () => ({ type: RESET_DELETE_POST_SUCCESS })
+
+export const searchPostSuccess = () => ({ type: SEARCH_POST_SUCCESS })
+export const searchPostFail = searchPostErrorMsg => ({
+  type: SEARCH_POST_FAIL,
+  payload: searchPostErrorMsg,
+})
