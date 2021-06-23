@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory, Link, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
@@ -22,13 +22,12 @@ import Brightness3Icon from "@material-ui/icons/Brightness3";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import SearchBar from "material-ui-search-bar";
-import {searchPost} from "../redux/post/actions";
-import { ROOMMATE_FORM } from '../globalConstants'
-
+import { searchPost, cancelSearch } from "../redux/post/actions";
+import { ROOMMATE_FORM } from "../globalConstants";
 
 export const light = {
   palette: {
-    // primary: indigo,cd H
+    // primary: indigo,
     type: "light",
   },
 };
@@ -40,7 +39,14 @@ export const dark = {
 };
 
 // NavBar consists of menu button, logo, title, search bar, and welcome text and profile pic, or login and register buttons, dependent of user authentication, from left to right.
-const NavBar = ({ handleMenuButton, isAuthenticated, logout, user, searchPost }) => {
+const NavBar = ({
+  handleMenuButton,
+  isAuthenticated,
+  logout,
+  user,
+  searchPost,
+  cancelSearch,
+}) => {
   // Styling (from left to right)
   const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -108,13 +114,13 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user, searchPost })
   const appliedTheme = createMuiTheme(theme ? light : dark);
 
   // Hooks
+  const location = useLocation();
   const classes = useStyles();
   const history = useHistory();
 
   // States
   const [anchorEl, setAnchorEl] = useState(null);
-	const [data, setData] = useState({ search: '' });
-
+  const [data, setData] = useState({ search: "" });
 
   // Handlers
   const handleMenuOpen = (e) => {
@@ -136,16 +142,13 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user, searchPost })
     history.push("/dashboard");
   };
 
-	// const handleSearch = (e) => {
-	// 	history.push({
-	// 		pathname: '/search/',
-	// 		search: '?search=' + data.search,
-	// 	});
-	// 	window.location.reload();
-	// };
-  
   const handleSearch = (searchItem) => {
     searchPost(ROOMMATE_FORM, searchItem);
+  };
+
+  const handleCancelSearch = () => {
+    console.log("hi");
+    cancelSearch();
   };
 
   return (
@@ -187,26 +190,16 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user, searchPost })
           <div className={classes.grow} />
 
           {/* Search bar */}
-          <SearchBar
+         {location.pathname === '/roommates' && <SearchBar
+            className={classes.search}
             value={data.search}
             onChange={(newValue) => setData({ search: newValue })}
             onRequestSearch={() => handleSearch(data.search)}
-          />
-          {/* <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
+            onCancelSearch={handleCancelSearch}
+            cancelOnEscape
+          />}
 
-          <div className={classes.grow} /> */}
+          <div className={classes.grow} />
 
           {/* Welcome text and profile pic, or login and register buttons */}
           {isAuthenticated && user ? (
@@ -272,6 +265,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   logout: () => (dispatch) => dispatch(logout()),
+  searchPost,
+  cancelSearch,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps, {searchPost})(NavBar);
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

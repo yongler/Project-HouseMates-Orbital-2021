@@ -19,6 +19,7 @@ class CustomUserAdmin(admin.ModelAdmin):
                  (None, {'fields': ['last_name']}),
                  (None, {'fields': ['email']}),
                  (None, {'fields': ['profile_pic']}),
+                 (None, {'fields': ['bio']}),
                  ]
     # inlines = [ChoiceInline]
 

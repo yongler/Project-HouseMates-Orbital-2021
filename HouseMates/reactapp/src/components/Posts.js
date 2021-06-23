@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 import { Container, Fab, Grid, Tooltip, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import { getPostList, searchPost } from '../redux/post/actions'
+import { getPostList } from '../redux/post/actions'
 
 // Posts consists of list of Roommate and post button.
 const Posts = ({ 
-  postType, handlePostButton, PostComponent, xs, md, lg, posts, postsType, 
+  user, postType, handlePost, PostComponent, xs, md, lg, posts, postsType,
   postLoading, getPostList, searchedPost
 }) => {
   // Styling
@@ -30,8 +30,8 @@ const Posts = ({
   useEffect(() => {
     getPostList(postType)
   }, [])
-
-  const postToRender = searchPost ? searchPost : posts
+  
+  const postToRender = searchedPost ? searchedPost : posts
 
   return (
     <div>
