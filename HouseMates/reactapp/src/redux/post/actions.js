@@ -4,6 +4,8 @@ import {
   GET_POST_LIST_FAIL,
   GET_POST_DETAIL_SUCCESS,
   GET_POST_DETAIL_FAIL,
+  GET_USER_POST_SUCCESS,
+  GET_USER_POST_FAIL,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAIL,
   EDIT_POST_SUCCESS,
@@ -21,6 +23,7 @@ import {
 // Error messages
 const getPostListErrorMsg = "Unable to load posts"
 const getPostDetailErrorMsg = "Unable to load post"
+const getUserPostErrorMsg = "Unable to load user post"
 const createPostErrorMsg = "Unable to submit form"
 const editPostErrorMsg = "Unable to edit post"
 const deletePostErrorMsg = "Unable to delete post"
@@ -28,14 +31,11 @@ const deletePostErrorMsg = "Unable to delete post"
 // Async actions creators
 export const getPostList = formType =>
   async dispatch => {
+    // Loading
     dispatch(postLoading())
 
-    // Request
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }
+    // Draft request
+    const config = { headers: { 'Content-Type': 'application/json' } }
 
     // Get request
     try {
@@ -49,14 +49,11 @@ export const getPostList = formType =>
 
 export const getPostDetail = id =>
   async dispatch => {
+    // Loading
     dispatch(postLoading())
 
     // Draft request
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }
+    const config = { headers: { 'Content-Type': 'application/json' } }
 
     // Get request
     try {
@@ -68,8 +65,27 @@ export const getPostDetail = id =>
     }
   }
 
+export const getUserPost = owner => 
+  async dispatch => {
+    // Loading
+    dispatch(postLoading())
+
+    // Draft request
+    const config = { headers: { 'Content-Type': 'application/json' } }
+
+    // Get request
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/form/post-list/?owner=${owner}`, config)
+
+      dispatch(getUserPostSuccess(res.data))
+    } catch (err) {
+      dispatch(getUserPostFail(getUserPostErrorMsg))
+    }
+  }
+
 export const createPost = (post_form_type, selected_choices, owner) =>
   async dispatch => {
+    // Loading
     dispatch(postLoading())
 
     // Get access token from local storage
@@ -94,8 +110,9 @@ export const createPost = (post_form_type, selected_choices, owner) =>
     }
   }
 
-export const editPost = (id, post_form_type, selected_choices, owner) =>
+export const editPost = (id, post_form_type, selected_choices, owner, score_list, total_score) =>
   async dispatch => {
+    // Loading
     dispatch(postLoading())
 
     // Get access token from local storage
@@ -108,7 +125,7 @@ export const editPost = (id, post_form_type, selected_choices, owner) =>
         'Authorization': `JWT ${token}`,
       }
     }
-    const body = JSON.stringify({ post_form_type, selected_choices, owner })
+    const body = JSON.stringify({ post_form_type, selected_choices, owner, score_list, total_score })
 
     // Put request
     try {
@@ -122,6 +139,7 @@ export const editPost = (id, post_form_type, selected_choices, owner) =>
 
 export const deletePost = id =>
   async dispatch => {
+    // Loading
     dispatch(postLoading())
 
     // Get access token from local storage
@@ -161,6 +179,15 @@ export const getPostDetailSuccess = post => ({
 })
 export const getPostDetailFail = postErrorMsg => ({
   type: GET_POST_DETAIL_FAIL,
+  payload: postErrorMsg,
+})
+
+export const getUserPostSuccess = userPost => ({
+  type: GET_USER_POST_SUCCESS,
+  payload: userPost,
+})
+export const getUserPostFail = postErrorMsg => ({
+  type: GET_USER_POST_FAIL,
   payload: postErrorMsg,
 })
 

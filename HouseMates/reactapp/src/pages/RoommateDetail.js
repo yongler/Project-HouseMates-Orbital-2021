@@ -89,14 +89,14 @@ const RoommateDetail = ({ user, post, roommateCategories, getPostDetail, getQues
 
                     {/* Tags */}
                     {category.map(question =>
-                      Array.isArray(question.choice)
+                      Array.isArray(question.otherChoice)
                         ?
                         // Multiple choice question
-                        question.choice.map(choice =>
+                        question.otherChoice.map(choice =>
                           <Chip key={choice} className={classes.tag} label={choice} color="primary" />)
                         :
                         // Single choice question
-                        <Chip key={question} className={classes.tag} label={question.choice} color="primary" />)}
+                        <Chip key={question} className={classes.tag} label={question.otherChoice} color="primary" />)}
                   </div>)
                 }
               </div>

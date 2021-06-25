@@ -3,6 +3,8 @@ import {
   GET_POST_LIST_FAIL,
   GET_POST_DETAIL_SUCCESS,
   GET_POST_DETAIL_FAIL,
+  GET_USER_POST_SUCCESS,
+  GET_USER_POST_FAIL,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAIL,
   EDIT_POST_SUCCESS,
@@ -22,6 +24,7 @@ const initialState = {
   posts: [],
   postsType: [],
   post: null,
+  userPost: [],
   postErrorMsg: '',
   createPostSuccess: false,
   editPostSuccess: false,
@@ -58,6 +61,22 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         postLoading: false,
+        post: null,
+        postErrorMsg: payload,
+      }
+
+    case GET_USER_POST_SUCCESS:
+      return {
+        ...state,
+        postLoading: false,
+        userPost: payload,
+      }
+
+    case GET_USER_POST_FAIL:
+      return {
+        ...state,
+        postLoading: false,
+        userPost: null,
         postErrorMsg: payload,
       }
 
@@ -129,7 +148,7 @@ const postReducer = (state = initialState, action) => {
         ...state,
         createPostSuccess: false,
       }
-      
+
     case RESET_EDIT_POST_SUCCESS:
       return {
         ...state,

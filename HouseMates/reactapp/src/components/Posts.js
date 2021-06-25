@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 import { Container, Fab, Grid, Tooltip, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import { getPostList } from '../redux/post/actions'
+import { getPostList, getUserPost } from '../redux/post/actions'
 
 // Posts consists of list of Roommate and post button.
 const Posts = ({
-  user, postType, handlePost, PostComponent, xs, md, lg, posts, postsType,
-  postLoading, getPostList
+  user, userPost, postType, handlePost, PostComponent, xs, md, lg, posts, postsType,
+  getUserPost, postLoading, getPostList
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
@@ -27,9 +27,8 @@ const Posts = ({
   const classes = useStyles()
 
   // componentDidMount
-  useEffect(() => {
-    getPostList(postType)
-  }, [])
+  useEffect(() => { getPostList(postType) }, [])
+  useEffect(() => user ? getUserPost(user.id) : null, [user])
 
   return (
     <div>
@@ -58,7 +57,7 @@ const Posts = ({
       }
 
       {/* Post button */}
-      {user &&
+      {user && userPost?.length === 0 &&
         <Tooltip title="" onClick={handlePost}>
           <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
         </Tooltip>}
@@ -68,6 +67,7 @@ const Posts = ({
 
 const mapStateToProps = state => ({
   user: state.auth.user,
+  userPost: state.post.userPost,
   posts: state.post.posts,
   postsType: state.post.postsType,
   postLoading: state.post.postLoading,
@@ -75,6 +75,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getPostList,
+  getUserPost,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Posts)

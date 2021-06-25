@@ -5,12 +5,12 @@ import { Link, useHistory } from 'react-router-dom'
 import { Card, CardActionArea, CardContent, CardMedia, Chip, IconButton, Tooltip, Typography } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { deletePost, getPostList, resetDeletePostSuccess } from '../redux/post/actions'
+import { deletePost, getPostList, getUserPost, resetDeletePostSuccess } from '../redux/post/actions'
 import Confirmation from '../components/Confirmation'
 import { ROOMMATE_FORM } from '../globalConstants'
 
 // RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.fUSER
-const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePostSuccess, getPostList }) => {
+const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePostSuccess, getUserPost, getPostList }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     card: {
@@ -58,6 +58,7 @@ const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePo
   const handleClose = () => {
     resetDeletePostSuccess()
     getPostList(ROOMMATE_FORM)
+    getUserPost(user.id)
     setOpen(false)
   }
 
@@ -137,6 +138,7 @@ const mapDispatchToProps = {
   deletePost,
   resetDeletePostSuccess,
   getPostList,
+  getUserPost,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoommateCard)

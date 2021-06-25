@@ -2,20 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, Radio, RadioGroup, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
+import { Button, Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, Radio, RadioGroup, Slider, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
 import Confirmation from './Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
-import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE } from '../globalConstants'
+import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, PRIORITY, SELF, OTHER } from '../globalConstants'
 
 // Form consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 const Form = ({
-  isAuthenticated, user,
+  user,
+  getQuestions,
   roommateQuestions, roommateCategories,
   housingQuestions, housingCategories,
   profileQuestions, profileCategories,
   createPostSuccess, editPostSuccess,
-  getQuestions,
   createPost, resetCreatePostSuccess,
   editPost, resetEditPostSuccess,
   formType, initialFormFields, id,
@@ -52,8 +52,11 @@ const Form = ({
   const completed = category => {
     return questions
       .filter(question => question.category === categories[category])
-      .reduce((prev, curr) => prev && formFields[category] && formFields[category][curr.id], true)
+      .reduce((prev, curr) => prev && formFields[category]?.[curr.id]?.myChoice && formFields[category]?.[curr.id]?.otherChoice && formFields[category]?.[curr.id]?.priority, true)
   }
+
+  // Constants
+  const priorityChoices = ["Irrelevant", "A little important", "Somewhat important", "Very important", "Mandatory"]
 
   // States
   const [formFields, setFormFields] = useState({})
@@ -82,37 +85,101 @@ const Form = ({
   const handleStep = (category) => () =>
     category <= maxCategory ? setCurrentCategory(category) : null
 
-  const handleChange = (e, category) => {
-    setFormFields({
-      ...formFields,
-      [category]: {
-        ...formFields[category],
-        [e.target.name]: {
-          question: e.target.name,
-          choice: e.target.value,
-        },
-      }
-    })
-  }
-  const handleMultipleChange = (e, category) => {
-    const name = e.target.name
-    const newValue = e.target.value
-    var value = formFields[category] && formFields[category][name] ? formFields[category][name].choice : []
-    if (value && value.includes(newValue)) {
-      value.splice(value.indexOf(newValue), 1)
-    } else {
-      value.push(newValue)
+  const handleChange = (e, category, type, selfOther) => {
+    switch (type) {
+      case SINGLE_CHOICE:
+        switch (selfOther) {
+          case SELF:
+            setFormFields({
+              ...formFields,
+              [category]: {
+                ...formFields[category],
+                [e.target.name]: {
+                  ...formFields[category]?.[e.target.name],
+                  question: e.target.name,
+                  myChoice: e.target.value,
+                },
+              }
+            })
+            break
+          case OTHER:
+            setFormFields({
+              ...formFields,
+              [category]: {
+                ...formFields[category],
+                [e.target.name]: {
+                  ...formFields[category]?.[e.target.name],
+                  otherChoice: e.target.value,
+                },
+              }
+            })
+            break
+          default:
+            break
+        }
+        break
+
+      case MULTIPLE_CHOICE:
+        switch (selfOther) {
+          case SELF:
+            var myChoice = formFields[category]?.[e.target.name]?.myChoice || []
+            if (myChoice?.includes(e.target.value)) {
+              myChoice.splice(myChoice.indexOf(e.target.value), 1)
+            } else {
+              myChoice.push(e.target.value)
+            }
+            setFormFields({
+              ...formFields,
+              [category]: {
+                ...formFields[category],
+                [e.target.name]: {
+                  ...formFields[category]?.[e.target.name],
+                  question: e.target.name,
+                  myChoice: myChoice,
+                },
+              }
+            })
+            break
+
+          case OTHER:
+            var otherChoice = formFields[category]?.[e.target.name]?.otherChoice || []
+            if (otherChoice?.includes(e.target.value)) {
+              otherChoice.splice(otherChoice.indexOf(e.target.value), 1)
+            } else {
+              otherChoice.push(e.target.value)
+            }
+            setFormFields({
+              ...formFields,
+              [category]: {
+                ...formFields[category],
+                [e.target.name]: {
+                  ...formFields[category]?.[e.target.name],
+                  otherChoice: otherChoice,
+                },
+              }
+            })
+            break
+          default:
+            break
+        }
+        break
+
+      case PRIORITY:
+        setFormFields({
+          ...formFields,
+          [category]: {
+            ...formFields[category],
+            [e.target.name]: {
+              ...formFields[category]?.[e.target.name],
+              priority: e.target.value,
+            },
+          }
+        })
+        break
+
+      default:
+        break
     }
-    setFormFields({
-      ...formFields,
-      [category]: {
-        ...formFields[category],
-        [e.target.name]: {
-          question: e.target.name,
-          choice: value,
-        },
-      }
-    })
   }
 
   const handleConfirmation = () => { setOpen(true) }
@@ -179,63 +246,133 @@ const Form = ({
   // Components
   const SingleChoiceQuestion = ({ question }) => {
     return (
-      <FormControl >
-        {/* Question */}
-        < FormLabel >
-          <Typography variant="h6" color="textPrimary">{question.question_text}</Typography>
-        </FormLabel >
-
-        {/* List of choices */}
-        < RadioGroup
-          onChange={e => handleChange(e, currentCategory, question.question_text)}
-          value={
-            formFields[currentCategory] && formFields[currentCategory][question.id]
-              ? formFields[currentCategory][question.id].choice
-              : null
-          }
-          name={question.id}
-        >
-          {question.choice_set.map(choice => (
-            <FormControlLabel
-              value={choice}
-              control={<Radio color="primary" />}
-              label={choice}
-              key={choice}
-            />
-          ))}
-        </RadioGroup >
-      </FormControl >
-    )
-  }
-
-  const MultipleChoiceQuestion = ({ question }) => {
-    return (
-      <FormControl>
+      <FormControl style={{ width: "100%" }}>
         {/* Question */}
         <FormLabel>
           <Typography variant="h6" color="textPrimary">{question.question_text}</Typography>
         </FormLabel>
 
-        {/* List of choices */}
-        <FormGroup>
-          {question.choice_set.map(choice => (
-            <FormControlLabel
+        <Grid container spacing={2}>
+          {/* My choices */}
+          <Grid item xs={4}>
+            <RadioGroup
+              onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, SELF)}
+              value={formFields[currentCategory]?.[question.id]?.myChoice}
               name={question.id}
-              value={choice}
-              control={<Checkbox color="primary" />}
-              checked={
-                formFields[currentCategory] &&
-                  formFields[currentCategory][question.id] &&
-                  formFields[currentCategory][question.id].choice
-                  ? formFields[currentCategory][question.id].choice.includes(choice)
-                  : false
-              }
-              label={choice}
-              key={choice}
-              onChange={e => handleMultipleChange(e, currentCategory, question.question_text)}
-            />
-          ))}
-        </FormGroup>
+            >
+              {question.choice_set.map(choice => (
+                <FormControlLabel
+                  value={choice}
+                  control={<Radio color="primary" />}
+                  label={choice}
+                  key={choice}
+                />
+              ))}
+            </RadioGroup>
+          </Grid>
+
+          {/* Other choices */}
+          <Grid item xs={4}>
+            <RadioGroup
+              onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, OTHER)}
+              value={formFields[currentCategory]?.[question.id]?.otherChoice}
+              name={question.id}
+            >
+              {question.choice_set.map(choice => (
+                <FormControlLabel
+                  value={choice}
+                  control={<Radio color="primary" />}
+                  label={choice}
+                  key={choice}
+                />
+              ))}
+            </RadioGroup>
+          </Grid>
+
+          {/* Priority */}
+          <Grid item xs={4}>
+            <RadioGroup
+              onChange={e => handleChange(e, currentCategory, PRIORITY)}
+              value={formFields[currentCategory]?.[question.id]?.priority}
+              name={question.id}
+            >
+              {priorityChoices.map(choice => (
+                <FormControlLabel
+                  value={choice}
+                  control={<Radio color="primary" />}
+                  label={choice}
+                  key={choice}
+                />
+              ))}
+            </RadioGroup>
+          </Grid>
+        </Grid>
+      </FormControl>
+    )
+  }
+
+  const MultipleChoiceQuestion = ({ question }) => {
+    return (
+      <FormControl style={{ width: '100%'}}>
+        {/* Question */}
+        <FormLabel>
+          <Typography variant="h6" color="textPrimary">{question.question_text}</Typography>
+        </FormLabel>
+
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            {/* My choices */}
+            <FormGroup>
+              {question.choice_set.map(choice => (
+                <FormControlLabel
+                  name={question.id}
+                  value={choice}
+                  control={<Checkbox color="primary" />}
+                  checked={formFields[currentCategory]?.[question.id]?.myChoice?.includes(choice)}
+                  label={choice}
+                  key={choice}
+                  onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, SELF)}
+                />
+              ))}
+            </FormGroup>
+          </Grid>
+
+          {/* Other choices */}
+          <Grid item xs={4}>
+            <FormGroup>
+              {question.choice_set.map(choice => (
+                <FormControlLabel
+                  name={question.id}
+                  value={choice}
+                  control={<Checkbox color="primary" />}
+                  checked={formFields[currentCategory]?.[question.id]?.otherChoice?.includes(choice)}
+                  label={choice}
+                  key={choice}
+                  onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, OTHER)}
+                />
+              ))}
+            </FormGroup>
+          </Grid>
+
+          {/* Priority */}
+          <Grid item xs={4}>
+            <RadioGroup
+              onChange={e => handleChange(e, currentCategory, PRIORITY)}
+              value={formFields[currentCategory]?.[question.id]?.priority}
+              name={question.id}
+            >
+              {priorityChoices.map(choice => (
+                <FormControlLabel
+                  value={choice}
+                  control={<Radio color="primary" />}
+                  label={choice}
+                  key={choice}
+                />
+              ))}
+            </RadioGroup>
+          </Grid>
+        </Grid>
+
       </FormControl>
     )
   }
@@ -280,31 +417,43 @@ const Form = ({
                 {questions
                   .filter(question => question.category === category)
                   .map(question => (
-                    <Grid container>
+                    <Grid container style={{ width: "100%"}}>
                       {/* Question */}
-                      <Grid item xs={6}>
+                      <Grid item xs={3}>
                         <Typography variant="body1" gutterBottom>{question.question_text}</Typography>
                       </Grid>
 
-                      {/* User input */}
-                      <Grid item xs={6}>
+                      {/* My choices */}
+                      <Grid item xs={3}>
                         {question.question_type === MULTIPLE_CHOICE
                           ?
                           <Typography variant="body1" gutterBottom>
-                            {formFields[categoryIndex] &&
-                              formFields[categoryIndex][question.id] &&
-                              formFields[categoryIndex][question.id].choice
-                              ? formFields[categoryIndex][question.id].choice
-                                .reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')
-                              : null}
+                            {formFields[categoryIndex]?.[question.id]?.myChoice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
                           </Typography>
                           :
                           <Typography variant="body1" gutterBottom>
-                            {formFields[categoryIndex] && formFields[categoryIndex][question.id]
-                              ? formFields[categoryIndex][question.id].choice
-                              : null}
+                            {formFields[categoryIndex]?.[question.id]?.myChoice}
                           </Typography>
                         }
+                      </Grid>
+                      {/* Other choices */}
+                      <Grid item xs={3}>
+                        {question.question_type === MULTIPLE_CHOICE
+                          ?
+                          <Typography variant="body1" gutterBottom>
+                            {formFields[categoryIndex]?.[question.id]?.otherChoice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
+                          </Typography>
+                          :
+                          <Typography variant="body1" gutterBottom>
+                            {formFields[categoryIndex]?.[question.id]?.otherChoice}
+                          </Typography>
+                        }
+                      </Grid>
+                      {/* Priority */}
+                      <Grid item xs={3}>
+                        <Typography variant="body1" gutterBottom>
+                          {formFields[categoryIndex]?.[question.id]?.priority}
+                        </Typography>
                       </Grid>
                     </Grid>
                   ))}
@@ -316,41 +465,41 @@ const Form = ({
       {/* Back and submit buttons */}
       {
         <Box mt={10}>
-            <Button
-              className={classes.backButton}
-              onClick={handleBack}
-              type="button"
-            >
-              Back
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={handleConfirmation}
-            >
-              Submit
-            </Button>
+          <Button
+            className={classes.backButton}
+            onClick={handleBack}
+            type="button"
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={handleConfirmation}
+          >
+            Submit
+          </Button>
         </Box>
       }
     </div>
 
   const questionsBasedOnCategory =
-    <Box className={classes.flex}>
+    <Box>
       <div>
         {questions
           .filter(question => question.category === categories[currentCategory])
           .map(question => (
-            <Box mt={5} key={question.id}>
+            <Box mt={5} key={question.id} style={{ width: '100%' }}>
               {question.question_type === SINGLE_CHOICE
                 ?
                 <SingleChoiceQuestion question={question} />
                 :
-                // questions.question_type === "Multiple choice"
-                // ?
-                <MultipleChoiceQuestion question={question} />
-                // :
-                // <TextQuestion question={question} />
+                question.question_type === MULTIPLE_CHOICE
+                  ?
+                  <MultipleChoiceQuestion question={question} />
+                  :
+                  <TextQuestion question={question} />
               }
             </Box>
           ))}
@@ -359,21 +508,21 @@ const Form = ({
       {/* Back and next buttons */}
       {
         <Box mt={10}>
-            <Button
-              disabled={currentCategory === 0}
-              onClick={handleBack}
-              className={classes.backButton}
-            >
-              Back
-            </Button>
-            <Button
-              disabled={!completed(currentCategory)}
-              variant="contained"
-              color="primary"
-              onClick={handleNext}
-            >
-              Next
-            </Button>
+          <Button
+            disabled={currentCategory === 0}
+            onClick={handleBack}
+            className={classes.backButton}
+          >
+            Back
+          </Button>
+          <Button
+            disabled={!completed(currentCategory)}
+            variant="contained"
+            color="primary"
+            onClick={handleNext}
+          >
+            Next
+          </Button>
         </Box>
       }
     </Box>
