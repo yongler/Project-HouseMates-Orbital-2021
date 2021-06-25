@@ -24,7 +24,7 @@ class QuestionView(viewsets.ModelViewSet):
 		return queryset
 
 class PostView(viewsets.ModelViewSet):
-	permission_classes=[IsOwnerProfileOrReadOnly]
+	# permission_classes=[IsOwnerProfileOrReadOnly]
 	serializer_class = PostSerializer
 	filter_backends = [filters.SearchFilter]
 	search_fields = ['owner__first_name', 'owner__last_name', 'owner__bio', 'selected_choices']
@@ -40,6 +40,9 @@ class PostView(viewsets.ModelViewSet):
 		return queryset
 	
 	def perform_create(self, serializer):
+		print('hi')
+		print(self.request.data)
+		print('bye')
 		serializer.save(owner=self.request.user)
 
 class ChoiceView(viewsets.ModelViewSet):
