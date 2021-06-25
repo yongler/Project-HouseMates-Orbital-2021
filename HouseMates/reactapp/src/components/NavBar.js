@@ -1,15 +1,29 @@
-import React, { useState, Fragment } from 'react'
-import { useHistory, Link } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { makeStyles, fade } from '@material-ui/core/styles'
-import { AppBar, Avatar, Button, IconButton, InputBase, Menu, MenuItem, Paper, Toolbar, Typography } from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu'
-import SearchIcon from '@material-ui/icons/Search'
-import { logout } from '../redux/auth/actions'
-import Logo from '../static/housemates-logo-without-text-white.svg'
+import React, { useState, Fragment } from "react";
+import { useHistory, Link, useLocation } from "react-router-dom";
+import { connect } from "react-redux";
+import { makeStyles, fade } from "@material-ui/core/styles";
+import {
+  AppBar,
+  Avatar,
+  Button,
+  IconButton,
+  InputBase,
+  Menu,
+  MenuItem,
+  Paper,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
+import { logout } from "../redux/auth/actions";
+import Logo from "../static/housemates-logo-without-text-white.svg";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import SearchBar from "material-ui-search-bar";
+import { searchPost, cancelSearch } from "../redux/post/actions";
+import { ROOMMATE_FORM } from "../globalConstants";
 
 export const light = {
   palette: {
@@ -25,7 +39,14 @@ export const dark = {
 };
 
 // NavBar consists of menu button, logo, title, search bar, and welcome text and profile pic, or login and register buttons, dependent of user authentication, from left to right.
-const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
+const NavBar = ({
+  handleMenuButton,
+  isAuthenticated,
+  logout,
+  user,
+  searchPost,
+  cancelSearch,
+}) => {
   // Styling (from left to right)
   const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -93,11 +114,13 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
   const appliedTheme = createMuiTheme(theme ? light : dark);
 
   // Hooks
+  const location = useLocation();
   const classes = useStyles();
   const history = useHistory();
 
   // States
   const [anchorEl, setAnchorEl] = useState(null);
+  const [data, setData] = useState({ search: "" });
 
   // Handlers
   const handleMenuOpen = (e) => {
@@ -115,7 +138,18 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
     logout();
     history.push("/login");
   };
-  const handleClick = () => { history.push('/dashboard') }
+  const handleClick = () => {
+    history.push("/dashboard");
+  };
+
+  const handleSearch = (searchItem) => {
+    searchPost(ROOMMATE_FORM, searchItem);
+  };
+
+  const handleCancelSearch = () => {
+    console.log("hi");
+    cancelSearch();
+  };
 
   return (
     <div>
@@ -140,30 +174,30 @@ const NavBar = ({ handleMenuButton, isAuthenticated, logout, user }) => {
             height="45"
             className={classes.logo}
             onClick={handleClick}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           />
 
           {/* Title */}
-          <Typography variant="h6" className={classes.title} onClick={handleClick} style={{ cursor: 'pointer' }}>
+          <Typography
+            variant="h6"
+            className={classes.title}
+            onClick={handleClick}
+            style={{ cursor: "pointer" }}
+          >
             HouseMates
           </Typography>
 
           <div className={classes.grow} />
 
           {/* Search bar */}
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
+         {location.pathname === '/roommates' && <SearchBar
+            className={classes.search}
+            value={data.search}
+            onChange={(newValue) => setData({ search: newValue })}
+            onRequestSearch={() => handleSearch(data.search)}
+            onCancelSearch={handleCancelSearch}
+            cancelOnEscape
+          />}
 
           <div className={classes.grow} />
 
@@ -231,6 +265,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   logout: () => (dispatch) => dispatch(logout()),
+  searchPost,
+  cancelSearch,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

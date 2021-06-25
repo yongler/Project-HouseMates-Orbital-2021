@@ -97,7 +97,7 @@ const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePo
 
               {/* Age, gender and bio */}
               <Typography variant="body2" color="textSecondary" className={classes.text}>
-                {/* {post.age} &middot; {post.gender} &middot; {post?.bio?.length > 220 ? post.bio.substring(0, 220) + "..." : post.bio} */}
+                {post?.owner.bio?.length > 220 ? post.owner.bio.substring(0, 220) + "..." : post.owner.bio}
               </Typography>
 
               <br />

@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from .serializers import QuestionSerializer, PostSerializer, SelectedChoiceSerializer, ChoiceSerializer, FormSerializer
 from rest_framework import filters
+from .permissions import IsOwnerProfileOrReadOnly
 
 from .models import Question, Choice, Post, Selected_choice, Form
 
@@ -23,10 +24,10 @@ class QuestionView(viewsets.ModelViewSet):
 		return queryset
 
 class PostView(viewsets.ModelViewSet):
+	# permission_classes=[IsOwnerProfileOrReadOnly]
 	serializer_class = PostSerializer
 	filter_backends = [filters.SearchFilter]
-	search_fields = ['selected_choices__question']
-	# search_fields = ['owner__first_name', 'owner__last_name', 'selected_choices']
+	search_fields = ['owner__first_name', 'owner__last_name', 'owner__bio', 'selected_choices']
 
 	def get_queryset(self):
 		queryset = Post.objects.all()
@@ -39,6 +40,9 @@ class PostView(viewsets.ModelViewSet):
 		return queryset
 	
 	def perform_create(self, serializer):
+		print('hi')
+		print(self.request.data)
+		print('bye')
 		serializer.save(owner=self.request.user)
 
 class ChoiceView(viewsets.ModelViewSet):

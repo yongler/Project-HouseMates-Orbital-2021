@@ -238,7 +238,7 @@ const authReducer =
 
       case CHANGE_PROFILE_PIC_SUCCESS:
         const updatedUser = {...state.user};
-        updatedUser.profile_pic = "http://localhost:8000/images/" + payload;
+        updatedUser.profile_pic = `${process.env.REACT_APP_API_URL}/images/` + payload;
 
         return {
           ...state, 

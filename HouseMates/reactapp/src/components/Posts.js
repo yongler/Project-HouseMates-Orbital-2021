@@ -6,9 +6,9 @@ import AddIcon from '@material-ui/icons/Add'
 import { getPostList, getUserPost } from '../redux/post/actions'
 
 // Posts consists of list of Roommate and post button.
-const Posts = ({
+const Posts = ({ 
   user, userPost, postType, handlePost, PostComponent, xs, md, lg, posts, postsType,
-  getUserPost, postLoading, getPostList
+  getUserPosst, postLoading, getPostList, searchedPost
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
@@ -29,16 +29,18 @@ const Posts = ({
   // componentDidMount
   useEffect(() => { getPostList(postType) }, [])
   useEffect(() => user ? getUserPost(user.id) : null, [user])
+  
+  const postToRender = searchedPost ? searchedPost : posts
 
   return (
     <div>
-      {postType === postsType && posts.length !== 0
+      {postType === postsType && postToRender.length !== 0
         ?
         <>
           {/* List of posts */}
           <Container>
             <Grid container spacing={2}>
-              {posts.map(post => (
+              {postToRender.map(post => (
                 <Grid item xs={xs} md={md} lg={lg} key={post.id} className={classes.grid}>
                   <PostComponent post={post} />
                 </Grid>
@@ -71,6 +73,7 @@ const mapStateToProps = state => ({
   posts: state.post.posts,
   postsType: state.post.postsType,
   postLoading: state.post.postLoading,
+  searchedPost: state.post.searchedPost,
 })
 
 const mapDispatchToProps = {

@@ -26,7 +26,17 @@ class FormSerializer(serializers.ModelSerializer):
 
 # User filled forms model serializers
 class PostSerializer(serializers.ModelSerializer):
-    owner = userProfileSerializer()
+    owner = serializers.SerializerMethodField()
+
+    def get_owner(self, instance):
+        temp = instance.owner
+        return {
+        "id":temp.id, 
+        "first_name":temp.first_name, 
+        "last_name":temp.last_name, 
+        "profile_pic":"http://localhost:8000/images/" + str(temp.profile_pic),
+        "bio":temp.bio }
+    # owner = userProfileSerializer()
 
     class Meta:
         model = Post
@@ -38,8 +48,3 @@ class SelectedChoiceSerializer(serializers.ModelSerializer):
         model = Selected_choice
         fields = '__all__'
 
-    # owner = serializers.SerializerMethodField()
-
-    # def get_owner(self, instance):
-    #     temp = instance.owner
-    #     return [temp.first_name, temp.last_name, str(temp.profile_pic)]

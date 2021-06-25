@@ -1,4 +1,4 @@
-// // preliminaries 
+// preliminaries 
 // https://www.youtube.com/watch?v=m9PiPlRuy6E&t=304s
 
 //  (only for roommates post, in profile form its empty )
@@ -10,13 +10,14 @@
 
 
 
-// // algo
+// algo
 // get current_post.selected_choices (posts)
 // get current_post.owner.selected_choices (profile)
 
 // get other_post.selected_choices (posts)
 // get other_post.owner.selected_choices (profile)
 
+// n = 0
 
 // loop through length of selected_choices (posts), at every iteration:
 //     get score1 of current_post.choice, add to current_post.total_score (if dh)
@@ -28,6 +29,7 @@
 //     if current_post.owner.choice === other_post.choice:
 //         current_post.obtained_score += score2
 
+//     n += 1
 
     
 // percentage of other_post matching current_post = other_post.obtained_score / current_post.total_score 
@@ -44,7 +46,7 @@
 
 
 
-// // displaying 
+// displaying 
 // at each post, if current user.id === score_list key, display matching percentage
 
 

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from "axios";
 import {
   GET_POST_LIST_SUCCESS,
   GET_POST_LIST_FAIL,
@@ -18,7 +18,11 @@ import {
   RESET_CREATE_POST_SUCCESS,
   RESET_EDIT_POST_SUCCESS,
   RESET_DELETE_POST_SUCCESS,
-} from './types'
+  SEARCH_POST_SUCCESS,
+  SEARCH_POST_FAIL,
+  CANCEL_SEARCH_SUCCESS,
+  CANCEL_SEARCH_FAIL
+} from "./types";
 
 // Error messages
 const getPostListErrorMsg = "Unable to load posts"
@@ -47,7 +51,7 @@ export const getPostList = formType =>
     }
   }
 
-export const getPostDetail = id =>
+export const getPostDetail = id => {
   async dispatch => {
     // Loading
     dispatch(postLoading())
@@ -64,6 +68,7 @@ export const getPostDetail = id =>
       dispatch(getPostDetailFail(getPostDetailErrorMsg))
     }
   }
+};
 
 export const getUserPost = owner => 
   async dispatch => {
@@ -89,26 +94,30 @@ export const createPost = (post_form_type, selected_choices, owner) =>
     dispatch(postLoading())
 
     // Get access token from local storage
-    const token = localStorage.getItem('access')
+    const token = localStorage.getItem("access");
 
     // Draft request
     const config = {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `JWT ${token}`,
-      }
-    }
-    const body = JSON.stringify({ post_form_type, selected_choices, owner })
+        "Content-Type": "application/json",
+        Authorization: `JWT ${token}`,
+      },
+    };
+    const body = JSON.stringify({ post_form_type, selected_choices, owner });
 
     // Post request
     try {
-      axios.post(`${process.env.REACT_APP_API_URL}/form/post-list/`, body, config)
+      axios.post(
+        `${process.env.REACT_APP_API_URL}/form/post-list/`,
+        body,
+        config
+      );
 
-      dispatch(createPostSuccess())
+      dispatch(createPostSuccess());
     } catch (err) {
-      dispatch(createPostFail(createPostErrorMsg))
+      dispatch(createPostFail(createPostErrorMsg));
     }
-  }
+  };
 
 export const editPost = (id, post_form_type, selected_choices, owner, score_list, total_score) =>
   async dispatch => {
@@ -116,7 +125,7 @@ export const editPost = (id, post_form_type, selected_choices, owner, score_list
     dispatch(postLoading())
 
     // Get access token from local storage
-    const token = localStorage.getItem('access')
+    const token = localStorage.getItem("access");
 
     // Draft request
     const config = {
@@ -129,58 +138,96 @@ export const editPost = (id, post_form_type, selected_choices, owner, score_list
 
     // Put request
     try {
-      axios.put(`${process.env.REACT_APP_API_URL}/form/post-list/${id}/`, body, config)
+      axios.put(
+        `${process.env.REACT_APP_API_URL}/form/post-list/${id}/`,
+        body,
+        config
+      );
 
-      dispatch(editPostSuccess())
+      dispatch(editPostSuccess());
     } catch (err) {
-      dispatch(editPostFail(editPostErrorMsg))
+      dispatch(editPostFail(editPostErrorMsg));
     }
+  };
+
+export const deletePost = (id) => async (dispatch) => {
+  dispatch(postLoading());
+
+  // Get access token from local storage
+  const token = localStorage.getItem("access");
+
+  // Draft request
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${token}`,
+    },
+  };
+
+  // Post request
+  try {
+    axios.delete(
+      `${process.env.REACT_APP_API_URL}/form/post-list/${id}/`,
+      config
+    );
+
+    dispatch(deletePostSuccess());
+  } catch (err) {
+    dispatch(deletePostFail(deletePostErrorMsg));
   }
+};
 
-export const deletePost = id =>
-  async dispatch => {
-    // Loading
-    dispatch(postLoading())
+export const searchPost = (formType, searchItem) => async (dispatch) => {
+  dispatch(postLoading());
 
-    // Get access token from local storage
-    const token = localStorage.getItem('access')
+  // Request
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
 
-    // Draft request
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `JWT ${token}`,
-      }
-    }
+  // Get request
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/form/post-list/?form_type=${formType}&search=${searchItem}`,
+      config
+    );
 
-    // Post request
-    try {
-      axios.delete(`${process.env.REACT_APP_API_URL}/form/post-list/${id}/`, config)
-
-      dispatch(deletePostSuccess())
-    } catch (err) {
-      dispatch(deletePostFail(deletePostErrorMsg))
-    }
+    dispatch(searchPostSuccess(res.data));
+  } catch (err) {
+    dispatch(searchPostFail(searchPostErrorMsg));
   }
+};
+
+export const cancelSearch = () => async (dispatch) => {
+  console.log('in action')
+  try {
+    dispatch(cancelSearchSuccess());
+  } catch (err) {
+    dispatch(cancelSearchFail(cancelSearchErrorMsg));
+  }
+};
+
 
 // Action Creators
 export const getPostListSuccess = (formType, posts) => ({
   type: GET_POST_LIST_SUCCESS,
   payload: { formType, posts },
-})
-export const getPostListFail = postErrorMsg => ({
+});
+export const getPostListFail = (postErrorMsg) => ({
   type: GET_POST_LIST_FAIL,
   payload: postErrorMsg,
-})
+});
 
-export const getPostDetailSuccess = post => ({
+export const getPostDetailSuccess = (post) => ({
   type: GET_POST_DETAIL_SUCCESS,
   payload: post,
-})
-export const getPostDetailFail = postErrorMsg => ({
+});
+export const getPostDetailFail = (postErrorMsg) => ({
   type: GET_POST_DETAIL_FAIL,
   payload: postErrorMsg,
-})
+});
 
 export const getUserPostSuccess = userPost => ({
   type: GET_USER_POST_SUCCESS,
@@ -195,25 +242,45 @@ export const createPostSuccess = () => ({ type: CREATE_POST_SUCCESS })
 export const createPostFail = postErrorMsg => ({
   type: CREATE_POST_FAIL,
   payload: postErrorMsg,
-})
+});
 
-export const editPostSuccess = () => ({ type: EDIT_POST_SUCCESS })
-export const editPostFail = postErrorMsg => ({
+export const editPostSuccess = () => ({ type: EDIT_POST_SUCCESS });
+export const editPostFail = (postErrorMsg) => ({
   type: EDIT_POST_FAIL,
   payload: postErrorMsg,
-})
+});
 
-export const deletePostSuccess = () => ({ type: DELETE_POST_SUCCESS })
-export const deletePostFail = postErrorMsg => ({
+export const deletePostSuccess = () => ({ type: DELETE_POST_SUCCESS });
+export const deletePostFail = (postErrorMsg) => ({
   type: DELETE_POST_FAIL,
   payload: postErrorMsg,
-})
+});
 
-export const postLoading = () => ({ type: POST_LOADING })
-export const resetPostLoading = () => ({ type: RESET_POST_LOADING })
+export const postLoading = () => ({ type: POST_LOADING });
+export const resetPostLoading = () => ({ type: RESET_POST_LOADING });
 
-export const resetPostErrorMsg = () => ({ type: RESET_POST_ERROR_MSG })
+export const resetPostErrorMsg = () => ({ type: RESET_POST_ERROR_MSG });
 
-export const resetCreatePostSuccess = () => ({ type: RESET_CREATE_POST_SUCCESS })
-export const resetEditPostSuccess = () => ({ type: RESET_EDIT_POST_SUCCESS })
-export const resetDeletePostSuccess = () => ({ type: RESET_DELETE_POST_SUCCESS })
+export const resetCreatePostSuccess = () => ({
+  type: RESET_CREATE_POST_SUCCESS,
+});
+export const resetEditPostSuccess = () => ({ type: RESET_EDIT_POST_SUCCESS });
+export const resetDeletePostSuccess = () => ({
+  type: RESET_DELETE_POST_SUCCESS,
+});
+
+export const searchPostSuccess = (searchedPost) => ({
+  type: SEARCH_POST_SUCCESS,
+  payload: searchedPost,
+});
+export const searchPostFail = (searchPostErrorMsg) => ({
+  type: SEARCH_POST_FAIL,
+  payload: searchPostErrorMsg,
+});
+
+export const cancelSearchSuccess = () => ({ type: CANCEL_SEARCH_SUCCESS });
+export const cancelSearchFail = (cancelSearchErrorMsg) => ({
+  type: CANCEL_SEARCH_FAIL,
+  payload: cancelSearchErrorMsg,
+});
+

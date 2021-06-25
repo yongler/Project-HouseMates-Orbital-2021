@@ -1,5 +1,5 @@
 from django.db import models
-# from accounts.models import CustomUser
+from accounts.models import CustomUser
 
 
 # Admin blank forms model 
@@ -29,7 +29,7 @@ class Choice(models.Model):
 
 # User filled forms model 
 class Post(models.Model):
-    owner = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, null=True)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     post_form_type = models.ForeignKey(Form, on_delete=models.CASCADE)
     selected_choices = models.JSONField(default=list)
     score_list = models.JSONField(default=list)
