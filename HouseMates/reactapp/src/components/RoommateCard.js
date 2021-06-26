@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link, useHistory } from 'react-router-dom'
@@ -8,9 +8,10 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { deletePost, getPostList, getUserPost, resetDeletePostSuccess } from '../redux/post/actions'
 import Confirmation from '../components/Confirmation'
 import { ROOMMATE_FORM } from '../globalConstants'
+import { loadUser } from '../redux/auth/actions'
 
 // RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.fUSER
-const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePostSuccess, getUserPost, getPostList }) => {
+const RoommateCard = ({ user, userPost, post, deletePostSuccess, deletePost, resetDeletePostSuccess, getUserPost, getPostList, loadUser }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     card: {
@@ -62,6 +63,10 @@ const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePo
     setOpen(false)
   }
 
+  // componentDidMount
+  useEffect(() => loadUser(), [])
+  useEffect(() => user ? getUserPost(user.id): null, [user])
+
   return (
     <>
       <Card className={classes.card}>
@@ -92,7 +97,7 @@ const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePo
             <CardContent>
               {/* Name */}
               <Typography variant="h5" gutterBottom>
-                {post.owner.first_name} {post.owner.last_name}
+                {post.owner.first_name} {post.owner.last_name} {post.score_list[userPost?.[0]?.id]?.score && post.score_list[userPost?.[0]?.id]?.score + "%"}
               </Typography>
 
               {/* Age, gender and bio */}
@@ -131,6 +136,7 @@ const RoommateCard = ({ user, post, deletePostSuccess, deletePost, resetDeletePo
 
 const mapStateToProps = state => ({
   user: state.auth.user,
+  userPost: state.post.userPost,
   deletePostSuccess: state.post.deletePostSuccess,
 })
 
@@ -139,6 +145,7 @@ const mapDispatchToProps = {
   resetDeletePostSuccess,
   getPostList,
   getUserPost,
+  loadUser,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoommateCard)

@@ -8,7 +8,7 @@ import { getPostList, getUserPost } from '../redux/post/actions'
 // Posts consists of list of Roommate and post button.
 const Posts = ({ 
   user, userPost, postType, handlePost, PostComponent, xs, md, lg, posts, postsType,
-  getUserPosst, postLoading, getPostList, searchedPost
+  getUserPost, postLoading, getPostList, searchedPost
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({

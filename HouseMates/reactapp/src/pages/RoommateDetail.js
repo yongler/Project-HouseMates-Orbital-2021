@@ -5,12 +5,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Avatar, Card, CardContent, CardHeader, Chip, Fab, IconButton, Tooltip, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import { getPostDetail } from '../redux/post/actions'
+import { getPostDetail, getUserPost } from '../redux/post/actions'
 import { getQuestions } from '../redux/form/actions'
 import { ROOMMATE_FORM } from '../globalConstants'
 
 // RoommateDetail consists of profile pic, name, categories of tags and post button.
-const RoommateDetail = ({ user, post, roommateCategories, getPostDetail, getQuestions }) => {
+const RoommateDetail = ({ user, userPost, post, roommateCategories, getPostDetail, getQuestions, getUserPost }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     avatar: {
@@ -56,6 +56,8 @@ const RoommateDetail = ({ user, post, roommateCategories, getPostDetail, getQues
     if (roommateCategories.length === 0) { getQuestions(ROOMMATE_FORM) }
     getPostDetail(id)
   }, [])
+  useEffect(() => user ? getUserPost(user.id) : null, [user])
+
 
   return (
     <div className={classes.card}>
@@ -104,7 +106,7 @@ const RoommateDetail = ({ user, post, roommateCategories, getPostDetail, getQues
           </Card >
 
           {/* Post button */}
-          {user &&
+          {user && userPost?.length === 0 &&
             <Tooltip title="" onClick={handleClick}>
             <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
           </Tooltip>}
@@ -118,6 +120,7 @@ const RoommateDetail = ({ user, post, roommateCategories, getPostDetail, getQues
 
 const mapPropsToState = state => ({
   user: state.auth.user,
+  userPost: state.post.userPost,
   post: state.post.post,
   roommateCategories: state.form.roommateCategories,
 })
@@ -125,6 +128,7 @@ const mapPropsToState = state => ({
 const mapDispatchToProps = {
   getQuestions,
   getPostDetail,
+  getUserPost,
 }
 
 export default connect(mapPropsToState, mapDispatchToProps)(RoommateDetail);

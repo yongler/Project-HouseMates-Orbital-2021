@@ -32,6 +32,9 @@ const createPostErrorMsg = "Unable to submit form"
 const editPostErrorMsg = "Unable to edit post"
 const deletePostErrorMsg = "Unable to delete post"
 
+const searchPostErrorMsg = "Unable to search post"
+const cancelSearchErrorMsg = " Unable to cancel search"
+
 // Async actions creators
 export const getPostList = formType =>
   async dispatch => {
@@ -51,7 +54,7 @@ export const getPostList = formType =>
     }
   }
 
-export const getPostDetail = id => {
+export const getPostDetail = id => 
   async dispatch => {
     // Loading
     dispatch(postLoading())
@@ -68,7 +71,6 @@ export const getPostDetail = id => {
       dispatch(getPostDetailFail(getPostDetailErrorMsg))
     }
   }
-};
 
 export const getUserPost = owner => 
   async dispatch => {

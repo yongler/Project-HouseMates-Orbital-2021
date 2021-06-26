@@ -5,12 +5,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Button, Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, Radio, RadioGroup, Slider, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
 import Confirmation from './Confirmation'
 import { getQuestions } from '../redux/form/actions'
-import { createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
+import { getUserPost, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
 import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, PRIORITY, SELF, OTHER } from '../globalConstants'
 
 // Form consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 const Form = ({
-  user,
+  user, posts, userPost,
   getQuestions,
   roommateQuestions, roommateCategories,
   housingQuestions, housingCategories,
@@ -19,12 +19,10 @@ const Form = ({
   createPost, resetCreatePostSuccess,
   editPost, resetEditPostSuccess,
   formType, initialFormFields, id,
+  getUserPost, getPostList,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
-    backButton: {
-      marginRight: theme.spacing(1),
-    },
     paper: {
       padding: 30,
       paddingBottom: 50,
@@ -196,7 +194,7 @@ const Form = ({
     resetCreatePostSuccess()
     resetEditPostSuccess()
     setOpen(false)
-    history.push('/roommates')
+    history.push('/matchmaking')
   }
 
   // componentDidMount
@@ -219,7 +217,6 @@ const Form = ({
       }
     }
   }, [])
-
   useEffect(() => {
     setQuestions(roommateQuestions)
     setCategories(roommateCategories)
@@ -232,7 +229,6 @@ const Form = ({
     setQuestions(profileQuestions)
     setCategories(profileCategories)
   }, [profileQuestions, formType === PROFILE_FORM ? questions : null])
-
   useEffect(() => {
     if (initialFormFields) {
       setFormFields(initialFormFields)
@@ -242,138 +238,153 @@ const Form = ({
       setMaxCategory(categories.length)
     }
   }, [initialFormFields, categories])
+  useEffect(() => { getPostList(ROOMMATE_FORM) }, [])
+  useEffect(() => user ? getUserPost(user.id) : null, [user])
 
   // Components
   const SingleChoiceQuestion = ({ question }) => {
     return (
-      <FormControl style={{ width: "100%" }}>
+      <>
         {/* Question */}
-        <FormLabel>
-          <Typography variant="h6" color="textPrimary">{question.question_text}</Typography>
-        </FormLabel>
+        <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
 
-        <Grid container spacing={2}>
+        <Grid container spacing={8}>
           {/* My choices */}
           <Grid item xs={4}>
-            <RadioGroup
-              onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, SELF)}
-              value={formFields[currentCategory]?.[question.id]?.myChoice}
-              name={question.id}
-            >
-              {question.choice_set.map(choice => (
-                <FormControlLabel
-                  value={choice}
-                  control={<Radio color="primary" />}
-                  label={choice}
-                  key={choice}
-                />
-              ))}
-            </RadioGroup>
+            <FormControl>
+              <FormLabel>You are...</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.myChoice}
+                onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, SELF)}
+              >
+                {question.choice_set.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
           </Grid>
 
           {/* Other choices */}
           <Grid item xs={4}>
-            <RadioGroup
-              onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, OTHER)}
-              value={formFields[currentCategory]?.[question.id]?.otherChoice}
-              name={question.id}
-            >
-              {question.choice_set.map(choice => (
-                <FormControlLabel
-                  value={choice}
-                  control={<Radio color="primary" />}
-                  label={choice}
-                  key={choice}
-                />
-              ))}
-            </RadioGroup>
+            <FormControl>
+              <FormLabel>Your ideal roommate is......</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.otherChoice}
+                onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, OTHER)}
+              >
+                {question.choice_set.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
           </Grid>
 
           {/* Priority */}
           <Grid item xs={4}>
-            <RadioGroup
-              onChange={e => handleChange(e, currentCategory, PRIORITY)}
-              value={formFields[currentCategory]?.[question.id]?.priority}
-              name={question.id}
-            >
-              {priorityChoices.map(choice => (
-                <FormControlLabel
-                  value={choice}
-                  control={<Radio color="primary" />}
-                  label={choice}
-                  key={choice}
-                />
-              ))}
-            </RadioGroup>
+            <FormControl>
+              <FormLabel>This question is...</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.priority}
+                onChange={e => handleChange(e, currentCategory, PRIORITY)}
+              >
+                {priorityChoices.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
           </Grid>
         </Grid>
-      </FormControl>
+      </>
     )
   }
 
   const MultipleChoiceQuestion = ({ question }) => {
     return (
-      <FormControl style={{ width: '100%'}}>
+      <>
         {/* Question */}
-        <FormLabel>
-          <Typography variant="h6" color="textPrimary">{question.question_text}</Typography>
-        </FormLabel>
+        <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
 
-        <Grid container spacing={2}>
+        <Grid container item spacing={8}>
+          {/* My choices */}
           <Grid item xs={4}>
-            {/* My choices */}
-            <FormGroup>
-              {question.choice_set.map(choice => (
-                <FormControlLabel
-                  name={question.id}
-                  value={choice}
-                  control={<Checkbox color="primary" />}
-                  checked={formFields[currentCategory]?.[question.id]?.myChoice?.includes(choice)}
-                  label={choice}
-                  key={choice}
-                  onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, SELF)}
-                />
-              ))}
-            </FormGroup>
+            <FormControl>
+              <FormLabel>You are...</FormLabel>
+              <FormGroup>
+                {question.choice_set.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Checkbox color="primary" />}
+                    name={question.id}
+                    value={choice}
+                    label={choice}
+                    checked={formFields[currentCategory]?.[question.id]?.myChoice?.includes(choice)}
+                    onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, SELF)}
+                  />
+                ))}
+              </FormGroup>
+            </FormControl>
           </Grid>
 
           {/* Other choices */}
           <Grid item xs={4}>
-            <FormGroup>
-              {question.choice_set.map(choice => (
-                <FormControlLabel
-                  name={question.id}
-                  value={choice}
-                  control={<Checkbox color="primary" />}
-                  checked={formFields[currentCategory]?.[question.id]?.otherChoice?.includes(choice)}
-                  label={choice}
-                  key={choice}
-                  onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, OTHER)}
-                />
-              ))}
-            </FormGroup>
+            <FormControl>
+              <FormLabel>Your ideal roommate is......</FormLabel>
+              <FormGroup>
+                {question.choice_set.map(choice => (
+                  <FormControlLabel
+                    name={question.id}
+                    value={choice}
+                    control={<Checkbox color="primary" />}
+                    checked={formFields[currentCategory]?.[question.id]?.otherChoice?.includes(choice)}
+                    label={choice}
+                    key={choice}
+                    onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, OTHER)}
+                  />
+                ))}
+              </FormGroup>
+            </FormControl>
           </Grid>
 
           {/* Priority */}
           <Grid item xs={4}>
-            <RadioGroup
-              onChange={e => handleChange(e, currentCategory, PRIORITY)}
-              value={formFields[currentCategory]?.[question.id]?.priority}
-              name={question.id}
-            >
-              {priorityChoices.map(choice => (
-                <FormControlLabel
-                  value={choice}
-                  control={<Radio color="primary" />}
-                  label={choice}
-                  key={choice}
-                />
-              ))}
-            </RadioGroup>
+            <FormControl>
+              <FormLabel>This question is...</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.priority}
+                onChange={e => handleChange(e, currentCategory, PRIORITY)}
+              >
+                {priorityChoices.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
           </Grid>
         </Grid>
-
-      </FormControl>
+      </>
     )
   }
 
@@ -404,25 +415,37 @@ const Form = ({
     </Stepper>
 
   const summary =
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 40 }}>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <Grid container>
+      <Grid container item xs={12} style={{ padding: 48 }}>
         {categories
           .filter(category => category !== "Confirmation")
           .map((category, categoryIndex) => (
-            <div style={{ display: 'flex', flexDirection: 'column' }} className={classes.category} key={category}>
-              {/* Category */}
-              <div><Typography variant="h6">{category}</Typography></div>
+            // Category
+            <Grid item xs={12} key={category} style={{ marginBottom: 32 }}>
+              <Grid container>
+                <Grid item xs={3}>
+                  <Typography variant="h6">{category}</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body1" color="textSecondary">You are...</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body1" color="textSecondary">Your ideal roommate is......</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body1" color="textSecondary">This question is...</Typography>
+                </Grid>
+              </Grid>
 
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Grid container>
                 {questions
                   .filter(question => question.category === category)
                   .map(question => (
-                    <Grid container style={{ width: "100%"}}>
+                    <Grid container item xs={12} spacing={8}>
                       {/* Question */}
                       <Grid item xs={3}>
                         <Typography variant="body1" gutterBottom>{question.question_text}</Typography>
                       </Grid>
-
                       {/* My choices */}
                       <Grid item xs={3}>
                         {question.question_type === MULTIPLE_CHOICE
@@ -457,75 +480,64 @@ const Form = ({
                       </Grid>
                     </Grid>
                   ))}
-              </div>
-            </div>
+              </Grid>
+            </Grid>
           ))}
-      </div>
+      </Grid>
 
       {/* Back and submit buttons */}
-      {
-        <Box mt={10}>
-          <Button
-            className={classes.backButton}
-            onClick={handleBack}
-            type="button"
-          >
-            Back
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={handleConfirmation}
-          >
-            Submit
-          </Button>
-        </Box>
-      }
-    </div>
+      {<Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button
+          onClick={handleBack}
+          style={{ marginRight: 8 }}
+        >
+          Back
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleConfirmation}
+        >
+          Submit
+        </Button>
+      </Grid>}
+    </Grid>
 
   const questionsBasedOnCategory =
-    <Box>
-      <div>
+    <Grid container>
+      <Grid container item xs={12} style={{ padding: 48 }}>
         {questions
           .filter(question => question.category === categories[currentCategory])
           .map(question => (
-            <Box mt={5} key={question.id} style={{ width: '100%' }}>
+            <Grid item xs={12} style={{ marginBottom: 32 }}>
               {question.question_type === SINGLE_CHOICE
-                ?
-                <SingleChoiceQuestion question={question} />
-                :
-                question.question_type === MULTIPLE_CHOICE
-                  ?
-                  <MultipleChoiceQuestion question={question} />
-                  :
-                  <TextQuestion question={question} />
-              }
-            </Box>
+                ? <SingleChoiceQuestion question={question} />
+                : question.question_type === MULTIPLE_CHOICE
+                  ? <MultipleChoiceQuestion question={question} />
+                  : <TextQuestion question={question} />}
+            </Grid>
           ))}
-      </div>
+      </Grid>
 
       {/* Back and next buttons */}
-      {
-        <Box mt={10}>
-          <Button
-            disabled={currentCategory === 0}
-            onClick={handleBack}
-            className={classes.backButton}
-          >
-            Back
-          </Button>
-          <Button
-            disabled={!completed(currentCategory)}
-            variant="contained"
-            color="primary"
-            onClick={handleNext}
-          >
-            Next
-          </Button>
-        </Box>
-      }
-    </Box>
+      {<Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button
+          onClick={handleBack}
+          disabled={currentCategory === 0}
+          style={{ marginRight: 8 }}
+        >
+          Back
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleNext}
+          disabled={!completed(currentCategory)}
+        >
+          Next
+        </Button>
+      </Grid>}
+    </Grid>
 
   const confirmationDialog =
     <Confirmation
@@ -568,6 +580,8 @@ const mapStateToProps = (state) => ({
   profileCategories: state.form.profileCategories,
   createPostSuccess: state.post.createPostSuccess,
   editPostSuccess: state.post.editPostSuccess,
+  userPost: state.post.userPost,
+  posts: state.post.posts,
 })
 
 const mapDispatchToProps = {
@@ -576,6 +590,8 @@ const mapDispatchToProps = {
   editPost,
   resetCreatePostSuccess,
   resetEditPostSuccess,
+  getUserPost,
+  getPostList,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form)

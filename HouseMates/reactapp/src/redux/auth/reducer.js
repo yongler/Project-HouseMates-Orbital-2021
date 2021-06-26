@@ -24,8 +24,11 @@ import {
   RESET_AUTH_LOADING,
   RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
+  RESET_EDIT_BIO_SUCCESS,
   CHANGE_PROFILE_PIC_SUCCESS,
-  CHANGE_PROFILE_PIC_FAIL
+  CHANGE_PROFILE_PIC_FAIL,
+  EDIT_BIO_SUCCESS,
+  EDIT_BIO_FAIL,
 } from "./types";
 
 // Initial states
@@ -41,6 +44,7 @@ const initialState = {
   resetPasswordSuccess: false,
   resetPasswordConfirmSuccess: false,
   changePasswordSuccess: false,
+  editBioSuccess: false,
   authErrorMsg: "",
   authLoading: false,
 };
@@ -151,7 +155,7 @@ const authReducer =
           isAuthenticated: false,
           user: null,
         }
-      
+
       case DELETE_ACCOUNT_SUCCESS:
         return {
           ...state,
@@ -166,7 +170,7 @@ const authReducer =
           authErrorMsg: payload,
           authLoading: false
         }
-        
+
       case RESET_PASSWORD_SUCCESS:
         return {
           ...state,
@@ -236,19 +240,40 @@ const authReducer =
           changePasswordSuccess: false,
         }
 
+      case RESET_EDIT_BIO_SUCCESS:
+        return {
+          ...state,
+          editBioSuccess: false,
+        }
+
       case CHANGE_PROFILE_PIC_SUCCESS:
-        const updatedUser = {...state.user};
+        const updatedUser = { ...state.user };
         updatedUser.profile_pic = `${process.env.REACT_APP_API_URL}/images/` + payload;
 
         return {
-          ...state, 
-          user: updatedUser 
+          ...state,
+          user: updatedUser
         }
 
       case CHANGE_PROFILE_PIC_FAIL:
         console.log("change pic fail")
         return {
           ...state,
+        }
+
+      case EDIT_BIO_SUCCESS:
+        return {
+          ...state,
+          authLoading: false,
+          editBioSuccess: true,
+        }
+
+      case EDIT_BIO_FAIL:
+        return {
+          ...state,
+          authLoading: false,
+          authErrorMsg: payload,
+          editBioSuccess: false,
         }
 
       default:

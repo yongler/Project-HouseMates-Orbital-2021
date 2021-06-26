@@ -25,8 +25,11 @@ import {
   RESET_AUTH_LOADING,
   RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
+  RESET_EDIT_BIO_SUCCESS,
   CHANGE_PROFILE_PIC_SUCCESS,
-  CHANGE_PROFILE_PIC_FAIL
+  CHANGE_PROFILE_PIC_FAIL,
+  EDIT_BIO_SUCCESS,
+  EDIT_BIO_FAIL,
 } from "./types";
 
 // Error messages
@@ -60,6 +63,10 @@ const expiredResetPasswordTokenErrorMsg = "Expired reset password token";
 const changePasswordFailErrorMsg = "Unable to change password";
 const incorrectCurrentPasswordErrorMsg = "Incorrect current password";
 const newPasswordTooWeakErrorMsg = "New password too weak";
+
+// Edit bio
+const editBioFailErrorMsg = "Unable to edit bio"
+const bioCannotBeEmptyErrorMsg = "Bio cannot be empty"
 
 // Async Action Creators
 // Register
@@ -360,7 +367,7 @@ export const changePassword =
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `JWT ${token}`,
+        "Authorization": `JWT ${token}`,
       },
     };
     const body = JSON.stringify({
@@ -418,6 +425,41 @@ export const changeProfilePic = (picture) => async (dispatch) => {
     dispatch(changeProfilePicFail(err));
   }
 };
+
+// Edit bio
+export const editBio = (first_name, last_name, bio) =>
+  async dispatch => {
+    // Loading
+    dispatch(authLoading());
+
+    // Get access token from local storage
+    const token = localStorage.getItem("access");
+
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `JWT ${token}`,
+      },
+    };
+    const body = JSON.stringify({ first_name, last_name, bio });
+
+    // Put request
+    try {
+      await axios.put(`${process.env.REACT_APP_API_URL}/auth/users/me/`, body, config)
+
+      dispatch(editBioSuccess());
+    } catch (err) {
+      if (err.response.data.bio) {
+        dispatch(editBioFail(bioCannotBeEmptyErrorMsg))
+      } else {
+        dispatch(editBioFail(editBioFailErrorMsg))
+      }
+    }
+  }
+
+
+
 
 // Action Creators
 export const registerSuccess = () => ({ type: REGISTER_SUCCESS });
@@ -495,15 +537,20 @@ export const resetAuthLoading = () => ({ type: RESET_AUTH_LOADING });
 
 export const resetAuthErrorMsg = () => ({ type: RESET_AUTH_ERROR_MSG });
 
-export const resetChangePasswordSuccess = () => ({
-  type: RESET_CHANGE_PASSWORD_SUCCESS,
-});
+export const resetChangePasswordSuccess = () => ({ type: RESET_CHANGE_PASSWORD_SUCCESS })
+export const resetEditBioSuccess = () => ({ type: RESET_EDIT_BIO_SUCCESS })
 
 export const changeProfilePicSuccess = (picture) => ({
   type: CHANGE_PROFILE_PIC_SUCCESS,
   payload: picture.name
 });
-export const changeProfilePicFail = (errorMsg) => ({
+export const changeProfilePicFail = (authErrorMsg) => ({
   type: CHANGE_PROFILE_PIC_FAIL,
-  payload: errorMsg,
+  payload: authErrorMsg,
+});
+
+export const editBioSuccess = () => ({ type: EDIT_BIO_SUCCESS });
+export const editBioFail = (authErrorMsg) => ({
+  type: EDIT_BIO_FAIL,
+  payload: authErrorMsg,
 });
