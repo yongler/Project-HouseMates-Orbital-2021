@@ -34,7 +34,7 @@ class PostSerializer(serializers.ModelSerializer):
         "id":temp.id, 
         "first_name":temp.first_name, 
         "last_name":temp.last_name, 
-        "profile_pic":"http://localhost:8000/images/" + str(temp.profile_pic),
+        "profile_pic":str(temp.profile_pic),
         "bio":temp.bio }
     # owner = userProfileSerializer()
 
