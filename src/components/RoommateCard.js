@@ -131,9 +131,10 @@ const RoommateCard = ({
           {/* Pic */}
           <CardMedia
             className={classes.media}
-            image={post.owner.profile_pic}
+            image={'images/' + post.owner.profile_pic}
             title={post.owner.first_name + " " + post.owner.last_name}
           />
+          {console.log("hi", post.owner.profile_pic)}
 
           <CardActionArea>
             {/* Poster's description */}
