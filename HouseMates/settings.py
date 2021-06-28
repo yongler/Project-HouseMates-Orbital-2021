@@ -33,8 +33,8 @@ if os.path.isfile(dotenv_file):
 SECRET_KEY = "django-insecure-!pj4x%qojxw8-cf0hb**-9cyz8u+*9xlsu2xa)m*117n+oe&cc"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -166,7 +166,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = 'images/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "static/images")
+MEDIA_ROOT = os.path.join(BASE_DIR, "images")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
@@ -191,13 +191,13 @@ DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
-    "SEND_CONFIRMATION_EMAIL": True,
     "SET_USERNAME_RETYPE": True,
     "SET_PASSWORD_RETYPE": True,
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": " /reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
-    "SEND_ACTIVATION_EMAIL": True,
+    # "SEND_CONFIRMATION_EMAIL": True,
+    # "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     # 'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],

@@ -19,19 +19,32 @@ import {
   ListItemText,
   TextField,
   Typography,
-} from "@material-ui/core"
-import ArrowBackIcon from "@material-ui/icons/ArrowBack"
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
-import CreateIcon from "@material-ui/icons/Create"
-import Badge from "@material-ui/core/Badge"
-import { loadUser, changeProfilePic, editBio, resetEditBioSuccess } from '../redux/auth/actions'
+} from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import CreateIcon from "@material-ui/icons/Create";
+import Badge from "@material-ui/core/Badge";
+import {
+  loadUser,
+  changeProfilePic,
+  editBio,
+  resetEditBioSuccess,
+} from "../redux/auth/actions";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 // Profile consists of profile pic, name and list of settings.
-const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, resetEditBioSuccess, prevPath }) => {
+const Profile = ({
+  user,
+  changeProfilePic,
+  editBio,
+  loadUser,
+  editBioSuccess,
+  resetEditBioSuccess,
+  prevPath,
+}) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -49,38 +62,58 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
       marginLeft: 23,
       marginRight: 23,
     },
-  }))
+  }));
 
   // Hooks
-  const classes = useStyles()
-  const history = useHistory()
+  const classes = useStyles();
+  const history = useHistory();
 
   // States
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [editBioTextFieldOpen, setEditBioTextFieldOpen] = useState(false)
-  const [bio, setBio] = useState('')
+  const [editBioTextFieldOpen, setEditBioTextFieldOpen] = useState(false);
+  const [bio, setBio] = useState("");
 
   // Handlers
-  const handleBack = () => { history.push(prevPath) }
-  const handleChangePassword = () => { history.push("/change-password") }
-  const handleDeleteAccount = () => { history.push("/delete-account") }
-  const handleClickOpen = () => { setOpen(true); };
-  const handleClose = () => { setOpen(false); };
-  const handleCapture = ({ target }) => { setSelectedFile(target.files[0]); };
+  const handleBack = () => {
+    history.push(prevPath);
+  };
+  const handleChangePassword = () => {
+    history.push("/change-password");
+  };
+  const handleDeleteAccount = () => {
+    history.push("/delete-account");
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleCapture = ({ target }) => {
+    setSelectedFile(target.files[0]);
+  };
   const handleSubmit = () => {
     changeProfilePic(selectedFile);
     setOpen(false);
   };
-  const handleClick = () => { setEditBioTextFieldOpen(true) }
-  const handleCancel = () => { setEditBioTextFieldOpen(false) }
-  const handleChange = e => { setBio(e.target.value) }
-  const handleEditBio = e => {
-    e.preventDefault()
-    editBio(user.first_name, user.last_name, bio)
-    setEditBioTextFieldOpen(false)
-  }
-  const handleEdit = () => { setEditBioTextFieldOpen(true) }
+  const handleClick = () => {
+    setEditBioTextFieldOpen(true);
+  };
+  const handleCancel = () => {
+    setEditBioTextFieldOpen(false);
+  };
+  const handleChange = (e) => {
+    setBio(e.target.value);
+  };
+  const handleEditBio = (e) => {
+    e.preventDefault();
+    editBio(user.first_name, user.last_name, bio);
+    setEditBioTextFieldOpen(false);
+  };
+  const handleEdit = () => {
+    setEditBioTextFieldOpen(true);
+  };
 
   // Content
   const accordions = [
@@ -103,13 +136,13 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
         </ListItem>,
       ],
     },
-  ]
+  ];
 
   // componentDidMount
   useEffect(() => {
-    loadUser()
-    resetEditBioSuccess()
-  }, [editBioSuccess])
+    loadUser();
+    resetEditBioSuccess();
+  }, [editBioSuccess]);
 
   return (
     <div className={classes.card}>
@@ -152,7 +185,7 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
                 <Button
                   variant="contained"
                   component="label"
-                // startIcon={<CloudUploadIcon />}
+                  // startIcon={<CloudUploadIcon />}
                 >
                   {/* Upload File */}
                   <input
@@ -181,8 +214,7 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
 
             {/* Bio */}
             <Box mb={3}>
-              {editBioTextFieldOpen
-                ?
+              {editBioTextFieldOpen ? (
                 // Bio textarea
                 <form onSubmit={handleEditBio}>
                   <Grid container>
@@ -197,7 +229,15 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
                         onChange={handleChange}
                       />
                     </Grid>
-                    <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+                    <Grid
+                      item
+                      xs={12}
+                      style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        marginTop: 8,
+                      }}
+                    >
                       <Button
                         size="small"
                         onClick={handleCancel}
@@ -216,17 +256,28 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
                     </Grid>
                   </Grid>
                 </form>
-                :
-                user.bio
-                  ?
-                  // Bio
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant="body1" color="textSecondary">{user.bio}</Typography>
-                    <Link variant="body2" onClick={handleEdit}>Edit</Link>
-                  </div>
-                  :
-                  // Add bio link
-                  <Link variant="body2" onClick={handleClick}>Add bio...</Link>}
+              ) : user.bio ? (
+                // Bio
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="body1" color="textSecondary">
+                    {user.bio}
+                  </Typography>
+                  <Link variant="body2" onClick={handleEdit}>
+                    Edit
+                  </Link>
+                </div>
+              ) : (
+                // Add bio link
+                <Link variant="body2" onClick={handleClick}>
+                  Add bio...
+                </Link>
+              )}
             </Box>
 
             {/* List of settings */}
@@ -241,27 +292,27 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
                       {accordion.details.map((detail) => detail)}
                     </List>
                   </AccordionDetails>
-                </Accordion>))}
+                </Accordion>
+              ))}
             </div>
           </CardContent>
         </Card>
-      )
-      }
-    </div >
-  )
-}
+      )}
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
   editBioSuccess: state.auth.editBioSuccess,
   prevPath: state.auth.prevPath,
-})
+});
 
 const mapDispatchToProps = {
   changeProfilePic,
   editBio,
   resetEditBioSuccess,
   loadUser,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile)
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
