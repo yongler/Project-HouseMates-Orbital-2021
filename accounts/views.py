@@ -32,6 +32,7 @@ class Assets(View):
 
         if os.path.isfile(path):
             with open(path, 'rb') as file:
-                return HttpResponse(file.read(), content_type='application/javascript')
+                # return HttpResponse(file.read(), content_type='application/javascript')
+                return HttpResponse(file.read(), content_type='image/jpeg')
         else:
             return HttpResponseNotFound()
