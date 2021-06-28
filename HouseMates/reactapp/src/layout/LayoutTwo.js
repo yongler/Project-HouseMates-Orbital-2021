@@ -7,7 +7,7 @@ import SideNav from '../components/SideNav'
 import NavBar from '../components/NavBar'
 
 // LayoutTwo consists of NavBar on top of the component, SideNav at the side and Footer at the bottom.
-const LayoutTwo = ({ children, formLoading, postLoading }) => {
+const LayoutTwo = ({ children, formLoading, postLoading, profileLoading }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     root: {
@@ -86,7 +86,7 @@ const LayoutTwo = ({ children, formLoading, postLoading }) => {
 
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {/* Loading spinner */}
-            {(postLoading || formLoading) && <CircularProgress style={{ marginBottom: 40 }} />}
+            {(postLoading || formLoading || profileLoading) && <CircularProgress style={{ marginBottom: 40 }} />}
 
             {/* Main content */}
             <div style={{ width: '100%' }}>{children}</div>
@@ -107,6 +107,7 @@ const LayoutTwo = ({ children, formLoading, postLoading }) => {
 const mapStateToProps = state => ({
   formLoading: state.form.formLoading,
   postLoading: state.post.postLoading,
+  profileLoading: state.auth.profileLoading,
 })
 
 export default connect(mapStateToProps)(LayoutTwo)

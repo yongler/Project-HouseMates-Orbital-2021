@@ -7,10 +7,10 @@ import {
   IRRELEVANT, A_LITTLE_IMPORTANT, SOMEWHAT_IMPORTANT, VERY_IMPORTANT, MANDATORY
 } from '../globalConstants'
 import { loadUser } from '../redux/auth/actions'
-import { getUserPost, getPostList, editPost, postLoading } from '../redux/post/actions'
+import { getUserPost, getPostList, editPost, postLoading, resetEditPostSuccess } from '../redux/post/actions'
 import './components.css'
 
-const Matchmaking = ({ user, userPost, posts, loadUser, getUserPost, getPostList, editPost, postLoading, loading }) => {
+const Matchmaking = ({ user, userPost, posts, loadUser, getUserPost, getPostList, editPost, postLoading, loading, resetEditPostSuccess }) => {
 
   // States
   const history = useHistory()
@@ -88,7 +88,7 @@ const Matchmaking = ({ user, userPost, posts, loadUser, getUserPost, getPostList
         }
 
         // Calculate average score
-        const averageScore = (Math.pow((myScore / myTotalScore) * (otherScore / otherTotalScore), 1 / numOfQuestions) * 100).toFixed(2)
+        const averageScore = (Math.pow((myScore / myTotalScore) * (otherScore / otherTotalScore), 1 / numOfQuestions) * 100).toFixed(0)
 
         // Update my post score list
         myScoreList = {
@@ -114,7 +114,10 @@ const Matchmaking = ({ user, userPost, posts, loadUser, getUserPost, getPostList
     // Save my post score list and total score
     editPost(myPost.id, myPost.post_form_type, undefined, undefined, myScoreList, myTotalScore)
   }
-  const handleClose = () => history.push('/roommates')
+  const handleClose = () => {
+    resetEditPostSuccess()
+    history.push('/roommates')
+}
 
   // componentDidMount
   useEffect(() => { getPostList(ROOMMATE_FORM) }, [])
@@ -149,6 +152,7 @@ const mapDispatchToProps = {
   getPostList,
   editPost,
   postLoading: () => (dispatch) => dispatch(postLoading()),
+  resetEditPostSuccess,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Matchmaking)

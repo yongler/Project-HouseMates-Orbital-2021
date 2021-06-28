@@ -9,13 +9,24 @@
 
 .button {
   border: none;
-  border-radius: 50%;
-  color: white;
-  cursor: pointer;
-  font-size: 15;
   height: 1.7rem;
-  text-align: center;
   width: 1.7rem;
+  border-radius: 50%;
+}
+
+.close {
+  position: absolute;
+  text-align: center;
+  color: white;
+}
+
+.div {
+  border: none;
+  position: absolute;
+  height: 1.8rem;
+  width: 1.8rem;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .grow {
@@ -23,23 +34,13 @@
 }
 
 @keyframes grow {
-  0% {
-    height: 1.7rem;
-    width: 1.7rem;
-  }
-  50% {
-    height: 1.8rem;
-    width: 1.8rem;
-  }
-  100% {
-    height: 1.7rem;
-    width: 1.7rem;
-  }
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 .sheild {
   height: 100%;
   width: 100%; 
   position: fixed;
-  z-index: 1; 
 }

@@ -21,6 +21,7 @@ import {
   CHANGE_PASSWORD_SUCCESS,
   CHANGE_PASSWORD_FAIL,
   AUTH_LOADING,
+  PROFILE_LOADING,
   RESET_AUTH_LOADING,
   RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
@@ -29,6 +30,7 @@ import {
   CHANGE_PROFILE_PIC_FAIL,
   EDIT_BIO_SUCCESS,
   EDIT_BIO_FAIL,
+  SET_PREV_PATH,
 } from "./types";
 
 // Initial states
@@ -47,6 +49,8 @@ const initialState = {
   editBioSuccess: false,
   authErrorMsg: "",
   authLoading: false,
+  profileLoading: false,
+  prevPath: "",
 };
 
 // Reducer
@@ -240,10 +244,10 @@ const authReducer =
           changePasswordSuccess: false,
         }
 
-      case RESET_EDIT_BIO_SUCCESS:
+      case PROFILE_LOADING:
         return {
           ...state,
-          editBioSuccess: false,
+          profileLoading: true
         }
 
       case CHANGE_PROFILE_PIC_SUCCESS:
@@ -252,28 +256,42 @@ const authReducer =
 
         return {
           ...state,
+          profileLoading: false,
           user: updatedUser
         }
 
       case CHANGE_PROFILE_PIC_FAIL:
-        console.log("change pic fail")
         return {
           ...state,
+          profileLoading: false,
+          authErrorMsg: payload,
         }
 
       case EDIT_BIO_SUCCESS:
         return {
           ...state,
-          authLoading: false,
+          profileLoading: false,
           editBioSuccess: true,
         }
 
       case EDIT_BIO_FAIL:
         return {
           ...state,
-          authLoading: false,
+          profileLoading: false,
           authErrorMsg: payload,
           editBioSuccess: false,
+        }
+
+      case RESET_EDIT_BIO_SUCCESS:
+        return {
+          ...state,
+          editBioSuccess: false,
+        }
+
+      case SET_PREV_PATH:
+        return {
+          ...state,
+          prevPath: payload,
         }
 
       default:

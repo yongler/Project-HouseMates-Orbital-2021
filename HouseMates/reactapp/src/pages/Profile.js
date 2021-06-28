@@ -24,14 +24,14 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import CreateIcon from "@material-ui/icons/Create"
 import Badge from "@material-ui/core/Badge"
-import { changeProfilePic, editBio, loadUser, resetEditBioSuccess } from '../redux/auth/actions'
+import { loadUser, changeProfilePic, editBio, resetEditBioSuccess } from '../redux/auth/actions'
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 // Profile consists of profile pic, name and list of settings.
-const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, resetEditBioSuccess }) => {
+const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, resetEditBioSuccess, prevPath }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -62,10 +62,9 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
   const [bio, setBio] = useState('')
 
   // Handlers
-  const handleBack = () => { history.go(-1) }
+  const handleBack = () => { history.push(prevPath) }
   const handleChangePassword = () => { history.push("/change-password") }
   const handleDeleteAccount = () => { history.push("/delete-account") }
-  const handleEditProfile = () => { history.push("/edit-profile") }
   const handleClickOpen = () => { setOpen(true); };
   const handleClose = () => { setOpen(false); };
   const handleCapture = ({ target }) => { setSelectedFile(target.files[0]); };
@@ -101,13 +100,6 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
           style={{ width: "100%" }}
         >
           <ListItemText primary="Delete account" />
-        </ListItem>,
-        <ListItem
-          button
-          onClick={handleEditProfile}
-          style={{ width: "100%" }}
-        >
-          <ListItemText primary="Edit profile" />
         </ListItem>,
       ],
     },
@@ -262,6 +254,7 @@ const Profile = ({ user, changeProfilePic, editBio, loadUser, editBioSuccess, re
 const mapStateToProps = (state) => ({
   user: state.auth.user,
   editBioSuccess: state.auth.editBioSuccess,
+  prevPath: state.auth.prevPath,
 })
 
 const mapDispatchToProps = {

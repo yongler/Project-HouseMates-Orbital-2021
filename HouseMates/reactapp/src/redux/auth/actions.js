@@ -22,6 +22,7 @@ import {
   CHANGE_PASSWORD_SUCCESS,
   CHANGE_PASSWORD_FAIL,
   AUTH_LOADING,
+  PROFILE_LOADING,
   RESET_AUTH_LOADING,
   RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
@@ -30,6 +31,7 @@ import {
   CHANGE_PROFILE_PIC_FAIL,
   EDIT_BIO_SUCCESS,
   EDIT_BIO_FAIL,
+  SET_PREV_PATH,
 } from "./types";
 
 // Error messages
@@ -63,6 +65,9 @@ const expiredResetPasswordTokenErrorMsg = "Expired reset password token";
 const changePasswordFailErrorMsg = "Unable to change password";
 const incorrectCurrentPasswordErrorMsg = "Incorrect current password";
 const newPasswordTooWeakErrorMsg = "New password too weak";
+
+// Change profile pic
+const changeProfilePicFailErrorMsg = "Unable to change profile pic"
 
 // Edit bio
 const editBioFailErrorMsg = "Unable to edit bio"
@@ -278,12 +283,12 @@ export const deleteAccount = (current_password) => async (dispatch) => {
       data,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `JWT ${token}`,
+        "Authorization": `JWT ${token}`,
       },
     });
 
-    dispatch(deleteAccountSuccess());
     dispatch(logout());
+    dispatch(deleteAccountSuccess());
   } catch (err) {
     if (err.response.data.current_password) {
       dispatch(deleteAccountFail(incorrectPasswordErrorMsg));
@@ -397,40 +402,43 @@ export const changePassword =
   };
 
 // Change Profile Picture
-export const changeProfilePic = (picture) => async (dispatch) => {
-  var formData = new FormData();
-  formData.append("profile_pic", picture);
+export const changeProfilePic = (picture) =>
+  async (dispatch) => {
+    // Loading
+    dispatch(profileLoading())
 
-  const token = localStorage.getItem("access");
+    // Get access token from local storage
+    const token = localStorage.getItem("access");
 
-  // Request
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `JWT ${token}`,
-    },
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Authorization": `JWT ${token}`,
+      },
+    };
+    var formData = new FormData()
+    formData.append("profile_pic", picture)
+
+    // Patch request
+    try {
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/auth/users/me/`,
+        formData,
+        config
+      );
+
+      dispatch(changeProfilePicSuccess(picture));
+    } catch (err) {
+      dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg));
+    }
   };
-
-  // patch request
-  try {
-    await axios.patch(
-      `${process.env.REACT_APP_API_URL}/auth/users/me/`,
-      formData,
-      config
-    );
-
-    dispatch(changeProfilePicSuccess(picture));
-  } catch (err) {
-    console.log(err)
-    dispatch(changeProfilePicFail(err));
-  }
-};
 
 // Edit bio
 export const editBio = (first_name, last_name, bio) =>
   async dispatch => {
     // Loading
-    dispatch(authLoading());
+    dispatch(profileLoading());
 
     // Get access token from local storage
     const token = localStorage.getItem("access");
@@ -535,6 +543,8 @@ export const changePasswordFail = (authErrorMsg) => ({
 export const authLoading = () => ({ type: AUTH_LOADING });
 export const resetAuthLoading = () => ({ type: RESET_AUTH_LOADING });
 
+export const profileLoading = () => ({ type: PROFILE_LOADING });
+
 export const resetAuthErrorMsg = () => ({ type: RESET_AUTH_ERROR_MSG });
 
 export const resetChangePasswordSuccess = () => ({ type: RESET_CHANGE_PASSWORD_SUCCESS })
@@ -554,3 +564,8 @@ export const editBioFail = (authErrorMsg) => ({
   type: EDIT_BIO_FAIL,
   payload: authErrorMsg,
 });
+
+export const setPrevPath = (path) => ({
+  type: SET_PREV_PATH,
+  payload: path,
+})
