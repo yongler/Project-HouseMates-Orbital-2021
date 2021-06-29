@@ -102,10 +102,8 @@ const RoommateDetail = ({
                 className={classes.avatar}
                 src={"/images/" + post.owner.profile_pic}
               />
+              {console.log(post.owner.profile_pic)}
               {console.log("/images/" + post.owner.profile_pic)}
-              {console.log(
-                "http://localhost:8000/images/" + post.owner.profile_pic
-              )}
 
               {/* Name */}
               <Typography variant="h5">
