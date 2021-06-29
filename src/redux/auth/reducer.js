@@ -54,249 +54,248 @@ const initialState = {
 };
 
 // Reducer
-const authReducer =
-  (state = initialState, action) => {
-    const { type, payload } = action
+const authReducer = (state = initialState, action) => {
+  const { type, payload } = action;
 
-    switch (type) {
-      case REGISTER_SUCCESS:
-        return {
-          ...state,
-          registrationSuccess: true,
-          authLoading: false,
-        }
+  switch (type) {
+    case REGISTER_SUCCESS:
+      return {
+        ...state,
+        registrationSuccess: true,
+        authLoading: false,
+      };
 
-      case REGISTER_FAIL:
-        return {
-          ...state,
-          registrationSuccess: false,
-          authErrorMsg: payload,
-          authLoading: false,
-        }
+    case REGISTER_FAIL:
+      return {
+        ...state,
+        registrationSuccess: false,
+        authErrorMsg: payload,
+        authLoading: false,
+      };
 
-      case ACTIVATE_SUCCESS:
-        return {
-          ...state,
-          activationSuccess: true,
-          authLoading: false,
-        }
+    case ACTIVATE_SUCCESS:
+      return {
+        ...state,
+        activationSuccess: true,
+        authLoading: false,
+      };
 
-      case ACTIVATE_FAIL:
-        return {
-          ...state,
-          activationSuccess: false,
-          authErrorMsg: payload,
-          authLoading: false,
-        }
+    case ACTIVATE_FAIL:
+      return {
+        ...state,
+        activationSuccess: false,
+        authErrorMsg: payload,
+        authLoading: false,
+      };
 
-      case RESEND_ACTIVATION_EMAIL_SUCCESS:
-        return {
-          ...state,
-          resendActivationEmailSuccess: true,
-          authLoading: false,
-        }
+    case RESEND_ACTIVATION_EMAIL_SUCCESS:
+      return {
+        ...state,
+        resendActivationEmailSuccess: true,
+        authLoading: false,
+      };
 
-      case RESEND_ACTIVATION_EMAIL_FAIL:
-        return {
-          ...state,
-          resendActivationEmailSuccess: false,
-          authErrorMsg: payload,
-          authLoading: false,
-        }
+    case RESEND_ACTIVATION_EMAIL_FAIL:
+      return {
+        ...state,
+        resendActivationEmailSuccess: false,
+        authErrorMsg: payload,
+        authLoading: false,
+      };
 
-      case LOAD_USER_SUCCESS:
-        return {
-          ...state,
-          user: payload,
-          authLoading: false,
-        }
+    case LOAD_USER_SUCCESS:
+      return {
+        ...state,
+        user: payload,
+        authLoading: false,
+      };
 
-      case LOAD_USER_FAIL:
-        return {
-          ...state,
-          user: null,
-          authLoading: false,
-        }
+    case LOAD_USER_FAIL:
+      return {
+        ...state,
+        user: null,
+        authLoading: false,
+      };
 
-      case CHECK_AUTHENTICATION_SUCCESS:
-        return {
-          ...state,
-          isAuthenticated: true,
-        }
+    case CHECK_AUTHENTICATION_SUCCESS:
+      return {
+        ...state,
+        isAuthenticated: true,
+      };
 
-      case CHECK_AUTHENTICATION_FAIL:
-        return {
-          ...state,
-          isAuthenticated: false,
-        }
+    case CHECK_AUTHENTICATION_FAIL:
+      return {
+        ...state,
+        isAuthenticated: false,
+      };
 
-      case LOGIN_SUCCESS:
-        localStorage.setItem('access', payload.access)
-        localStorage.setItem('refresh', payload.refresh)
-        return {
-          ...state,
-          access: payload.access,
-          refresh: payload.refresh,
-          authLoading: false,
-        }
+    case LOGIN_SUCCESS:
+      localStorage.setItem("access", payload.access);
+      localStorage.setItem("refresh", payload.refresh);
+      return {
+        ...state,
+        access: payload.access,
+        refresh: payload.refresh,
+        authLoading: false,
+      };
 
-      case LOGIN_FAIL:
-        return {
-          ...state,
-          access: null,
-          refresh: null,
-          authErrorMsg: payload,
-          authLoading: false,
-        }
+    case LOGIN_FAIL:
+      return {
+        ...state,
+        access: null,
+        refresh: null,
+        authErrorMsg: payload,
+        authLoading: false,
+      };
 
-      case LOGOUT:
-        localStorage.removeItem('access')
-        localStorage.removeItem('refresh')
-        return {
-          ...state,
-          access: null,
-          refresh: null,
-          isAuthenticated: false,
-          user: null,
-        }
+    case LOGOUT:
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      return {
+        ...state,
+        access: null,
+        refresh: null,
+        isAuthenticated: false,
+        user: null,
+      };
 
-      case DELETE_ACCOUNT_SUCCESS:
-        return {
-          ...state,
-          deleteAccountSuccess: true,
-          authLoading: false,
-        }
+    case DELETE_ACCOUNT_SUCCESS:
+      return {
+        ...state,
+        deleteAccountSuccess: true,
+        authLoading: false,
+      };
 
-      case DELETE_ACCOUNT_FAIL:
-        return {
-          ...state,
-          deleteAccountSuccess: false,
-          authErrorMsg: payload,
-          authLoading: false
-        }
+    case DELETE_ACCOUNT_FAIL:
+      return {
+        ...state,
+        deleteAccountSuccess: false,
+        authErrorMsg: payload,
+        authLoading: false,
+      };
 
-      case RESET_PASSWORD_SUCCESS:
-        return {
-          ...state,
-          resetPasswordSuccess: true,
-          authLoading: false,
-        }
+    case RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        resetPasswordSuccess: true,
+        authLoading: false,
+      };
 
-      case RESET_PASSWORD_FAIL:
-        return {
-          ...state,
-          resetPasswordSuccess: false,
-          authErrorMsg: payload,
-          authLoading: false,
-        }
+    case RESET_PASSWORD_FAIL:
+      return {
+        ...state,
+        resetPasswordSuccess: false,
+        authErrorMsg: payload,
+        authLoading: false,
+      };
 
-      case RESET_PASSWORD_CONFIRM_SUCCESS:
-        return {
-          ...state,
-          resetPasswordConfirmSuccess: true,
-          authLoading: false,
-        }
+    case RESET_PASSWORD_CONFIRM_SUCCESS:
+      return {
+        ...state,
+        resetPasswordConfirmSuccess: true,
+        authLoading: false,
+      };
 
-      case RESET_PASSWORD_CONFIRM_FAIL:
-        return {
-          ...state,
-          resetPasswordConfirmSuccess: false,
-          authErrorMsg: payload,
-          authLoading: false,
-        }
+    case RESET_PASSWORD_CONFIRM_FAIL:
+      return {
+        ...state,
+        resetPasswordConfirmSuccess: false,
+        authErrorMsg: payload,
+        authLoading: false,
+      };
 
-      case CHANGE_PASSWORD_SUCCESS:
-        return {
-          ...state,
-          changePasswordSuccess: true,
-          authLoading: false,
-        }
+    case CHANGE_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        changePasswordSuccess: true,
+        authLoading: false,
+      };
 
-      case CHANGE_PASSWORD_FAIL:
-        return {
-          ...state,
-          changePasswordSuccess: false,
-          authErrorMsg: payload,
-          authLoading: false,
-        }
+    case CHANGE_PASSWORD_FAIL:
+      return {
+        ...state,
+        changePasswordSuccess: false,
+        authErrorMsg: payload,
+        authLoading: false,
+      };
 
-      case AUTH_LOADING:
-        return {
-          ...state,
-          authLoading: true,
-        }
+    case AUTH_LOADING:
+      return {
+        ...state,
+        authLoading: true,
+      };
 
-      case RESET_AUTH_LOADING:
-        return {
-          ...state,
-          authLoading: false,
-        }
+    case RESET_AUTH_LOADING:
+      return {
+        ...state,
+        authLoading: false,
+      };
 
-      case RESET_AUTH_ERROR_MSG:
-        return {
-          ...state,
-          authErrorMsg: '',
-        }
+    case RESET_AUTH_ERROR_MSG:
+      return {
+        ...state,
+        authErrorMsg: "",
+      };
 
-      case RESET_CHANGE_PASSWORD_SUCCESS:
-        return {
-          ...state,
-          changePasswordSuccess: false,
-        }
+    case RESET_CHANGE_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        changePasswordSuccess: false,
+      };
 
-      case PROFILE_LOADING:
-        return {
-          ...state,
-          profileLoading: true
-        }
+    case PROFILE_LOADING:
+      return {
+        ...state,
+        profileLoading: true,
+      };
 
-      case CHANGE_PROFILE_PIC_SUCCESS:
-        const updatedUser = { ...state.user };
-        updatedUser.profile_pic = `/images/` + payload;
+    case CHANGE_PROFILE_PIC_SUCCESS:
+      const updatedUser = { ...state.user };
+      updatedUser.profile_pic = payload;
 
-        return {
-          ...state,
-          profileLoading: false,
-          user: updatedUser
-        }
+      return {
+        ...state,
+        profileLoading: false,
+        user: updatedUser,
+      };
 
-      case CHANGE_PROFILE_PIC_FAIL:
-        return {
-          ...state,
-          profileLoading: false,
-          authErrorMsg: payload,
-        }
+    case CHANGE_PROFILE_PIC_FAIL:
+      return {
+        ...state,
+        profileLoading: false,
+        authErrorMsg: payload,
+      };
 
-      case EDIT_BIO_SUCCESS:
-        return {
-          ...state,
-          profileLoading: false,
-          editBioSuccess: true,
-        }
+    case EDIT_BIO_SUCCESS:
+      return {
+        ...state,
+        profileLoading: false,
+        editBioSuccess: true,
+      };
 
-      case EDIT_BIO_FAIL:
-        return {
-          ...state,
-          profileLoading: false,
-          authErrorMsg: payload,
-          editBioSuccess: false,
-        }
+    case EDIT_BIO_FAIL:
+      return {
+        ...state,
+        profileLoading: false,
+        authErrorMsg: payload,
+        editBioSuccess: false,
+      };
 
-      case RESET_EDIT_BIO_SUCCESS:
-        return {
-          ...state,
-          editBioSuccess: false,
-        }
+    case RESET_EDIT_BIO_SUCCESS:
+      return {
+        ...state,
+        editBioSuccess: false,
+      };
 
-      case SET_PREV_PATH:
-        return {
-          ...state,
-          prevPath: payload,
-        }
+    case SET_PREV_PATH:
+      return {
+        ...state,
+        prevPath: payload,
+      };
 
-      default:
-        return state
-    }
+    default:
+      return state;
   }
+};
 
-export default authReducer
+export default authReducer;
