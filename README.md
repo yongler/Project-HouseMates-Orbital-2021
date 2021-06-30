@@ -1,7 +1,10 @@
 ### Project-HouseMates-Orbital-2021
+---
 Welcome to HouseMates, a one stop solution for finding an accomodation partner as well as a warm place to stay! 
 
-[](src/static/housemates-logo-with-text-black)
+![](src/static/housemates-logo-with-text-black)
+
+---
 
 ### Links 
 - [Website]
@@ -9,6 +12,8 @@ Welcome to HouseMates, a one stop solution for finding an accomodation partner a
 - [Poster]
 - [Documentation]
 - [Developer guide]
+
+---
 
 ### Getting started
 - Create virtual environment 
@@ -18,15 +23,17 @@ Welcome to HouseMates, a one stop solution for finding an accomodation partner a
 - npm run build
 - python manage.py runserver
 
+---
+
 ### Things to note
 - settings.DEBUG = true during development and false during deployment
 
 ### Contributors 
 
-[![](https://github.com/yongler.png?size=5)](https://github.com/yongler)
-[![](https://github.com/xyliew25.png?size=5)](https://github.com/xyliew25)
+[![](https://github.com/yongler.png?s=460)](https://github.com/yongler)
+[![](https://github.com/xyliew25.png?s=460)](https://github.com/xyliew25)
 
-If interested in collaboration, do contact us at [](housematesorbital@gmail.com)
+If interested in collaboration, do contact us at ![](housematesorbital@gmail.com)
 
 
 
