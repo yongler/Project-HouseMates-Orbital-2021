@@ -1,0 +1,46 @@
+.buttonHolder {
+  align-items: center; 
+  display: flex;
+  flex-direction: column;
+  height: 2rem; 
+  justify-content: center;
+  width: 2rem; 
+}
+
+.button {
+  border: none;
+  height: 1.7rem;
+  width: 1.7rem;
+  border-radius: 50%;
+}
+
+.close {
+  position: absolute;
+  text-align: center;
+  color: white;
+}
+
+.div {
+  border: none;
+  position: absolute;
+  height: 1.8rem;
+  width: 1.8rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.grow {
+  animation: grow 2s infinite;
+}
+
+@keyframes grow {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.sheild {
+  height: 100%;
+  width: 100%; 
+  position: fixed;
+}
