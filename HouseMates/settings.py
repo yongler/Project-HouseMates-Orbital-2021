@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "rest_framework_simplejwt",
     "corsheaders",
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -165,9 +166,18 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = 'images/'
+MEDIA_URL = '/images/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "build/static/media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "build", "static", "media")
+
+#S3 BUCKETS CONFIG
+# AWS_ACCESS_KEY_ID = 'AKIA2VQMUMOWCECPYUOU '
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'housematesorbital'
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
@@ -197,8 +207,8 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": " /reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
-    # "SEND_CONFIRMATION_EMAIL": True,
-    # "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     # 'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
