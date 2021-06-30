@@ -1,14 +1,14 @@
 ### Project-HouseMates-Orbital-2021
 Welcome to HouseMates, a one stop solution for finding an accomodation partner as well as a warm place to stay! 
 
-![] (src/static/housemates-logo-with-text-black)
+[](src/static/housemates-logo-with-text-black)
 
 ### Links 
-[website]
-[video]
-[poster]
-[documentation]
-[developer_guide]
+- [Website]
+- [Video]
+- [Poster]
+- [Documentation]
+- [Developer guide]
 
 ### Getting started
 - Create virtual environment 
@@ -23,16 +23,16 @@ Welcome to HouseMates, a one stop solution for finding an accomodation partner a
 
 ### Contributors 
 
-[![](https://github.com/yongler.png?size=50)](https://github.com/yongler)
-[![](https://github.com/xyliew25.png?size=50)](https://github.com/xyliew25)
+[![](https://github.com/yongler.png?size=5)](https://github.com/yongler)
+[![](https://github.com/xyliew25.png?size=5)](https://github.com/xyliew25)
 
-If interested in collaboration, do contact us at [![](housematesorbital@gmail.com)] (housematesorbital@gmail.com)
-
-
+If interested in collaboration, do contact us at [](housematesorbital@gmail.com)
 
 
-[website]: https://housematesorbital.herokuapp.com/
-[video]: https://drive.google.com/file/d/1Qq_O-xDxBkwFGBv5BVJdsCmHarahbMat/view?usp=sharing 
-[poster]: https://drive.google.com/file/d/1m8fIU8g8oMp3aGYJQCG0FrY0w2pxe9ol/view?usp=sharing
-[documentation]: https://docs.google.com/document/d/15YP8M2yLsO2hrO9KCudOdDSrc8GFp0T2Ubhxmt8GrdA/edit?usp=sharing
-[developer_guide]: https://docs.google.com/document/d/1EY_-xi3OXSbBJuggnQMHDQ9-PEKM4058wHgds8yHlEA/edit?usp=sharing
+
+
+[Website]: https://housematesorbital.herokuapp.com/
+[Video]: https://drive.google.com/file/d/1Qq_O-xDxBkwFGBv5BVJdsCmHarahbMat/view?usp=sharing 
+[Poster]: https://drive.google.com/file/d/1m8fIU8g8oMp3aGYJQCG0FrY0w2pxe9ol/view?usp=sharing
+[Documentation]: https://docs.google.com/document/d/15YP8M2yLsO2hrO9KCudOdDSrc8GFp0T2Ubhxmt8GrdA/edit?usp=sharing
+[Developer guide]: https://docs.google.com/document/d/1EY_-xi3OXSbBJuggnQMHDQ9-PEKM4058wHgds8yHlEA/edit?usp=sharing
