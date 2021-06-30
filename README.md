@@ -2,14 +2,9 @@
 
 > Welcome to HouseMates, your one stop solution for finding an accomodation partner as well as a warm place to stay in Singapore. 
 
-<br/>
-
-![](./src/static/housemates-logo-with-text-black.svg)
-
-<br/>
+<img src="./src/static/housemates-logo-with-text-black.svg" width="400" height="790">
 
 ---
-
 ## Links 
 - [Website]
 - [Video]
@@ -17,10 +12,7 @@
 - [Documentation] 
 - [Developer guide]
 
-<br/>
-
 ---
-
 ## Getting started
 
 ```bash
@@ -32,17 +24,11 @@ npm run build
 python manage.py runserver
 ```
 
-<br/>
-
 ---
-
 ## Things to note
 - settings.DEBUG = true during development and false during deployment
   
-<br/>
-
 ---
-
 ## Collaborations 
 
 If interested in collaborations, do contact us at  [housematesorbital@gmail.com](housematesorbital@gmail.com)
