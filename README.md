@@ -2,9 +2,9 @@
 
 > Welcome to HouseMates, your one stop solution for finding an accomodation partner as well as a warm place to stay in Singapore. 
 
-<p class="aligncenter">
+<div style="text-align:center">
     <img src="./src/static/housemates-logo-with-text-black.svg" width="400" height="400">
-</p>
+</div>
 
 ---
 ## Links 
@@ -44,9 +44,3 @@ If interested in collaborations, do contact us at  [housematesorbital@gmail.com]
 [Documentation]: https://docs.google.com/document/d/15YP8M2yLsO2hrO9KCudOdDSrc8GFp0T2Ubhxmt8GrdA/edit?usp=sharing
 [Developer guide]: https://docs.google.com/document/d/1EY_-xi3OXSbBJuggnQMHDQ9-PEKM4058wHgds8yHlEA/edit?usp=sharing
 
-
-<style>
-.aligncenter {
-    text-align: center;
-}
-</style>
