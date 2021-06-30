@@ -1,41 +1,51 @@
-### Project HouseMates
+# Project HouseMates
+
+> Welcome to HouseMates, your one stop solution for finding an accomodation partner as well as a warm place to stay in Singapore. 
+
+<br/>
+
+![](./src/static/housemates-logo-with-text-black.svg)
+
+<br/>
+
 ---
-Welcome to HouseMates, your one stop solution for finding an accomodation partner as well as a warm place to stay in Singapore. 
 
-[![]](src/static/housemates-logo-with-text-black)
-
----
-
-### Links 
+## Links 
 - [Website]
 - [Video]
 - [Poster]
-- [Documentation]
+- [Documentation] 
 - [Developer guide]
 
----
-
-### Getting started
-- Create virtual environment 
-- pipenv install -r requirements.txt
-- python manage.py migrate
-- npm install 
-- npm run build
-- python manage.py runserver
+<br/>
 
 ---
 
-### Things to note
+## Getting started
+
+```bash
+pipenv shell  
+pipenv install -r requirements.txt
+python manage.py migrate
+npm install 
+npm run build
+python manage.py runserver
+```
+
+<br/>
+
+---
+
+## Things to note
 - settings.DEBUG = true during development and false during deployment
+  
+<br/>
 
 ---
 
-### Contributors 
+## Collaborations 
 
-[![](https://github.com/yongler.png?s=460)](https://github.com/yongler)
-[![](https://github.com/xyliew25.png?s=460)](https://github.com/xyliew25)
-
-If interested in collaboration, do contact us at [![]](housematesorbital@gmail.com)
+If interested in collaborations, do contact us at  [housematesorbital@gmail.com](housematesorbital@gmail.com)
 
 
 
