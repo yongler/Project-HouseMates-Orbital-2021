@@ -2,7 +2,7 @@
 
 > Welcome to HouseMates, your one stop solution for finding an accomodation partner as well as a warm place to stay in Singapore. 
 
-<img src="./src/static/housemates-logo-with-text-black.svg" width="400" height="790">
+<img src="./src/static/housemates-logo-with-text-black.svg" width="400" height="400">
 
 ---
 ## Links 
