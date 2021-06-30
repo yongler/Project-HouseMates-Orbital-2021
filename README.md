@@ -1,14 +1,38 @@
-# Project-HouseMates-Orbital-2021
+### Project-HouseMates-Orbital-2021
+Welcome to HouseMates, a one stop solution for finding an accomodation partner as well as a warm place to stay! 
 
-# After pull/clone:
-Create virtual environment
+![] (src/static/housemates-logo-with-text-black)
 
-npm install (in reactapp directory)
+### Links 
+[website]
+[video]
+[poster]
+[documentation]
+[developer_guide]
 
-pipenv install -r requirements.txt
+### Getting started
+- Create virtual environment 
+- pipenv install -r requirements.txt
+- python manage.py migrate
+- npm install 
+- npm run build
+- python manage.py runserver
 
-python manage.py migrate
+### Things to note
+- settings.DEBUG = true during development and false during deployment
 
-If there are any changes made to the reactapp directory, run 'npm run build' in reactapp directory
+### Contributors 
 
-Run 'python manage.py runserver' in Housemates directory
+[![](https://github.com/yongler.png?size=50)](https://github.com/yongler)
+[![](https://github.com/xyliew25.png?size=50)](https://github.com/xyliew25)
+
+If interested in collaboration, do contact us at [![](housematesorbital@gmail.com)] (housematesorbital@gmail.com)
+
+
+
+
+[website]: https://housematesorbital.herokuapp.com/
+[video]: https://drive.google.com/file/d/1Qq_O-xDxBkwFGBv5BVJdsCmHarahbMat/view?usp=sharing 
+[poster]: https://drive.google.com/file/d/1m8fIU8g8oMp3aGYJQCG0FrY0w2pxe9ol/view?usp=sharing
+[documentation]: https://docs.google.com/document/d/15YP8M2yLsO2hrO9KCudOdDSrc8GFp0T2Ubhxmt8GrdA/edit?usp=sharing
+[developer_guide]: https://docs.google.com/document/d/1EY_-xi3OXSbBJuggnQMHDQ9-PEKM4058wHgds8yHlEA/edit?usp=sharing
