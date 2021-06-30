@@ -183,7 +183,6 @@ const postReducer = (state = initialState, action) => {
       };
 
     case CANCEL_SEARCH_SUCCESS:
-      console.log('in reducer')
       return {
         ...state,
         postLoading: false,

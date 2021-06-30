@@ -172,7 +172,6 @@ const Profile = ({
               }
             >
               <Avatar className={classes.avatar} src={user.profile_pic} />
-              {console.log(user.profile_pic)}
             </Badge>
             <Dialog
               open={open}

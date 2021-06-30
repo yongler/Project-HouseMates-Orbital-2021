@@ -405,9 +405,7 @@ export const changeProfilePic = (picture) => async (dispatch) => {
         body = JSON.stringify({ profile_pic });
       })
       .then(async () => {
-        console.log("body", body);
         await axios.patch(`/auth/users/me/`, body, config);
-        console.log("profile_pic", profile_pic);
         dispatch(changeProfilePicSuccess(profile_pic));
       });
   } catch (err) {

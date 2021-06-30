@@ -250,8 +250,6 @@ const authReducer = (state = initialState, action) => {
       };
 
     case CHANGE_PROFILE_PIC_SUCCESS:
-      console.log("reducer");
-      console.log(payload);
       const updatedUser = { ...state.user };
       updatedUser.profile_pic = payload;
 

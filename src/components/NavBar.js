@@ -147,7 +147,6 @@ const NavBar = ({
   };
 
   const handleCancelSearch = () => {
-    console.log("hi");
     cancelSearch();
   };
 

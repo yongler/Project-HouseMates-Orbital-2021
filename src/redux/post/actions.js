@@ -206,7 +206,6 @@ export const searchPost = (formType, searchItem) => async (dispatch) => {
 };
 
 export const cancelSearch = () => async (dispatch) => {
-  console.log('in action')
   try {
     dispatch(cancelSearchSuccess());
   } catch (err) {
