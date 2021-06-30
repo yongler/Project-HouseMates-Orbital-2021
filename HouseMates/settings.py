@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "rest_framework_simplejwt",
     "corsheaders",
-    'storages',
+    # 'storages',
 ]
 
 MIDDLEWARE = [
@@ -168,7 +168,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/images/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "build", "static", "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "src", "static")
 
 #S3 BUCKETS CONFIG
 # AWS_ACCESS_KEY_ID = 'AKIA2VQMUMOWCECPYUOU '
