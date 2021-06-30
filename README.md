@@ -1,8 +1,8 @@
-### Project-HouseMates-Orbital-2021
+### Project HouseMates
 ---
-Welcome to HouseMates, a one stop solution for finding an accomodation partner as well as a warm place to stay! 
+Welcome to HouseMates, your one stop solution for finding an accomodation partner as well as a warm place to stay in Singapore. 
 
-![](src/static/housemates-logo-with-text-black)
+[![]](src/static/housemates-logo-with-text-black)
 
 ---
 
@@ -28,12 +28,14 @@ Welcome to HouseMates, a one stop solution for finding an accomodation partner a
 ### Things to note
 - settings.DEBUG = true during development and false during deployment
 
+---
+
 ### Contributors 
 
 [![](https://github.com/yongler.png?s=460)](https://github.com/yongler)
 [![](https://github.com/xyliew25.png?s=460)](https://github.com/xyliew25)
 
-If interested in collaboration, do contact us at ![](housematesorbital@gmail.com)
+If interested in collaboration, do contact us at [![]](housematesorbital@gmail.com)
 
 
 
