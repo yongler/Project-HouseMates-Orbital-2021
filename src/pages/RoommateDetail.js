@@ -100,10 +100,9 @@ const RoommateDetail = ({
               {/* Profile pic */}
               <Avatar
                 className={classes.avatar}
-                src={"/images/" + post.owner.profile_pic}
+                src={post.owner.profile_pic}
               />
               {console.log(post.owner.profile_pic)}
-              {console.log("/images/" + post.owner.profile_pic)}
 
               {/* Name */}
               <Typography variant="h5">
