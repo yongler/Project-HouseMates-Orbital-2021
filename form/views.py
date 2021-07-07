@@ -10,6 +10,9 @@ from .serializers import QuestionSerializer, PostSerializer, SelectedChoiceSeria
 from rest_framework import filters
 from .permissions import IsOwnerProfileOrReadOnly
 
+# pagination 
+from rest_framework.pagination import PageNumberPagination
+
 # import models 
 from .models import Question, Choice, Post, Selected_choice, Form
 
@@ -34,6 +37,7 @@ class PostView(viewsets.ModelViewSet):
 	serializer_class = PostSerializer
 	filter_backends = [filters.SearchFilter]
 	search_fields = ['owner__first_name', 'owner__last_name', 'owner__bio', 'selected_choices']
+	pagination_class = PageNumberPagination
 
 	def get_queryset(self):
 		queryset = Post.objects.all()
