@@ -21,82 +21,82 @@ import {
   SEARCH_POST_SUCCESS,
   SEARCH_POST_FAIL,
   CANCEL_SEARCH_SUCCESS,
-  CANCEL_SEARCH_FAIL
+  CANCEL_SEARCH_FAIL,
 } from "./types";
 
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 // Error messages
-const getPostListErrorMsg = "Unable to load posts"
-const getPostDetailErrorMsg = "Unable to load post"
-const getUserPostErrorMsg = "Unable to load user post"
-const createPostErrorMsg = "Unable to submit form"
-const editPostErrorMsg = "Unable to edit post"
-const deletePostErrorMsg = "Unable to delete post"
+const getPostListErrorMsg = "Unable to load posts";
+const getPostDetailErrorMsg = "Unable to load post";
+const getUserPostErrorMsg = "Unable to load user post";
+const createPostErrorMsg = "Unable to submit form";
+const editPostErrorMsg = "Unable to edit post";
+const deletePostErrorMsg = "Unable to delete post";
 
-const searchPostErrorMsg = "Unable to search post"
-const cancelSearchErrorMsg = " Unable to cancel search"
+const searchPostErrorMsg = "Unable to search post";
+const cancelSearchErrorMsg = " Unable to cancel search";
 
 // Async actions creators
-export const getPostList = formType =>
-  async dispatch => {
-    // Loading
-    dispatch(postLoading())
+export const getPostList = (formType) => async (dispatch) => {
+  // Loading
+  dispatch(postLoading());
 
-    // Draft request
-    const config = { headers: { 'Content-Type': 'application/json' } }
+  // Draft request
+  const config = { headers: { "Content-Type": "application/json" } };
 
-    // Get request
-    try {
-      const res = await axios.get(`/form/post-list/?form_type=${formType}`, config)
+  // Get request
+  try {
+    const res = await axios.get(
+      `/form/post-list/?form_type=${formType}`,
+      config
+    );
 
-      dispatch(getPostListSuccess(formType, res.data))
-    } catch (err) {
-      dispatch(getPostListFail(getPostListErrorMsg))
-    }
+    dispatch(getPostListSuccess(formType, res.data));
+  } catch (err) {
+    dispatch(getPostListFail(getPostListErrorMsg));
   }
+};
 
-export const getPostDetail = id => 
-  async dispatch => {
-    // Loading
-    dispatch(postLoading())
+export const getPostDetail = (id) => async (dispatch) => {
+  // Loading
+  dispatch(postLoading());
 
-    // Draft request
-    const config = { headers: { 'Content-Type': 'application/json' } }
+  // Draft request
+  const config = { headers: { "Content-Type": "application/json" } };
 
-    // Get request
-    try {
-      const res = await axios.get(`/form/post-list/${id}/`, config)
+  // Get request
+  try {
+    const res = await axios.get(`/form/post-list/${id}/`, config);
 
-      dispatch(getPostDetailSuccess(res.data))
-    } catch (err) {
-      dispatch(getPostDetailFail(getPostDetailErrorMsg))
-    }
+    dispatch(getPostDetailSuccess(res.data));
+  } catch (err) {
+    dispatch(getPostDetailFail(getPostDetailErrorMsg));
   }
+};
 
-export const getUserPost = owner => 
-  async dispatch => {
-    // Loading
-    dispatch(postLoading())
+export const getUserPost = (owner) => async (dispatch) => {
+  // Loading
+  dispatch(postLoading());
 
-    // Draft request
-    const config = { headers: { 'Content-Type': 'application/json' } }
+  // Draft request
+  const config = { headers: { "Content-Type": "application/json" } };
 
-    // Get request
-    try {
-      const res = await axios.get(`/form/post-list/?owner=${owner}`, config)
+  // Get request
+  try {
+    const res = await axios.get(`/form/post-list/?owner=${owner}`, config);
 
-      dispatch(getUserPostSuccess(res.data))
-    } catch (err) {
-      dispatch(getUserPostFail(getUserPostErrorMsg))
-    }
+    dispatch(getUserPostSuccess(res.data));
+  } catch (err) {
+    dispatch(getUserPostFail(getUserPostErrorMsg));
   }
+};
 
-export const createPost = (post_form_type, selected_choices, owner) =>
-  async dispatch => {
+export const createPost =
+  (post_form_type, selected_choices, owner) => async (dispatch) => {
     // Loading
-    dispatch(postLoading())
+    dispatch(postLoading());
 
     // Get access token from local storage
     const token = localStorage.getItem("access");
@@ -112,11 +112,7 @@ export const createPost = (post_form_type, selected_choices, owner) =>
 
     // Post request
     try {
-      axios.post(
-        `/form/post-list/`,
-        body,
-        config
-      );
+      axios.post(`/form/post-list/`, body, config);
 
       dispatch(createPostSuccess());
     } catch (err) {
@@ -124,10 +120,11 @@ export const createPost = (post_form_type, selected_choices, owner) =>
     }
   };
 
-export const editPost = (id, post_form_type, selected_choices, owner, score_list, total_score) =>
-  async dispatch => {
+export const editPost =
+  (id, post_form_type, selected_choices, owner, score_list, total_score) =>
+  async (dispatch) => {
     // Loading
-    dispatch(postLoading())
+    dispatch(postLoading());
 
     // Get access token from local storage
     const token = localStorage.getItem("access");
@@ -135,19 +132,21 @@ export const editPost = (id, post_form_type, selected_choices, owner, score_list
     // Draft request
     const config = {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `JWT ${token}`,
-      }
-    }
-    const body = JSON.stringify({ post_form_type, selected_choices, owner, score_list, total_score })
+        "Content-Type": "application/json",
+        Authorization: `JWT ${token}`,
+      },
+    };
+    const body = JSON.stringify({
+      post_form_type,
+      selected_choices,
+      owner,
+      score_list,
+      total_score,
+    });
 
     // Put request
     try {
-      axios.put(
-        `/form/post-list/${id}/`,
-        body,
-        config
-      );
+      axios.put(`/form/post-list/${id}/`, body, config);
 
       dispatch(editPostSuccess());
     } catch (err) {
@@ -171,10 +170,7 @@ export const deletePost = (id) => async (dispatch) => {
 
   // Post request
   try {
-    axios.delete(
-      `/form/post-list/${id}/`,
-      config
-    );
+    axios.delete(`/form/post-list/${id}/`, config);
 
     dispatch(deletePostSuccess());
   } catch (err) {
@@ -213,11 +209,10 @@ export const cancelSearch = () => async (dispatch) => {
   }
 };
 
-
 // Action Creators
-export const getPostListSuccess = (formType, posts) => ({
+export const getPostListSuccess = (formType, resdata) => ({
   type: GET_POST_LIST_SUCCESS,
-  payload: { formType, posts },
+  payload: { formType, resdata },
 });
 export const getPostListFail = (postErrorMsg) => ({
   type: GET_POST_LIST_FAIL,
@@ -233,17 +228,17 @@ export const getPostDetailFail = (postErrorMsg) => ({
   payload: postErrorMsg,
 });
 
-export const getUserPostSuccess = userPost => ({
+export const getUserPostSuccess = (userPost) => ({
   type: GET_USER_POST_SUCCESS,
   payload: userPost,
-})
-export const getUserPostFail = postErrorMsg => ({
+});
+export const getUserPostFail = (postErrorMsg) => ({
   type: GET_USER_POST_FAIL,
   payload: postErrorMsg,
-})
+});
 
-export const createPostSuccess = () => ({ type: CREATE_POST_SUCCESS })
-export const createPostFail = postErrorMsg => ({
+export const createPostSuccess = () => ({ type: CREATE_POST_SUCCESS });
+export const createPostFail = (postErrorMsg) => ({
   type: CREATE_POST_FAIL,
   payload: postErrorMsg,
 });
@@ -287,4 +282,3 @@ export const cancelSearchFail = (cancelSearchErrorMsg) => ({
   type: CANCEL_SEARCH_FAIL,
   payload: cancelSearchErrorMsg,
 });
-

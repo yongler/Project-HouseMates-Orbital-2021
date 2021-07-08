@@ -4,7 +4,6 @@ import { Typography } from '@material-ui/core'
 // Footer consists of copyright.
 const Footer = () => {
   return (
-    // Copyright
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       Team Eclipse

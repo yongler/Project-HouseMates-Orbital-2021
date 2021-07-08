@@ -100,7 +100,6 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
             key={category.text}
             button
             onClick={() => {
-              // setHoverOpen(true)
               history.push(category.path)
             }}
             className={location.pathname === category.path ? classes.active : null}

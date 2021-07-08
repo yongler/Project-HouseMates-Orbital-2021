@@ -29,7 +29,7 @@ const initialState = {
   postsType: [],
   post: null,
   userPost: [],
-  postErrorMsg: '',
+  postErrorMsg: "",
   createPostSuccess: false,
   editPostSuccess: false,
   deletePostSuccess: false,
@@ -45,7 +45,10 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         postLoading: false,
-        posts: payload.posts,
+        posts: payload.resdata.results,
+        count: payload.resdata.count,
+        next: payload.resdata.next,
+        previous: payload.resdata.previous,
         postsType: payload.formType,
       };
 
@@ -69,14 +72,14 @@ const postReducer = (state = initialState, action) => {
         postLoading: false,
         post: null,
         postErrorMsg: payload,
-      }
+      };
 
     case GET_USER_POST_SUCCESS:
       return {
         ...state,
         postLoading: false,
-        userPost: payload,
-      }
+        userPost: payload.results,
+      };
 
     case GET_USER_POST_FAIL:
       return {
