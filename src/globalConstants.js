@@ -4,6 +4,8 @@ export const PROFILE_FORM = 3
 
 export const SINGLE_CHOICE = 'SingleChoice'
 export const MULTIPLE_CHOICE = 'MultipleChoice'
+export const TEXT = 'Text'
+export const SELECT = 'Select'
 export const PRIORITY = 'Priority'
 
 export const SELF = 'Self'

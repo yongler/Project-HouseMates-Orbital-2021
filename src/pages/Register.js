@@ -102,6 +102,8 @@ const Register = ({ isAuthenticated, authLoading, registrationSuccess, register 
     if (firstName && lastName && email && password && confirmPassword && !samePasswordError && account) {
       register(firstName, lastName, email, password, confirmPassword)
     }
+
+    window.scroll(0, 0) 
   }
 
   if (isAuthenticated) { return <Redirect to="/" /> }

@@ -160,10 +160,16 @@ const authReducer = (state = initialState, action) => {
       };
 
     case DELETE_ACCOUNT_SUCCESS:
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
       return {
         ...state,
         deleteAccountSuccess: true,
         authLoading: false,
+        access: null,
+        refresh: null,
+        isAuthenticated: false,
+        user: null,
       };
 
     case DELETE_ACCOUNT_FAIL:
