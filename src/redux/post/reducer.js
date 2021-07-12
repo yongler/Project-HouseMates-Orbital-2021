@@ -3,8 +3,12 @@ import {
   GET_POST_LIST_FAIL,
   GET_POST_DETAIL_SUCCESS,
   GET_POST_DETAIL_FAIL,
-  GET_USER_POST_SUCCESS,
-  GET_USER_POST_FAIL,
+  GET_USER_POSTS_SUCCESS,
+  GET_USER_POSTS_FAIL,
+  GET_USER_ROOMMATE_POSTS_SUCCESS,
+  GET_USER_ROOMMATE_POSTS_FAIL,
+  GET_USER_HOUSING_POSTS_SUCCESS,
+  GET_USER_HOUSING_POSTS_FAIL,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAIL,
   EDIT_POST_SUCCESS,
@@ -28,7 +32,12 @@ const initialState = {
   posts: [],
   postsType: [],
   post: null,
-  userPost: [],
+  userPosts: [],
+  userRoommatePosts: [],
+  userHousingPosts: [],
+  count: 0,
+  next: null,
+  previous: null,
   postErrorMsg: "",
   createPostSuccess: false,
   editPostSuccess: false,
@@ -74,18 +83,48 @@ const postReducer = (state = initialState, action) => {
         postErrorMsg: payload,
       };
 
-    case GET_USER_POST_SUCCESS:
+    case GET_USER_POSTS_SUCCESS:
       return {
         ...state,
         postLoading: false,
-        userPost: payload.results,
+        userPosts: payload.results,
       };
 
-    case GET_USER_POST_FAIL:
+    case GET_USER_POSTS_FAIL:
       return {
         ...state,
         postLoading: false,
-        userPost: null,
+        userPosts: null,
+        postErrorMsg: payload,
+      };
+
+    case GET_USER_ROOMMATE_POSTS_SUCCESS:
+      return {
+        ...state,
+        postLoading: false,
+        userRoommatePosts: payload.results,
+      };
+
+    case GET_USER_ROOMMATE_POSTS_FAIL:
+      return {
+        ...state,
+        postLoading: false,
+        userRoommatePosts: null,
+        postErrorMsg: payload,
+      };
+
+    case GET_USER_HOUSING_POSTS_SUCCESS:
+      return {
+        ...state,
+        postLoading: false,
+        userHousingPosts: payload.results,
+      };
+
+    case GET_USER_HOUSING_POSTS_FAIL:
+      return {
+        ...state,
+        postLoading: false,
+        userHousingPosts: null,
         postErrorMsg: payload,
       };
 

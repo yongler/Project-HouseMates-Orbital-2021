@@ -1,11 +1,16 @@
 import axios from "axios";
+import { HOUSING_FORM, ROOMMATE_FORM } from "../../globalConstants";
 import {
   GET_POST_LIST_SUCCESS,
   GET_POST_LIST_FAIL,
   GET_POST_DETAIL_SUCCESS,
   GET_POST_DETAIL_FAIL,
-  GET_USER_POST_SUCCESS,
-  GET_USER_POST_FAIL,
+  GET_USER_POSTS_SUCCESS,
+  GET_USER_POSTS_FAIL,
+  GET_USER_ROOMMATE_POSTS_SUCCESS,
+  GET_USER_ROOMMATE_POSTS_FAIL,
+  GET_USER_HOUSING_POSTS_SUCCESS,
+  GET_USER_HOUSING_POSTS_FAIL,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAIL,
   EDIT_POST_SUCCESS,
@@ -30,7 +35,9 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 // Error messages
 const getPostListErrorMsg = "Unable to load posts";
 const getPostDetailErrorMsg = "Unable to load post";
-const getUserPostErrorMsg = "Unable to load user post";
+const getUserPostsErrorMsg = "Unable to load user posts";
+const getUserRoommatePostsErrorMsg = "Unable to load user roommate posts";
+const getUserHousingPostsErrorMsg = "Unable to load user housing posts";
 const createPostErrorMsg = "Unable to submit form";
 const editPostErrorMsg = "Unable to edit post";
 const deletePostErrorMsg = "Unable to delete post";
@@ -40,7 +47,7 @@ const cancelSearchErrorMsg = " Unable to cancel search";
 const changePicFailErrorMsg = " Unable to change pic";
 
 // Async actions creators
-export const getPostList = (formType) => async (dispatch) => {
+export const getPostList = (formType, page) => async (dispatch) => {
   // Loading
   dispatch(postLoading());
 
@@ -49,10 +56,16 @@ export const getPostList = (formType) => async (dispatch) => {
 
   // Get request
   try {
-    const res = await axios.get(
-      `/form/post-list/?form_type=${formType}`,
-      config
-    );
+    var res
+    if (formType === undefined && page == undefined) {
+      res = await axios.get(`/form/post-list/`, config);
+    } else if (formType !== undefined && page === undefined) {
+      res = await axios.get(`/form/post-list/?form_type=${formType}`, config);
+    } else if (formType === undefined && page !== undefined) {
+      res = await axios.get(`/form/post-list/?page=${page}`, config);
+    } else {
+      res = await axios.get(`/form/post-list/?form_type=${formType}&page=${page}`, config)
+    }
 
     dispatch(getPostListSuccess(formType, res.data));
   } catch (err) {
@@ -77,20 +90,47 @@ export const getPostDetail = (id) => async (dispatch) => {
   }
 };
 
-export const getUserPost = (owner) => async (dispatch) => {
-  // Loading
-  dispatch(postLoading());
+export const getUserPost = (owner) =>
+  async (dispatch) => {
+    // Draft request
+    const config = { headers: { "Content-Type": "application/json" } };
 
+    // Get request
+    try {
+      const res = await axios.get(`/form/post-list/?owner=${owner}`, config);
+
+      dispatch(getUserPostsSuccess(res.data));
+    } catch (err) {
+      dispatch(getUserPostsFail(getUserPostsErrorMsg));
+    }
+  };
+
+export const getUserRoommatePosts = (owner) =>
+  async (dispatch) => {
+    // Draft request
+    const config = { headers: { "Content-Type": "application/json" } };
+
+    // Get request
+    try {
+      const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${ROOMMATE_FORM}`, config);
+
+      dispatch(getUserRoommatePostsSuccess(res.data));
+    } catch (err) {
+      dispatch(getUserRoommatePostsFail(getUserRoommatePostsErrorMsg));
+    }
+  };
+
+export const getUserHousingPosts = (owner) => async (dispatch) => {
   // Draft request
   const config = { headers: { "Content-Type": "application/json" } };
 
   // Get request
   try {
-    const res = await axios.get(`/form/post-list/?owner=${owner}`, config);
+    const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${HOUSING_FORM}`, config);
 
-    dispatch(getUserPostSuccess(res.data));
+    dispatch(getUserHousingPostsSuccess(res.data));
   } catch (err) {
-    dispatch(getUserPostFail(getUserPostErrorMsg));
+    dispatch(getUserHousingPostsFail(getUserHousingPostsErrorMsg));
   }
 };
 
@@ -113,7 +153,7 @@ export const createPost =
 
     // Post request
     try {
-      axios.post(`/form/post-list/`, body, config);
+      await axios.post(`/form/post-list/`, body, config);
 
       dispatch(createPostSuccess());
     } catch (err) {
@@ -121,8 +161,7 @@ export const createPost =
     }
   };
 
-export const editPost =
-  (id, post_form_type, selected_choices, owner, score_list, total_score) =>
+export const editPost = (id, post_form_type, selected_choices, owner, score_list, total_score) =>
   async (dispatch) => {
     // Loading
     dispatch(postLoading());
@@ -134,20 +173,14 @@ export const editPost =
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `JWT ${token}`,
+        "Authorization": `JWT ${token}`,
       },
     };
-    const body = JSON.stringify({
-      post_form_type,
-      selected_choices,
-      owner,
-      score_list,
-      total_score,
-    });
+    const body = JSON.stringify({ post_form_type, selected_choices, owner, score_list, total_score });
 
     // Put request
     try {
-      axios.put(`/form/post-list/${id}/`, body, config);
+      await axios.put(`/form/post-list/${id}/`, body, config);
 
       dispatch(editPostSuccess());
     } catch (err) {
@@ -155,29 +188,31 @@ export const editPost =
     }
   };
 
-export const deletePost = (id) => async (dispatch) => {
-  dispatch(postLoading());
+export const deletePost = (id) =>
+  async (dispatch) => {
+    // Loading
+    dispatch(postLoading());
 
-  // Get access token from local storage
-  const token = localStorage.getItem("access");
+    // Get access token from local storage
+    const token = localStorage.getItem("access");
 
-  // Draft request
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `JWT ${token}`,
-    },
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `JWT ${token}`,
+      },
+    };
+
+    // Post request
+    try {
+      await axios.delete(`/form/post-list/${id}/`, config);
+
+      dispatch(deletePostSuccess());
+    } catch (err) {
+      dispatch(deletePostFail(deletePostErrorMsg));
+    }
   };
-
-  // Post request
-  try {
-    axios.delete(`/form/post-list/${id}/`, config);
-
-    dispatch(deletePostSuccess());
-  } catch (err) {
-    dispatch(deletePostFail(deletePostErrorMsg));
-  }
-};
 
 export const searchPost = (formType, searchItem) => async (dispatch) => {
   dispatch(postLoading());
@@ -267,12 +302,30 @@ export const getPostDetailFail = (postErrorMsg) => ({
   payload: postErrorMsg,
 });
 
-export const getUserPostSuccess = (userPost) => ({
-  type: GET_USER_POST_SUCCESS,
-  payload: userPost,
+export const getUserPostsSuccess = (userPosts) => ({
+  type: GET_USER_POSTS_SUCCESS,
+  payload: userPosts,
 });
-export const getUserPostFail = (postErrorMsg) => ({
-  type: GET_USER_POST_FAIL,
+export const getUserPostsFail = (postErrorMsg) => ({
+  type: GET_USER_POSTS_FAIL,
+  payload: postErrorMsg,
+});
+
+export const getUserRoommatePostsSuccess = (userRoommatePosts) => ({
+  type: GET_USER_ROOMMATE_POSTS_SUCCESS,
+  payload: userRoommatePosts,
+});
+export const getUserRoommatePostsFail = (postErrorMsg) => ({
+  type: GET_USER_ROOMMATE_POSTS_FAIL,
+  payload: postErrorMsg,
+});
+
+export const getUserHousingPostsSuccess = (userHousingPosts) => ({
+  type: GET_USER_HOUSING_POSTS_SUCCESS,
+  payload: userHousingPosts,
+});
+export const getUserHousingPostsFail = (postErrorMsg) => ({
+  type: GET_USER_HOUSING_POSTS_FAIL,
   payload: postErrorMsg,
 });
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import S3FileUpload from "react-s3";
 import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
@@ -33,8 +34,6 @@ import {
   EDIT_BIO_FAIL,
   SET_PREV_PATH,
 } from "./types";
-
-import S3FileUpload from "react-s3";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -82,9 +81,10 @@ const bioCannotBeEmptyErrorMsg = "Bio cannot be empty";
 // Register
 export const register =
   (first_name, last_name, email, password, re_password) => async (dispatch) => {
+    // Loading
     dispatch(authLoading());
 
-    // Request
+    // Draft request
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +101,6 @@ export const register =
     // Post request
     try {
       await axios.post(`/auth/users/`, body, config);
-
       dispatch(registerSuccess());
     } catch (err) {
       if (err.response.data.password) {
@@ -116,9 +115,10 @@ export const register =
 
 // Activate
 export const activate = (uid, token) => async (dispatch) => {
+  // Loading
   dispatch(authLoading());
 
-  // Request
+  // Draft request
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -129,7 +129,6 @@ export const activate = (uid, token) => async (dispatch) => {
   // Post request
   try {
     await axios.post(`/auth/users/activation/`, body, config);
-
     dispatch(activateSuccess());
   } catch (err) {
     if (err.response.data.uid || err.response.data.token) {
@@ -142,9 +141,10 @@ export const activate = (uid, token) => async (dispatch) => {
 
 // Resend activation email
 export const resendActivationEmail = (email) => async (dispatch) => {
+  // Loading
   dispatch(authLoading());
 
-  // Request
+  // Draft request
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -155,7 +155,6 @@ export const resendActivationEmail = (email) => async (dispatch) => {
   // Post request
   try {
     await axios.post(`/auth/users/resend_activation/`, body, config);
-
     dispatch(resendActivationEmailSuccess());
   } catch (err) {
     dispatch(
@@ -166,13 +165,14 @@ export const resendActivationEmail = (email) => async (dispatch) => {
 
 // Load user
 export const loadUser = () => async (dispatch) => {
+  // Loading
   dispatch(authLoading());
 
   // Get access token from local storage
   const token = localStorage.getItem("access");
 
   if (token) {
-    // Request
+    // Draft request
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -184,7 +184,6 @@ export const loadUser = () => async (dispatch) => {
     // Get request
     try {
       const res = await axios.get(`/auth/users/me/`, config);
-
       dispatch(loadUserSuccess(res.data));
     } catch (err) {
       dispatch(loadUserFail());
@@ -200,7 +199,7 @@ export const checkAuthentication = () => async (dispatch) => {
   const token = localStorage.getItem("access");
 
   if (token) {
-    // Request
+    // Draft request
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -212,7 +211,6 @@ export const checkAuthentication = () => async (dispatch) => {
     // Post request
     try {
       const res = await axios.post(`/auth/jwt/verify/`, body, config);
-
       if (res.data.code !== "token_not_valid") {
         dispatch(checkAuthenticationSuccess());
         dispatch(loadUser());
@@ -229,9 +227,10 @@ export const checkAuthentication = () => async (dispatch) => {
 
 // Login
 export const login = (email, password) => async (dispatch) => {
+  // Loading
   dispatch(authLoading());
 
-  // Request
+  // Draft request
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -242,7 +241,6 @@ export const login = (email, password) => async (dispatch) => {
   // Post request
   try {
     const res = await axios.post(`/auth/jwt/create/`, body, config);
-
     dispatch(loginSuccess(res.data));
     dispatch(checkAuthentication());
   } catch (err) {
@@ -252,39 +250,44 @@ export const login = (email, password) => async (dispatch) => {
 
 // Delete account
 export const deleteAccount = (current_password) => async (dispatch) => {
+  // Loading
   dispatch(authLoading());
 
   // Get access token from local storage
   const token = localStorage.getItem("access");
 
-  const data = JSON.stringify({ current_password });
-
-  // Delete request
-  try {
-    await axios.delete(`/auth/users/me/`, {
-      data,
+  if (token) {
+    // Draft request
+    const request = {
+      data: JSON.stringify({ current_password }),
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${token}`,
       },
-    });
+    };
 
-    dispatch(logout());
-    dispatch(deleteAccountSuccess());
-  } catch (err) {
-    if (err.response.data.current_password) {
-      dispatch(deleteAccountFail(incorrectPasswordErrorMsg));
-    } else {
-      dispatch(deleteAccountFail(unableToDeleteAccountErrorMsg));
+    // Delete request
+    try {
+      await axios.delete(`/auth/users/me/`, request);
+      dispatch(deleteAccountSuccess());
+    } catch (err) {
+      if (err.response.data.current_password) {
+        dispatch(deleteAccountFail(incorrectPasswordErrorMsg));
+      } else {
+        dispatch(deleteAccountFail(unableToDeleteAccountErrorMsg));
+      }
     }
+  } else {
+    dispatch(deleteAccountFail(unableToDeleteAccountErrorMsg));
   }
 };
 
 // Reset password
 export const resetPassword = (email) => async (dispatch) => {
+  // Loading
   dispatch(authLoading());
 
-  // Request
+  // Draft request
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -295,7 +298,6 @@ export const resetPassword = (email) => async (dispatch) => {
   // Post request
   try {
     await axios.post(`/auth/users/reset_password/`, body, config);
-
     dispatch(resetPasswordSuccess());
   } catch (err) {
     if (err.response.data) {
@@ -309,9 +311,10 @@ export const resetPassword = (email) => async (dispatch) => {
 // Reset password confirm
 export const resetPasswordConfirm =
   (uid, token, new_password, re_new_password) => async (dispatch) => {
+    // Loading
     dispatch(authLoading());
 
-    // Request
+    // Draft request
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -322,7 +325,6 @@ export const resetPasswordConfirm =
     // Post request
     try {
       await axios.post(`/auth/users/reset_password_confirm/`, body, config);
-
       dispatch(resetPasswordConfirmSuccess());
     } catch (err) {
       if (err.response.data.uid || err.response.data.token) {
@@ -338,11 +340,13 @@ export const resetPasswordConfirm =
 // Change password
 export const changePassword =
   (current_password, new_password, re_new_password) => async (dispatch) => {
+    // Loading
     dispatch(authLoading());
 
+    // Get access token from local storage
     const token = localStorage.getItem("access");
 
-    // Request
+    // Draft request
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -358,7 +362,6 @@ export const changePassword =
     // Post request
     try {
       await axios.post(`/auth/users/set_password/`, body, config);
-
       dispatch(changePasswordSuccess());
     } catch (err) {
       if (err.response.data.current_password) {
@@ -371,10 +374,54 @@ export const changePassword =
     }
   };
 
+// // Change Profile Picture
+// export const changeProfilePic = (picture) =>
+//   async (dispatch) => {
+//     // Loading
+//     dispatch(profileLoading())
+
+//     // Get access token from local storage
+//     const token = localStorage.getItem("access")
+
+//     const s3config = {
+//       bucketName: "housematesorbital",
+//       dirName: "images",
+//       region: "us-east-2",
+//       accessKeyId: "AKIA2VQMUMOWCECPYUOU",
+//       secretAccessKey: "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",
+//     }
+
+//     // Draft request
+//     const config = {
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": `JWT ${token}`,
+//       },
+//     }
+
+//     // Patch request
+//     let body
+//     let profile_pic
+//     try {
+//       S3FileUpload.uploadFile(picture, s3config)
+//         .then((data) => {
+//           profile_pic = data.location
+//           body = JSON.stringify({ profile_pic })
+//         })
+//         .then(async () => {
+//           await axios.patch(`/auth/users/me/`, body, config)
+//           dispatch(changeProfilePicSuccess(profile_pic))
+//         })
+//     } catch (err) {
+//       dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg))
+//     }
+//   }
+
+
 // Change Profile Picture
 export const changeProfilePic = (picture) => async (dispatch) => {
   // Loading
-  dispatch(profileLoading());
+  // dispatch(profileLoading());
 
   // Get access token from local storage
   const token = localStorage.getItem("access");
@@ -398,16 +445,22 @@ export const changeProfilePic = (picture) => async (dispatch) => {
   // Patch request
   let body;
   let profile_pic;
+
   try {
-    S3FileUpload.uploadFile(picture, s3config)
-      .then((data) => {
-        profile_pic = data.location;
-        body = JSON.stringify({ profile_pic });
-      })
-      .then(async () => {
-        await axios.patch(`/auth/users/me/`, body, config);
-        dispatch(changeProfilePicSuccess(profile_pic));
-      });
+    const listing = [];
+
+    new Promise(() => {
+      for (var i = 0; i < picture.length; i++) {
+        S3FileUpload.uploadFile(picture[i], s3config).then((data) => {
+          console.log("hello");
+          listing.push(data.location);
+          console.log(listing);
+        });
+      }
+    }).then(() => {
+      console.log("yo");
+      console.log(listing);
+    });
   } catch (err) {
     dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg));
   }
@@ -433,7 +486,6 @@ export const editBio = (first_name, last_name, bio) => async (dispatch) => {
   // Put request
   try {
     await axios.put(`/auth/users/me/`, body, config);
-
     dispatch(editBioSuccess());
   } catch (err) {
     if (err.response.data.bio) {

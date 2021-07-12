@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
-import Form from '../components/Form'
 import { getPostDetail } from '../redux/post/actions'
-import { ROOMMATE_FORM } from '../globalConstants'
+import HousingForm from './HousingForm'
 
-const EditForm = ({ post, getPostDetail }) => {
+const EditHousingForm = ({ post, getPostDetail }) => {
   // Hooks
   const { id } = useParams()
   const [initialFormFields, setInitialFormFields] = useState({})
@@ -24,8 +23,7 @@ const EditForm = ({ post, getPostDetail }) => {
 
   return (
     <div>
-      <Form
-        formType={ROOMMATE_FORM}
+      <HousingForm
         initialFormFields={initialFormFields}
         id={id}
       />
@@ -41,4 +39,4 @@ const mapDispatchToProps = {
   getPostDetail,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditForm)
+export default connect(mapStateToProps, mapDispatchToProps)(EditHousingForm)

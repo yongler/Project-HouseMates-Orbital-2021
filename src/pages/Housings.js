@@ -1,58 +1,110 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import Posts from '../components/Posts'
+import { connect } from 'react-redux'
+import { makeStyles } from '@material-ui/core'
+import { Box, Container, Fab, Grid, Tooltip, Typography } from '@material-ui/core'
+import Pagination from '@material-ui/lab/Pagination'
+import AddIcon from '@material-ui/icons/Add'
 import HousingCard from '../components/HousingCard'
-import { HOUSING_FORM } from '../globalConstants'
+import { getPostList, getUserHousingPosts } from '../redux/post/actions'
+import { HOUSING_FORM, PAGINATION } from '../globalConstants'
 
-// Housings consists of list of Roommate and post button.
-const Housings = () => {
-  // Data (hard coded for now)
-  const posts = [
-    {
-      id: 1,
-      pic: "housing.jpg",
-      name: "Atas Residence",
-      specs: ["6 guests", "2 bedrooms", "5 beds", "2 baths", "Air conditioning", "Free parking", "Wifi", "Pool"],
+// Posts consists of list of Roommate and post button.
+const Housings = ({
+  user, userHousingPosts, posts, postsType,
+  getUserHousingPosts, postLoading, getPostList, searchedPost, count
+}) => {
+  // Styling
+  const useStyles = makeStyles(theme => ({
+    tooltip: {
+      position: 'fixed',
+      bottom: theme.spacing(2),
+      right: theme.spacing(3),
     },
-    {
-      id: 2,
-      pic: "housing.jpg",
-      name: "Atas Residence",
-      specs: ["6 guests", "2 bedrooms", "5 beds", "2 baths", "Air conditioning", "Free parking", "Wifi", "Pool"],
+    grid: {
+      display: 'flex',
+      flexDirection: 'column',
     },
-    {
-      id: 3,
-      pic: "housing.jpg",
-      name: "Atas Residence",
-      specs: ["6 guests", "2 bedrooms", "5 beds", "2 baths", "Air conditioning", "Free parking", "Wifi", "Pool"],
-    },
-    {
-      id: 4,
-      pic: "housing.jpg",
-      name: "Atas Residence",
-      specs: ["6 guests", "2 bedrooms", "5 beds", "2 baths", "Air conditioning", "Free parking", "Wifi", "Pool"],
-    },
-  ]
+  }))
 
   // Hooks
+  const classes = useStyles()
   const history = useHistory()
+
+  // States
+  const [page, setPage] = useState(1)
 
   // Handlers
   const handlePost = () => { history.push('/housing-form') }
+  const handlePageChange = (event, value) => {
+    setPage(value)
+    getPostList(HOUSING_FORM, value)
+    window.scroll(0, 0)
+  }
+
+  // componentDidMount
+  useEffect(() => { getPostList(HOUSING_FORM) }, [])
+  useEffect(() => user ? getUserHousingPosts(user.id) : null, [user])
+
+  const postToRender = searchedPost ? searchedPost : posts
 
   return (
     <div>
-      <Posts
-        postType={HOUSING_FORM}
-        handlePost={handlePost}
-        PostComponent={HousingCard}
-        xs={12}
-        md={12}
-        lg={12}
-        Posts={posts}
-      />
+      {postsType === HOUSING_FORM && postToRender.length !== 0
+        ?
+        <>
+          {/* List of posts */}
+          <Container>
+            <Grid container spacing={2}>
+              {postToRender.map(post => (
+                <Grid item xs={12} key={post.id} className={classes.grid}>
+                  <HousingCard post={post} />
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </>
+        :
+        <>
+          {!postLoading &&
+            <div style={{ textAlign: 'center' }}>
+              {/* No post */}
+              <Typography variant="subtitle1">No post.</Typography>
+            </div>}
+        </>
+      }
+
+      {/* Pagination */}
+      {postToRender.length !== 0
+        ?
+        <Box style={{ width: "100%", display: 'flex', justifyContent: 'center', marginTop: 60 }}>
+          <Pagination color="primary" count={Math.ceil(count / PAGINATION)} page={page} onChange={handlePageChange} />
+        </Box>
+        :
+        null}
+
+      {/* Post button */}
+      {user && userHousingPosts?.length <= 10 &&
+        <Tooltip title="" onClick={handlePost}>
+          <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
+        </Tooltip>}
     </div>
   )
 }
 
-export default Housings
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  userHousingPosts: state.post.userHousingPosts,
+  posts: state.post.posts,
+  postsType: state.post.postsType,
+  postLoading: state.post.postLoading,
+  searchedPost: state.post.searchedPost,
+  count: state.post.count,
+})
+
+const mapDispatchToProps = {
+  getPostList,
+  getUserHousingPosts,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Housings)

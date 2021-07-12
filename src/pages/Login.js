@@ -85,6 +85,8 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
     if (email && password && account) {
       login(email, password);
     }
+
+    window.scroll(0, 0) 
   };
 
   if (isAuthenticated) {
