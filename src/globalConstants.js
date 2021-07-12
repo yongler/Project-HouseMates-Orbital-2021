@@ -16,3 +16,5 @@ export const A_LITTLE_IMPORTANT = 'A little important'
 export const SOMEWHAT_IMPORTANT = 'Somewhat important'
 export const VERY_IMPORTANT = 'Very important'
 export const MANDATORY = 'Mandatory'
+
+export const PAGINATION = 18

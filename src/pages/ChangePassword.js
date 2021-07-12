@@ -91,6 +91,8 @@ const ChangePassword = ({ authLoading, changePasswordSuccess, changePassword, re
     if (currentPassword && newPassword && confirmNewPassword && !samePasswordError) {
       changePassword(currentPassword, newPassword, confirmNewPassword)
     }
+
+    window.scroll(0, 0)
   }
   const handleRedirect = e => { 
     e.preventDefault()

@@ -17,7 +17,6 @@ import ResetPassword from './pages/ResetPassword'
 import ResetPasswordConfirm from './pages/ResetPasswordConfirm'
 import RoommateDetail from './pages/RoommateDetail'
 import RoommateForm from './pages/RoommateForm'
-import ProfileForm from './pages/ProfileForm'
 import HousingForm from './pages/HousingForm'
 import Roommates from './pages/Roommates'
 import LayoutTwo from './layout/LayoutTwo'
@@ -25,8 +24,10 @@ import LayoutOne from './layout/LayoutOne'
 import RouteWrapper from './layout/RouteWrapper'
 import Layout from './hocs/Layout'
 import store from './redux/store'
-import EditForm from './pages/EditForm'
 import Matchmaking from './components/Matchmaking'
+import EditHousingForm from './pages/EditHousingForm'
+import HousingDetail from './pages/HousingDetail'
+import EditRoommateForm from './pages/EditRoommateForm'
 
 const App = () => {
   // Styling
@@ -59,13 +60,14 @@ const App = () => {
               {/* Routes with LayoutTwo */}
               <RouteWrapper exact path="/" component={Home} layout={LayoutTwo} />
               <RouteWrapper exact path="/dashboard" component={Dashboard} layout={LayoutTwo} />
-              <RouteWrapper path="/housings" component={Housings} layout={LayoutTwo} />
+              <RouteWrapper exact path="/housings" component={Housings} layout={LayoutTwo} />
+              <RouteWrapper path="/housings/:id" component={HousingDetail} layout={LayoutTwo} />
               <RouteWrapper exact path="/roommates" component={Roommates} layout={LayoutTwo} />
               <RouteWrapper path="/roommates/:id" component={RoommateDetail} layout={LayoutTwo} />
               <RouteWrapper path="/roommate-form" component={RoommateForm} layout={LayoutTwo} />
-              <RouteWrapper path="/edit-profile" component={ProfileForm} layout={LayoutTwo} />
               <RouteWrapper path="/housing-form" component={HousingForm} layout={LayoutTwo} />
-              <RouteWrapper path="/edit-form/:id" component={EditForm} layout={LayoutTwo} />
+              <RouteWrapper path="/edit-roommate-form/:id" component={EditRoommateForm} layout={LayoutTwo} />
+              <RouteWrapper path="/edit-housing-form/:id" component={EditHousingForm} layout={LayoutTwo} />
               <RouteWrapper path="/profile" component={Profile} layout={LayoutTwo} />
               <RouteWrapper path="/matchmaking" component={Matchmaking} layout={LayoutTwo} />
               <RouteWrapper path="*" component={Home} layout={LayoutTwo} />

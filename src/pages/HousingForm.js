@@ -17,9 +17,7 @@ const TextQuestion = ({ question, formFields, handleChange, currentCategory }) =
 
     {/* Input */}
     <TextField
-      // autoFocus
       variant="outlined"
-      margin="normal"
       fullWidth
       name={question.id}
       value={formFields[currentCategory]?.[question.id]?.choice}
@@ -30,13 +28,11 @@ const TextQuestion = ({ question, formFields, handleChange, currentCategory }) =
 
 const HousingForm = ({
   user,
-  getQuestions,
-  housingQuestions, housingCategories,
-  createPostSuccess, editPostSuccess,
-  createPost, resetCreatePostSuccess,
-  editPost, resetEditPostSuccess,
-  formType, initialFormFields, id,
-  getUserPost, getPostList,
+  getQuestions, housingCategories,
+  getPostList, housingQuestions,
+  createPost, createPostSuccess, resetCreatePostSuccess,
+  editPost, editPostSuccess, resetEditPostSuccess,
+  initialFormFields, id,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -67,7 +63,12 @@ const HousingForm = ({
   const completed = category => {
     return housingQuestions
       .filter(question => question.category === housingCategories[category])
-      .reduce((prev, curr) => prev && formFields[category]?.[curr.id]?.choice, true)
+      .reduce((prev, curr) =>
+      (prev &&
+        (Array.isArray(formFields[category]?.[curr.id]?.choice)
+          ? formFields[category]?.[curr.id]?.choice.length > 0
+          : formFields[category]?.[curr.id]?.choice)),
+        true)
   }
 
   // States
@@ -144,19 +145,21 @@ const HousingForm = ({
       first_name: user.first_name,
       last_name: user.last_name,
     }
-    if (id) { editPost(id, formType, data, userObj) } else { createPost(formType, data, userObj) }
+    if (id) { editPost(id, HOUSING_FORM, data, userObj) } else { createPost(HOUSING_FORM, data, userObj) }
   }
   const handleClose = () => {
     resetCreatePostSuccess()
     resetEditPostSuccess()
     setOpen(false)
-    history.push('/matchmaking')
+    history.push('/housings')
   }
 
   // componentDidMount
-  useEffect(() => {
-    if (housingQuestions.length === 0) getQuestions(HOUSING_FORM)
-  }, [])
+  // Get housing form questions
+  useEffect(() => { if (housingQuestions.length === 0) getQuestions(HOUSING_FORM) }, [])
+  // Get housing form categories
+  useEffect(() => { if (housingCategories.length === 0) getPostList(HOUSING_FORM) }, [])
+  // Get existing housing form data
   useEffect(() => {
     if (initialFormFields) {
       setFormFields(initialFormFields)
@@ -166,8 +169,6 @@ const HousingForm = ({
       setMaxCategory(housingCategories.length)
     }
   }, [initialFormFields, housingCategories])
-  useEffect(() => { getPostList(ROOMMATE_FORM) }, [])
-  useEffect(() => user ? getUserPost(user.id) : null, [user])
 
   // Components
   const SingleChoiceQuestion = ({ question }) => (
@@ -188,8 +189,7 @@ const HousingForm = ({
               control={<Radio color="primary" />}
               value={choice}
               label={choice}
-            />
-          ))}
+            />))}
         </RadioGroup>
       </FormControl>
     </>
@@ -212,8 +212,7 @@ const HousingForm = ({
               label={choice}
               checked={formFields[currentCategory]?.[question.id]?.choice?.includes(choice)}
               onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE)}
-            />
-          ))}
+            />))}
         </FormGroup>
       </FormControl>
     </>
@@ -224,20 +223,17 @@ const HousingForm = ({
       {/* Question */}
       <Typography variant="h6" color="textPrimary">{question.question_text}</Typography>
 
-      {console.log(formFields)}
-
       {/* Choices */}
-      <FormControl variant="outlined" fullWidth>
-        <Select
-          name={question.id}
-          value={formFields[currentCategory]?.[question.id]?.choice}
-          onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE)}
-        >
-          {question.choice_set.map(choice => (
-            <MenuItem key={choice} value={choice}>{choice}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <Select
+        variant="outlined"
+        fullWidth
+        name={question.id}
+        value={formFields[currentCategory]?.[question.id]?.choice}
+        onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE)}
+      >
+        {question.choice_set.map(choice => (
+          <MenuItem key={choice} value={choice}>{choice}</MenuItem>))}
+      </Select>
     </>
   )
 
@@ -262,44 +258,42 @@ const HousingForm = ({
         {housingCategories
           .filter(category => category !== "Confirmation")
           .map((category, categoryIndex) => (
-            // Category
-            <Grid item xs={12} key={category} style={{ marginBottom: 32 }}>
-              <Grid container>
-                <Grid item xs={3} />
-                <Grid item xs={9}>
+            <Grid container item xs={12} key={category} style={{ marginBottom: 32 }}>
+              <Grid container item xs={12}>
+                <Grid item xs={1} />
+                {/* Category */}
+                <Grid item xs={11}>
                   <Typography variant="h6">{category}</Typography>
                 </Grid>
               </Grid>
 
-              <Grid container>
+              <Grid container item xs={12}>
                 {housingQuestions
                   .filter(question => question.category === category)
                   .map(question => (
-                    <Grid container item xs={12} spacing={8}>
+                    <Grid container item xs={12}>
+                      <Grid item xs={1} />
                       {/* Question */}
-                      <Grid item xs={3} />
-                      <Grid item xs={4}>
+                      <Grid item xs={6}>
                         <Typography variant="body1" gutterBottom>{question.question_text}</Typography>
                       </Grid>
                       {/* Choices */}
-                      <Grid item xs={4}>
+                      <Grid item xs={5}>
                         {question.question_type === MULTIPLE_CHOICE
                           ?
+                          // Multiple choice
                           <Typography variant="body1" gutterBottom>
                             {formFields[categoryIndex]?.[question.id]?.choice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
                           </Typography>
                           :
+                          // Single choice
                           <Typography variant="body1" gutterBottom>
                             {formFields[categoryIndex]?.[question.id]?.choice}
-                          </Typography>
-                        }
+                          </Typography>}
                       </Grid>
-                      <Grid item xs={1} />
-                    </Grid>
-                  ))}
+                    </Grid>))}
               </Grid>
-            </Grid>
-          ))}
+            </Grid>))}
       </Grid>
 
       {/* Back and submit buttons */}
