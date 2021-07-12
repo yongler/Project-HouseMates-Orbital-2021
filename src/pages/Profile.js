@@ -194,6 +194,14 @@ const Profile = ({
                     accept="image/png, image/jpeg"
                     onChange={handleCapture}
                   />
+
+                  {/* <input
+                    type="file"
+                    id="image"
+                    accept="image/png, image/jpeg"
+                    multiple
+                    onChange={handleCapture}
+                  /> */}
                 </Button>
               </DialogContent>
 

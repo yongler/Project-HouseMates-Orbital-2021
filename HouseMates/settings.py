@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "rest_framework_simplejwt",
     "corsheaders",
+    "main",
+    "scrapypost"
     # 'storages',
 ]
 
@@ -189,7 +191,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
     ),
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 18
+    'PAGE_SIZE': 2
     
 }
 
@@ -209,8 +211,8 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": " /reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
-    "SEND_CONFIRMATION_EMAIL": True,
-    "SEND_ACTIVATION_EMAIL": True,
+    # "SEND_CONFIRMATION_EMAIL": True,
+    # "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     # 'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
