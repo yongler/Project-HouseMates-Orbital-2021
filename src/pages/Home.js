@@ -23,12 +23,14 @@ const Home = ({ posts, getPostList }) => {
           post.post_form_type === ROOMMATE_FORM
             ?
             <ProfileComponent
+              key={post.owner.id}
               name={post.owner.first_name + " " + post.owner.last_name}
               desc={post.owner.bio}
               pic={post.owner.profile_pic}
             />
             :
             <ProfileComponent
+              key={post.id}
               name={post.selected_choices[0][0].choice}
               desc={post.selected_choices[0][1].choice}
               pic={Pic}

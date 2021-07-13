@@ -16,19 +16,16 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { getPostList } from "../redux/post/actions";
+import { getPostDetail, getUserRoommatePosts } from "../redux/post/actions";
+import ProfileComponent from "../components/ProfileComponent";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
-  user,
+  user, loadUser,
   changeProfilePic,
-  editBio,
-  loadUser,
-  editBioSuccess,
-  resetEditBioSuccess,
-  prevPath,
-  posts,
-  getPostList,
+  editBio, editBioSuccess, resetEditBioSuccess,
+  userRoommatePosts, getUserRoommatePosts,
+  post, getPostDetail,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -58,6 +55,8 @@ const Profile = ({
   const [selectedFile, setSelectedFile] = useState(null);
   const [editBioTextFieldOpen, setEditBioTextFieldOpen] = useState(false);
   const [bio, setBio] = useState("");
+  const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([])
+  const [topThreeRoommates, setTopThreeRoommates] = useState([])
 
   // Handlers
   const handleChangePassword = () => { history.push("/change-password"); };
@@ -84,6 +83,28 @@ const Profile = ({
     loadUser();
     resetEditBioSuccess();
   }, [editBioSuccess]);
+
+  // Get user roommate post
+  useEffect(() => { if (user) getUserRoommatePosts(user.id) }, [user])
+  // After getting user roommate post, sort user roommate post score list and extract roommate id of the top 3 scores
+  useEffect(() => {
+    if (userRoommatePosts.length > 0) {
+      const unsortedScoreList = Object.values(userRoommatePosts[0].score_list)
+      const sortedScoreList = unsortedScoreList.sort((a, b) => (a.score > b.score) ? -1 : (a.score === b.score) ? ((a.post < b.post) ? -1 : 1) : 1)
+      const topThreeRoommatesId = []
+      for (let i = 0; i < 3; i++) { if (i <= sortedScoreList.length) topThreeRoommatesId.push(sortedScoreList[i].post) }
+      setTopThreeRoommatesId(topThreeRoommatesId)
+    }
+  }, [userRoommatePosts])
+  // After extracting top 3 roommates id, get post detail page of that id
+  useEffect(() => {
+    if (topThreeRoommates.length < topThreeRoommatesId.length) getPostDetail(topThreeRoommatesId[topThreeRoommates.length])
+  }, [topThreeRoommatesId, topThreeRoommates])
+  // After getting post detail page, add to top 3 roommates array
+  useEffect(() => {
+    if (post) topThreeRoommates.push(post)
+    setTopThreeRoommates(topThreeRoommates)
+  }, [post])
 
   return (
     <div className={classes.card}>
@@ -243,7 +264,17 @@ const Profile = ({
                   <PeopleIcon style={{ marginRight: 10 }} />
                   <Typography variant="h6" display="inline">Top 3 Roommates</Typography>
                 </span>
-                <Typography variant="body1" color="textSecondary" align="center">Create posts to find your ideal roommates now!</Typography>
+                {topThreeRoommates.length === 0
+                  ?
+                  <Typography variant="body1" color="textSecondary" align="center">Create posts to find your ideal roommates now!</Typography>
+                  :
+                  topThreeRoommates.map(post => (
+                    <ProfileComponent
+                      key={post.owner.id}
+                      name={post.owner.first_name + " " + post.owner.last_name}
+                      desc={post.owner.bio}
+                      pic={post.owner.profile_pic}
+                    />))}
               </Paper>
             </Grid>
             <Grid item xs={4}>
@@ -275,8 +306,8 @@ const Profile = ({
 const mapStateToProps = (state) => ({
   user: state.auth.user,
   editBioSuccess: state.auth.editBioSuccess,
-  prevPath: state.auth.prevPath,
-  posts: state.post.posts,
+  userRoommatePosts: state.post.userRoommatePosts,
+  post: state.post.post,
 });
 
 const mapDispatchToProps = {
@@ -284,7 +315,8 @@ const mapDispatchToProps = {
   editBio,
   resetEditBioSuccess,
   loadUser,
-  getPostList,
+  getUserRoommatePosts,
+  getPostDetail,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
