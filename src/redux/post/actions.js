@@ -28,8 +28,6 @@ import {
   SEARCH_POST_FAIL,
   CANCEL_SEARCH_SUCCESS,
   CANCEL_SEARCH_FAIL,
-  ADD_PIC_SUCCESS,
-  ADD_PIC_FAIL,
 } from "./types";
 
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -436,13 +434,4 @@ export const cancelSearchSuccess = () => ({ type: CANCEL_SEARCH_SUCCESS });
 export const cancelSearchFail = (cancelSearchErrorMsg) => ({
   type: CANCEL_SEARCH_FAIL,
   payload: cancelSearchErrorMsg,
-});
-
-export const addPicSuccess = (images) => ({
-  type: ADD_PIC_SUCCESS,
-  payload: images,
-});
-export const addPicFail = (ErrorMsg) => ({
-  type: ADD_PIC_FAIL,
-  payload: ErrorMsg,
 });
