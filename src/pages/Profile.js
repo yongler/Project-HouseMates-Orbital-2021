@@ -2,16 +2,39 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Box, Button, ButtonBase, Card, CardContent, CardHeader, Grid, IconButton, List, ListItem, ListItemText, Paper, TextField, Typography, MenuItem, MenuList } from "@material-ui/core";
+import {
+  Avatar,
+  Box,
+  Button,
+  ButtonBase,
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  TextField,
+  Typography,
+  MenuItem,
+  MenuList,
+} from "@material-ui/core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreateIcon from "@material-ui/icons/Create";
-import ChatIcon from '@material-ui/icons/Chat';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import HomeIcon from '@material-ui/icons/Home'
-import PeopleIcon from '@material-ui/icons/People'
+import ChatIcon from "@material-ui/icons/Chat";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
+import HomeIcon from "@material-ui/icons/Home";
+import PeopleIcon from "@material-ui/icons/People";
 import Badge from "@material-ui/core/Badge";
-import { loadUser, changeProfilePic, editBio, resetEditBioSuccess } from "../redux/auth/actions";
+import {
+  loadUser,
+  changeProfilePic,
+  editBio,
+  resetEditBioSuccess,
+} from "../redux/auth/actions";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -59,24 +82,43 @@ const Profile = ({
   const [topThreeRoommates, setTopThreeRoommates] = useState([])
 
   // Handlers
-  const handleChangePassword = () => { history.push("/change-password"); };
-  const handleDeleteAccount = () => { history.push("/delete-account"); };
-  const handleClickOpen = () => { setOpen(true); };
-  const handleClose = () => { setOpen(false); };
-  const handleCapture = ({ target }) => { setSelectedFile(target.files[0]); };
+  const handleChangePassword = () => {
+    history.push("/change-password");
+  };
+  const handleDeleteAccount = () => {
+    history.push("/delete-account");
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleCapture = ({ target }) => {
+    setSelectedFile(target.files);
+    // setSelectedFile(target.files[0]);
+  };
   const handleSubmit = () => {
     changeProfilePic(selectedFile);
     setOpen(false);
   };
-  const handleClick = () => { setEditBioTextFieldOpen(true); };
-  const handleCancel = () => { setEditBioTextFieldOpen(false); };
-  const handleChange = (e) => { setBio(e.target.value); };
+  const handleClick = () => {
+    setEditBioTextFieldOpen(true);
+  };
+  const handleCancel = () => {
+    setEditBioTextFieldOpen(false);
+  };
+  const handleChange = (e) => {
+    setBio(e.target.value);
+  };
   const handleEditBio = (e) => {
     e.preventDefault();
     editBio(user.first_name, user.last_name, bio);
     setEditBioTextFieldOpen(false);
   };
-  const handleEdit = () => { setEditBioTextFieldOpen(true); };
+  const handleEdit = () => {
+    setEditBioTextFieldOpen(true);
+  };
 
   // componentDidMount
   useEffect(() => {
@@ -112,7 +154,14 @@ const Profile = ({
         <Grid container spacing={3}>
           <Grid container item xs={12} spacing={3}>
             <Grid container item xs={8}>
-              <Paper style={{ width: "100%", display: 'flex', flexDirection: 'row', padding: 10 }}>
+              <Paper
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
                 {/* Profile pic */}
                 <Grid item xs={5} align="right">
                   <Badge
@@ -141,13 +190,14 @@ const Profile = ({
                       <Button
                         variant="contained"
                         component="label"
-                      // startIcon={<CloudUploadIcon />}
+                        // startIcon={<CloudUploadIcon />}
                       >
                         {/* Upload File */}
                         <input
                           type="file"
                           id="image"
                           accept="image/png, image/jpeg"
+                          multiple
                           onChange={handleCapture}
                         />
                       </Button>
@@ -245,11 +295,19 @@ const Profile = ({
               <Paper style={{ padding: 20, height: 200 }}>
                 <MenuList>
                   <AccountBoxIcon style={{ marginRight: 10 }} />
-                  <Typography variant="h6" display="inline">Account Settings</Typography>
-                  <MenuItem style={{ marginLeft: -10 }} onClick={handleChangePassword}>
+                  <Typography variant="h6" display="inline">
+                    Account Settings
+                  </Typography>
+                  <MenuItem
+                    style={{ marginLeft: -10 }}
+                    onClick={handleChangePassword}
+                  >
                     <Typography>Change password</Typography>
                   </MenuItem>
-                  <MenuItem style={{ marginLeft: -10 }} onClick={handleDeleteAccount}>
+                  <MenuItem
+                    style={{ marginLeft: -10 }}
+                    onClick={handleDeleteAccount}
+                  >
                     <Typography>Delete account</Typography>
                   </MenuItem>
                 </MenuList>
@@ -260,9 +318,11 @@ const Profile = ({
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={4}>
               <Paper style={{ padding: 10 }}>
-                <span style={{ display: 'flex', justifyContent: 'center' }}>
+                <span style={{ display: "flex", justifyContent: "center" }}>
                   <PeopleIcon style={{ marginRight: 10 }} />
-                  <Typography variant="h6" display="inline">Top 3 Roommates</Typography>
+                  <Typography variant="h6" display="inline">
+                    Top 3 Roommates
+                  </Typography>
                 </span>
                 {topThreeRoommates.length === 0
                   ?
@@ -279,27 +339,42 @@ const Profile = ({
             </Grid>
             <Grid item xs={4}>
               <Paper style={{ padding: 10 }}>
-                <span style={{ display: 'flex', justifyContent: 'center' }}>
+                <span style={{ display: "flex", justifyContent: "center" }}>
                   <HomeIcon style={{ marginRight: 10 }} />
-                  <Typography variant="h6" display="inline">Starred Housings</Typography>
+                  <Typography variant="h6" display="inline">
+                    Starred Housings
+                  </Typography>
                 </span>
-                <Typography variant="body1" color="textSecondary" align="center">No starred housings.</Typography>
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  align="center"
+                >
+                  No starred housings.
+                </Typography>
               </Paper>
             </Grid>
             <Grid item xs={4}>
               <Paper style={{ padding: 10 }}>
-                <span style={{ display: 'flex', justifyContent: 'center' }}>
+                <span style={{ display: "flex", justifyContent: "center" }}>
                   <ChatIcon style={{ marginRight: 10 }} />
-                  <Typography variant="h6" display="inline">3 new messages</Typography>
+                  <Typography variant="h6" display="inline">
+                    3 new messages
+                  </Typography>
                 </span>
-                <Typography variant="body1" color="textSecondary" align="center">Start chatting!</Typography>
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  align="center"
+                >
+                  Start chatting!
+                </Typography>
               </Paper>
             </Grid>
           </Grid>
         </Grid>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 };
 

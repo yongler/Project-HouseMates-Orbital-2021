@@ -44,6 +44,7 @@ const deletePostErrorMsg = "Unable to delete post";
 
 const searchPostErrorMsg = "Unable to search post";
 const cancelSearchErrorMsg = " Unable to cancel search";
+const changePicFailErrorMsg = " Unable to change pic";
 
 // Async actions creators
 export const getPostList = (formType, page) => async (dispatch) => {
@@ -243,6 +244,44 @@ export const cancelSearch = () => async (dispatch) => {
     dispatch(cancelSearchFail(cancelSearchErrorMsg));
   }
 };
+
+// // Change Picture
+// export const changePic = (id, picture) => async (dispatch) => {
+//   // Loading
+//   dispatch(postLoading());
+
+//   const s3config = {
+//     bucketName: "housematesorbital",
+//     dirName: "images",
+//     region: "us-east-2",
+//     accessKeyId: "AKIA2VQMUMOWCECPYUOU",
+//     secretAccessKey: "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",
+//   };
+
+//   // Draft request
+//   const config = {
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   };
+
+//   // Patch request
+//   let body;
+//   let profile_pic;
+//   try {
+//     S3FileUpload.uploadFile(picture, s3config)
+//       .then((data) => {
+//         images = [data.location];
+//         body = JSON.stringify({ profile_pic });
+//       })
+//       .then(async () => {
+//         await axios.patch(`/form/post-list/${id}`, body, config);
+//         dispatch(changePicSuccess(images));
+//       });
+//   } catch (err) {
+//     dispatch(changePicFail(changePicFailErrorMsg));
+//   }
+// };
 
 // Action Creators
 export const getPostListSuccess = (formType, resdata) => ({

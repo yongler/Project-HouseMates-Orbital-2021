@@ -9,19 +9,16 @@ admin.site.site_title = "HouseMates Admin Area"
 admin.site.index_title = "Welcome to the HouseMates admin area"
 
 
-# class ChoiceInline(admin.TabularInline):
-#     model = Choice
-#     extra = 3
-
-
 class CustomUserAdmin(admin.ModelAdmin):
     fieldsets = [(None, {'fields': ['first_name']}),
                  (None, {'fields': ['last_name']}),
                  (None, {'fields': ['email']}),
                  (None, {'fields': ['profile_pic']}),
                  (None, {'fields': ['bio']}),
+                 (None, {'fields': ['favourites']}),
                  ]
-    # inlines = [ChoiceInline]
+
+    # fieldsets = '__all__'
 
 
 # admin.site.register(Question)
