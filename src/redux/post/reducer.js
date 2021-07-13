@@ -25,6 +25,8 @@ import {
   SEARCH_POST_FAIL,
   CANCEL_SEARCH_SUCCESS,
   CANCEL_SEARCH_FAIL,
+  ADD_PIC_SUCCESS,
+  ADD_PIC_FAIL,
 } from "./types";
 
 const initialState = {
@@ -233,6 +235,19 @@ const postReducer = (state = initialState, action) => {
       };
 
     case CANCEL_SEARCH_FAIL:
+      return {
+        ...state,
+        postLoading: false,
+        postErrorMsg: payload,
+      };
+
+    case ADD_PIC_SUCCESS:
+      return {
+        ...state,
+        postLoading: false,
+      };
+
+    case ADD_PIC_FAIL:
       return {
         ...state,
         postLoading: false,

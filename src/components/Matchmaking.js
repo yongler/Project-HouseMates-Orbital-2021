@@ -112,11 +112,11 @@ const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPos
             }
 
             // Save other post score list and total score
-            editPost(otherPost.id, otherPost.post_form_type, undefined, undefined, otherScoreList, otherTotalScore)
+            editPost(otherPost.id, otherPost.post_form_type, undefined, undefined, otherScoreList, otherTotalScore, undefined)
           }
         })
         // Save my post score list and total score
-        editPost(myPost.id, myPost.post_form_type, undefined, undefined, myScoreList, myTotalScore)
+        editPost(myPost.id, myPost.post_form_type, undefined, undefined, myScoreList, myTotalScore, undefined)
       })
   }
   const handleClose = () => {

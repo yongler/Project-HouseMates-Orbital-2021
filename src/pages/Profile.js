@@ -96,8 +96,7 @@ const Profile = ({
     setOpen(false);
   };
   const handleCapture = ({ target }) => {
-    setSelectedFile(target.files);
-    // setSelectedFile(target.files[0]);
+    setSelectedFile(target.files[0]);
   };
   const handleSubmit = () => {
     changeProfilePic(selectedFile);

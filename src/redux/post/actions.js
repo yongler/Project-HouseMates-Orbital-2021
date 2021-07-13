@@ -1,4 +1,5 @@
 import axios from "axios";
+import S3FileUpload from "react-s3";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../../globalConstants";
 import {
   GET_POST_LIST_SUCCESS,
@@ -27,10 +28,20 @@ import {
   SEARCH_POST_FAIL,
   CANCEL_SEARCH_SUCCESS,
   CANCEL_SEARCH_FAIL,
+  ADD_PIC_SUCCESS,
+  ADD_PIC_FAIL,
 } from "./types";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+const s3config = {
+  bucketName: "housematesorbital",
+  dirName: "images",
+  region: "us-east-2",
+  accessKeyId: "AKIA2VQMUMOWCECPYUOU",
+  secretAccessKey: "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",
+};
 
 // Error messages
 const getPostListErrorMsg = "Unable to load posts";
@@ -44,7 +55,7 @@ const deletePostErrorMsg = "Unable to delete post";
 
 const searchPostErrorMsg = "Unable to search post";
 const cancelSearchErrorMsg = " Unable to cancel search";
-const changePicFailErrorMsg = " Unable to change pic";
+const addPicFailErrorMsg = " Unable to add pic";
 
 // Async actions creators
 export const getPostList = (formType, page) => async (dispatch) => {
@@ -56,15 +67,18 @@ export const getPostList = (formType, page) => async (dispatch) => {
 
   // Get request
   try {
-    var res
-    if (formType === undefined && page == undefined) {
+    var res;
+    if (formType === undefined && page === undefined) {
       res = await axios.get(`/form/post-list/`, config);
     } else if (formType !== undefined && page === undefined) {
       res = await axios.get(`/form/post-list/?form_type=${formType}`, config);
     } else if (formType === undefined && page !== undefined) {
       res = await axios.get(`/form/post-list/?page=${page}`, config);
     } else {
-      res = await axios.get(`/form/post-list/?form_type=${formType}&page=${page}`, config)
+      res = await axios.get(
+        `/form/post-list/?form_type=${formType}&page=${page}`,
+        config
+      );
     }
 
     dispatch(getPostListSuccess(formType, res.data));
@@ -90,35 +104,36 @@ export const getPostDetail = (id) => async (dispatch) => {
   }
 };
 
-export const getUserPost = (owner) =>
-  async (dispatch) => {
-    // Draft request
-    const config = { headers: { "Content-Type": "application/json" } };
+export const getUserPost = (owner) => async (dispatch) => {
+  // Draft request
+  const config = { headers: { "Content-Type": "application/json" } };
 
-    // Get request
-    try {
-      const res = await axios.get(`/form/post-list/?owner=${owner}`, config);
+  // Get request
+  try {
+    const res = await axios.get(`/form/post-list/?owner=${owner}`, config);
 
-      dispatch(getUserPostsSuccess(res.data));
-    } catch (err) {
-      dispatch(getUserPostsFail(getUserPostsErrorMsg));
-    }
-  };
+    dispatch(getUserPostsSuccess(res.data));
+  } catch (err) {
+    dispatch(getUserPostsFail(getUserPostsErrorMsg));
+  }
+};
 
-export const getUserRoommatePosts = (owner) =>
-  async (dispatch) => {
-    // Draft request
-    const config = { headers: { "Content-Type": "application/json" } };
+export const getUserRoommatePosts = (owner) => async (dispatch) => {
+  // Draft request
+  const config = { headers: { "Content-Type": "application/json" } };
 
-    // Get request
-    try {
-      const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${ROOMMATE_FORM}`, config);
+  // Get request
+  try {
+    const res = await axios.get(
+      `/form/post-list/?owner=${owner}&form_type=${ROOMMATE_FORM}`,
+      config
+    );
 
-      dispatch(getUserRoommatePostsSuccess(res.data));
-    } catch (err) {
-      dispatch(getUserRoommatePostsFail(getUserRoommatePostsErrorMsg));
-    }
-  };
+    dispatch(getUserRoommatePostsSuccess(res.data));
+  } catch (err) {
+    dispatch(getUserRoommatePostsFail(getUserRoommatePostsErrorMsg));
+  }
+};
 
 export const getUserHousingPosts = (owner) => async (dispatch) => {
   // Draft request
@@ -126,7 +141,10 @@ export const getUserHousingPosts = (owner) => async (dispatch) => {
 
   // Get request
   try {
-    const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${HOUSING_FORM}`, config);
+    const res = await axios.get(
+      `/form/post-list/?owner=${owner}&form_type=${HOUSING_FORM}`,
+      config
+    );
 
     dispatch(getUserHousingPostsSuccess(res.data));
   } catch (err) {
@@ -135,7 +153,7 @@ export const getUserHousingPosts = (owner) => async (dispatch) => {
 };
 
 export const createPost =
-  (post_form_type, selected_choices, owner) => async (dispatch) => {
+  (post_form_type, selected_choices, owner, picture) => async (dispatch) => {
     // Loading
     dispatch(postLoading());
 
@@ -149,19 +167,63 @@ export const createPost =
         Authorization: `JWT ${token}`,
       },
     };
-    const body = JSON.stringify({ post_form_type, selected_choices, owner });
+    if (picture) {
+      const images = [];
+      const dummy = Array.from(Array(picture.length).keys());
 
-    // Post request
-    try {
-      await axios.post(`/form/post-list/`, body, config);
+      dummy.forEach((i) => {
+        S3FileUpload.uploadFile(picture[i], s3config)
+          .then((data) => {
+            images.push(data.location);
+          })
+          .then(async () => {
+            if (images.length === picture.length) {
+              const body = JSON.stringify({
+                post_form_type,
+                selected_choices,
+                owner,
+                images,
+              });
 
-      dispatch(createPostSuccess());
-    } catch (err) {
-      dispatch(createPostFail(createPostErrorMsg));
+              // Post request
+              try {
+                await axios.post(`/form/post-list/`, body, config);
+
+                dispatch(createPostSuccess());
+              } catch (err) {
+                dispatch(createPostFail(createPostErrorMsg));
+              }
+            }
+          });
+      });
+    } else {
+      const body = JSON.stringify({
+        post_form_type,
+        selected_choices,
+        owner,
+      });
+
+      // Post request
+      try {
+        await axios.post(`/form/post-list/`, body, config);
+
+        dispatch(createPostSuccess());
+      } catch (err) {
+        dispatch(createPostFail(createPostErrorMsg));
+      }
     }
   };
 
-export const editPost = (id, post_form_type, selected_choices, owner, score_list, total_score) =>
+export const editPost =
+  (
+    id,
+    post_form_type,
+    selected_choices,
+    owner,
+    score_list,
+    total_score,
+    picture
+  ) =>
   async (dispatch) => {
     // Loading
     dispatch(postLoading());
@@ -173,46 +235,85 @@ export const editPost = (id, post_form_type, selected_choices, owner, score_list
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `JWT ${token}`,
-      },
-    };
-    const body = JSON.stringify({ post_form_type, selected_choices, owner, score_list, total_score });
-
-    // Put request
-    try {
-      await axios.put(`/form/post-list/${id}/`, body, config);
-
-      dispatch(editPostSuccess());
-    } catch (err) {
-      dispatch(editPostFail(editPostErrorMsg));
-    }
-  };
-
-export const deletePost = (id) =>
-  async (dispatch) => {
-    // Loading
-    dispatch(postLoading());
-
-    // Get access token from local storage
-    const token = localStorage.getItem("access");
-
-    // Draft request
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `JWT ${token}`,
+        Authorization: `JWT ${token}`,
       },
     };
 
-    // Post request
-    try {
-      await axios.delete(`/form/post-list/${id}/`, config);
+    if (picture) {
+      const images = [];
+      const dummy = Array.from(Array(picture.length).keys());
 
-      dispatch(deletePostSuccess());
-    } catch (err) {
-      dispatch(deletePostFail(deletePostErrorMsg));
+      dummy.forEach((i) => {
+        S3FileUpload.uploadFile(picture[i], s3config)
+          .then((data) => {
+            images.push(data.location);
+          })
+          .then(async () => {
+            if (images.length === picture.length) {
+              const body = JSON.stringify({
+                post_form_type,
+                selected_choices,
+                owner,
+                score_list,
+                total_score,
+                images,
+              });
+
+              // Put request
+              try {
+                await axios.put(`/form/post-list/${id}/`, body, config);
+
+                dispatch(editPostSuccess());
+              } catch (err) {
+                dispatch(editPostFail(editPostErrorMsg));
+              }
+            }
+          });
+      });
+    } else {
+      const body = JSON.stringify({
+        post_form_type,
+        selected_choices,
+        owner,
+        score_list,
+        total_score,
+      });
+
+      // Put request
+      try {
+        await axios.put(`/form/post-list/${id}/`, body, config);
+
+        dispatch(editPostSuccess());
+      } catch (err) {
+        dispatch(editPostFail(editPostErrorMsg));
+      }
     }
   };
+
+export const deletePost = (id) => async (dispatch) => {
+  // Loading
+  dispatch(postLoading());
+
+  // Get access token from local storage
+  const token = localStorage.getItem("access");
+
+  // Draft request
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${token}`,
+    },
+  };
+
+  // Post request
+  try {
+    await axios.delete(`/form/post-list/${id}/`, config);
+
+    dispatch(deletePostSuccess());
+  } catch (err) {
+    dispatch(deletePostFail(deletePostErrorMsg));
+  }
+};
 
 export const searchPost = (formType, searchItem) => async (dispatch) => {
   dispatch(postLoading());
@@ -244,44 +345,6 @@ export const cancelSearch = () => async (dispatch) => {
     dispatch(cancelSearchFail(cancelSearchErrorMsg));
   }
 };
-
-// // Change Picture
-// export const changePic = (id, picture) => async (dispatch) => {
-//   // Loading
-//   dispatch(postLoading());
-
-//   const s3config = {
-//     bucketName: "housematesorbital",
-//     dirName: "images",
-//     region: "us-east-2",
-//     accessKeyId: "AKIA2VQMUMOWCECPYUOU",
-//     secretAccessKey: "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",
-//   };
-
-//   // Draft request
-//   const config = {
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   };
-
-//   // Patch request
-//   let body;
-//   let profile_pic;
-//   try {
-//     S3FileUpload.uploadFile(picture, s3config)
-//       .then((data) => {
-//         images = [data.location];
-//         body = JSON.stringify({ profile_pic });
-//       })
-//       .then(async () => {
-//         await axios.patch(`/form/post-list/${id}`, body, config);
-//         dispatch(changePicSuccess(images));
-//       });
-//   } catch (err) {
-//     dispatch(changePicFail(changePicFailErrorMsg));
-//   }
-// };
 
 // Action Creators
 export const getPostListSuccess = (formType, resdata) => ({
@@ -373,4 +436,13 @@ export const cancelSearchSuccess = () => ({ type: CANCEL_SEARCH_SUCCESS });
 export const cancelSearchFail = (cancelSearchErrorMsg) => ({
   type: CANCEL_SEARCH_FAIL,
   payload: cancelSearchErrorMsg,
+});
+
+export const addPicSuccess = (images) => ({
+  type: ADD_PIC_SUCCESS,
+  payload: images,
+});
+export const addPicFail = (ErrorMsg) => ({
+  type: ADD_PIC_FAIL,
+  payload: ErrorMsg,
 });

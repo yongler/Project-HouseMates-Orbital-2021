@@ -374,54 +374,10 @@ export const changePassword =
     }
   };
 
-// // Change Profile Picture
-// export const changeProfilePic = (picture) =>
-//   async (dispatch) => {
-//     // Loading
-//     dispatch(profileLoading())
-
-//     // Get access token from local storage
-//     const token = localStorage.getItem("access")
-
-//     const s3config = {
-//       bucketName: "housematesorbital",
-//       dirName: "images",
-//       region: "us-east-2",
-//       accessKeyId: "AKIA2VQMUMOWCECPYUOU",
-//       secretAccessKey: "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",
-//     }
-
-//     // Draft request
-//     const config = {
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Authorization": `JWT ${token}`,
-//       },
-//     }
-
-//     // Patch request
-//     let body
-//     let profile_pic
-//     try {
-//       S3FileUpload.uploadFile(picture, s3config)
-//         .then((data) => {
-//           profile_pic = data.location
-//           body = JSON.stringify({ profile_pic })
-//         })
-//         .then(async () => {
-//           await axios.patch(`/auth/users/me/`, body, config)
-//           dispatch(changeProfilePicSuccess(profile_pic))
-//         })
-//     } catch (err) {
-//       dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg))
-//     }
-//   }
-
-
 // Change Profile Picture
 export const changeProfilePic = (picture) => async (dispatch) => {
   // Loading
-  // dispatch(profileLoading());
+  dispatch(profileLoading());
 
   // Get access token from local storage
   const token = localStorage.getItem("access");
@@ -445,22 +401,16 @@ export const changeProfilePic = (picture) => async (dispatch) => {
   // Patch request
   let body;
   let profile_pic;
-
   try {
-    const listing = [];
-
-    new Promise(() => {
-      for (var i = 0; i < picture.length; i++) {
-        S3FileUpload.uploadFile(picture[i], s3config).then((data) => {
-          console.log("hello");
-          listing.push(data.location);
-          console.log(listing);
-        });
-      }
-    }).then(() => {
-      console.log("yo");
-      console.log(listing);
-    });
+    S3FileUpload.uploadFile(picture, s3config)
+      .then((data) => {
+        profile_pic = data.location;
+        body = JSON.stringify({ profile_pic });
+      })
+      .then(async () => {
+        await axios.patch(`/auth/users/me/`, body, config);
+        dispatch(changeProfilePicSuccess(profile_pic));
+      });
   } catch (err) {
     dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg));
   }
