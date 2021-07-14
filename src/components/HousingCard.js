@@ -22,15 +22,15 @@ const HousingCard = ({
   editFavourites,
 }) => {
   // Styling
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     card: {
-      display: 'flex',
+      display: "flex",
       height: 200,
-      cursor: 'pointer',
+      cursor: "pointer",
       position: "relative",
     },
     content: {
-      flex: '1 0 auto',
+      flex: "1 0 auto",
     },
     media: {
       width: 400,
@@ -58,17 +58,25 @@ const HousingCard = ({
   }))
 
   // Hooks
-  const classes = useStyles()
-  const history = useHistory()
+  const classes = useStyles();
+  const history = useHistory();
 
   // States
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   // Handlers
-  const handleEdit = () => { history.push(`/edit-housing-form/${post.id}`) }
-  const handleOpenConfirmationDialog = () => { setOpen(true) }
-  const handleCancel = () => { setOpen(false) }
-  const handleDelete = () => { deletePost(post.id) }
+  const handleEdit = () => {
+    history.push(`/edit-housing-form/${post.id}`);
+  };
+  const handleOpenConfirmationDialog = () => {
+    setOpen(true);
+  };
+  const handleCancel = () => {
+    setOpen(false);
+  };
+  const handleDelete = () => {
+    deletePost(post.id);
+  };
   const handleClose = () => {
     resetDeletePostSuccess()
     getPostList(HOUSING_FORM)
@@ -88,10 +96,10 @@ const HousingCard = ({
   return (
     <>
       <Card className={classes.card}>
-        {user?.id === post.owner.id ?
+        {user?.id === post.owner.id ? (
           <>
             {/* Edit button */}
-            < Tooltip title="" className={classes.edit} onClick={handleEdit}>
+            <Tooltip title="" className={classes.edit} onClick={handleEdit}>
               <IconButton className={classes.icon}>
                 <EditIcon />
               </IconButton>
@@ -108,7 +116,7 @@ const HousingCard = ({
               </IconButton>
             </Tooltip>
           </>
-          :
+        ) : (
           // Favourite button
           <Tooltip
             title=""
@@ -124,38 +132,62 @@ const HousingCard = ({
               <FavoriteIcon />
             </IconButton>
           </Tooltip>
-        }
+        )}
 
         <Link
           to={`/housings/${post.id}`}
-          style={{ textDecoration: "none", color: "black", display: "flex", height: "100%", width: "100%" }}
+          style={{
+            textDecoration: "none",
+            color: "black",
+            display: "flex",
+            height: "100%",
+            width: "100%",
+          }}
         >
           <CardActionArea>
             {/* HousingCard description */}
             <CardContent className={classes.content}>
               {/* Name */}
-              <Typography variant="h5">{post.selected_choices[0][0].choice}</Typography>
+              <Typography variant="h5">
+                {post.selected_choices[0][0].choice}
+              </Typography>
 
               {/* Location */}
-              <Typography variant="body2" color="textSecondary">Located at {post.selected_choices[0][2].choice}</Typography>
+              <Typography variant="body2" color="textSecondary">
+                Located at {post.selected_choices[0][2].choice}
+              </Typography>
 
               <br />
 
               {/* Facilities */}
               <Typography variant="body2" color="textSecondary">
-                {post.selected_choices[1][0].choice} &middot; {post.selected_choices[1][1].choice} &middot; {post.selected_choices[1][2].choice.map((facility, index) =>
-                  index === 0
-                    ? <Fragment key={facility}>{facility} </Fragment>
-                    : <Fragment key={facility}>&middot; {facility} </Fragment>
+                {post.selected_choices[1][0].choice} &middot;{" "}
+                {post.selected_choices[1][1].choice} &middot;{" "}
+                {post.selected_choices[1][2].choice.map((facility, index) =>
+                  index === 0 ? (
+                    <Fragment key={facility}>{facility} </Fragment>
+                  ) : (
+                    <Fragment key={facility}>&middot; {facility} </Fragment>
+                  )
                 )}
               </Typography>
 
               <br />
 
               {/* Price */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                <Typography variant="h6">SGD {post.selected_choices[0][3].choice}</Typography>
-                <Typography variant="body2" color="textSecondary">&nbsp;/ night</Typography>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                }}
+              >
+                <Typography variant="h6">
+                  SGD {post.selected_choices[0][3].choice}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  &nbsp;/ night
+                </Typography>
               </div>
             </CardContent>
           </CardActionArea>
@@ -164,7 +196,7 @@ const HousingCard = ({
           <CardMedia
             className={classes.media}
             image={Pic}
-            title={post.selected_choices[0][0].choice}
+            // title={post.selected_choices[0][0].choice}
           />
         </Link>
       </Card>
@@ -180,8 +212,8 @@ const HousingCard = ({
         handleClose={handleClose}
       />
     </>
-  )
-}
+  );
+};
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,

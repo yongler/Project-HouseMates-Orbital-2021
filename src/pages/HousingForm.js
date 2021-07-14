@@ -10,10 +10,17 @@ import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOI
 
 // HousingForm consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 
-const TextQuestion = ({ question, formFields, handleChange, currentCategory }) => (
+const TextQuestion = ({
+  question,
+  formFields,
+  handleChange,
+  currentCategory,
+}) => (
   <>
     {/* Question */}
-    <Typography variant="h6" color="textPrimary">{question.question_text}</Typography>
+    <Typography variant="h6" color="textPrimary">
+      {question.question_text}
+    </Typography>
 
     {/* Input */}
     <TextField
@@ -21,18 +28,26 @@ const TextQuestion = ({ question, formFields, handleChange, currentCategory }) =
       fullWidth
       name={question.id}
       value={formFields[currentCategory]?.[question.id]?.choice}
-      onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE)}
+      onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE)}
     />
   </>
-)
+);
 
 const HousingForm = ({
   user,
-  getQuestions, housingCategories,
-  getPostList, housingQuestions,
-  createPost, createPostSuccess, resetCreatePostSuccess,
-  editPost, editPostSuccess, resetEditPostSuccess,
-  initialFormFields, id,
+  getQuestions,
+  housingCategories,
+  getPostList,
+  housingQuestions,
+  createPost,
+  createPostSuccess,
+  resetCreatePostSuccess,
+  editPost,
+  editPostSuccess,
+  resetEditPostSuccess,
+  initialFormFields,
+  id,
+  // addPic,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -43,9 +58,9 @@ const HousingForm = ({
       marginRight: 23,
     },
     flex: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
     },
     category: {
       marginBottom: 10,
@@ -53,48 +68,51 @@ const HousingForm = ({
     active: {
       background: theme.palette.action.hover,
     },
-  }))
+  }));
 
   // Hooks
-  const classes = useStyles()
-  const history = useHistory()
+  const classes = useStyles();
+  const history = useHistory();
 
   // Helper functions
-  const completed = category => {
+  const completed = (category) => {
     return housingQuestions
-      .filter(question => question.category === housingCategories[category])
-      .reduce((prev, curr) =>
-      (prev &&
-        (Array.isArray(formFields[category]?.[curr.id]?.choice)
-          ? formFields[category]?.[curr.id]?.choice.length > 0
-          : formFields[category]?.[curr.id]?.choice)),
-        true)
-  }
+      .filter((question) => question.category === housingCategories[category])
+      .reduce(
+        (prev, curr) =>
+          prev &&
+          (Array.isArray(formFields[category]?.[curr.id]?.choice)
+            ? formFields[category]?.[curr.id]?.choice.length > 0
+            : formFields[category]?.[curr.id]?.choice),
+        true
+      );
+  };
 
   // States
-  const [formFields, setFormFields] = useState({})
-  const [currentCategory, setCurrentCategory] = useState(0)
-  const [maxCategory, setMaxCategory] = useState(0)
-  const [categoryCompleted, setCategoryCompleted] = useState({})
-  const [open, setOpen] = useState(false)
+  const [formFields, setFormFields] = useState({});
+  const [currentCategory, setCurrentCategory] = useState(0);
+  const [maxCategory, setMaxCategory] = useState(0);
+  const [categoryCompleted, setCategoryCompleted] = useState({});
+  const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(undefined);
 
   // Handlers
   const handleNext = () => {
-    window.scrollTo(0, 0)
-    setCurrentCategory((prev) => prev + 1)
+    window.scrollTo(0, 0);
+    setCurrentCategory((prev) => prev + 1);
     setMaxCategory((prev) =>
       currentCategory >= maxCategory ? prev + 1 : prev
-    )
-    const newCategoryCompleted = categoryCompleted
-    newCategoryCompleted[currentCategory] = true
-    setCategoryCompleted(newCategoryCompleted)
-  }
+    );
+    const newCategoryCompleted = categoryCompleted;
+    newCategoryCompleted[currentCategory] = true;
+    setCategoryCompleted(newCategoryCompleted);
+  };
   const handleBack = () => {
-    window.scrollTo(0, 0)
-    setCurrentCategory((prev) => prev - 1)
-  }
+    window.scrollTo(0, 0);
+    setCurrentCategory((prev) => prev - 1);
+  };
   const handleStep = (category) => () =>
-    category <= maxCategory ? setCurrentCategory(category) : null
+    category <= maxCategory ? setCurrentCategory(category) : null;
 
   const handleChange = (e, category, type) => {
     switch (type) {
@@ -108,16 +126,16 @@ const HousingForm = ({
               question: e.target.name,
               choice: e.target.value,
             },
-          }
-        })
-        break
+          },
+        });
+        break;
 
       case MULTIPLE_CHOICE:
-        var choice = formFields[category]?.[e.target.name]?.choice || []
+        var choice = formFields[category]?.[e.target.name]?.choice || [];
         if (choice?.includes(e.target.value)) {
-          choice.splice(choice.indexOf(e.target.value), 1)
+          choice.splice(choice.indexOf(e.target.value), 1);
         } else {
-          choice.push(e.target.value)
+          choice.push(e.target.value);
         }
         setFormFields({
           ...formFields,
@@ -128,100 +146,138 @@ const HousingForm = ({
               question: e.target.name,
               choice: choice,
             },
-          }
-        })
-        break
+          },
+        });
+        break;
 
       default:
-        break
+        break;
     }
-  }
+  };
 
-  const handleConfirmation = () => { setOpen(true) }
-  const handleCancel = () => setOpen(false)
+  const handleConfirmation = () => {
+    setOpen(true);
+  };
+  const handleCancel = () => setOpen(false);
   const handleSubmit = () => {
-    const data = Object.values(formFields).map(category => Object.values(category))
+    const data = Object.values(formFields).map((category) =>
+      Object.values(category)
+    );
     const userObj = {
       first_name: user.first_name,
       last_name: user.last_name,
+    };
+    if (id) {
+      editPost(
+        id,
+        HOUSING_FORM,
+        data,
+        userObj,
+        undefined,
+        undefined,
+        selectedFile
+      );
+    } else {
+      createPost(HOUSING_FORM, data, userObj, selectedFile);
     }
-    if (id) { editPost(id, HOUSING_FORM, data, userObj) } else { createPost(HOUSING_FORM, data, userObj) }
-  }
+  };
   const handleClose = () => {
-    resetCreatePostSuccess()
-    resetEditPostSuccess()
-    setOpen(false)
-    history.push('/housings')
-  }
+    resetCreatePostSuccess();
+    resetEditPostSuccess();
+    setOpen(false);
+    history.push("/housings");
+  };
+
+  const handleCapture = ({ target }) => {
+    setSelectedFile(target.files);
+  };
 
   // componentDidMount
   // Get housing form questions
-  useEffect(() => { if (housingQuestions.length === 0) getQuestions(HOUSING_FORM) }, [])
+  useEffect(() => {
+    if (housingQuestions.length === 0) getQuestions(HOUSING_FORM);
+  }, []);
   // Get housing form categories
-  useEffect(() => { if (housingCategories.length === 0) getPostList(HOUSING_FORM) }, [])
+  useEffect(() => {
+    if (housingCategories.length === 0) getPostList(HOUSING_FORM);
+  }, []);
   // Get existing housing form data
   useEffect(() => {
     if (initialFormFields) {
-      setFormFields(initialFormFields)
-      const allCompleted = housingCategories
-        .reduce((prev, curr, index) => ({ ...prev, [index]: true }), {})
-      setCategoryCompleted(allCompleted)
-      setMaxCategory(housingCategories.length)
+      setFormFields(initialFormFields);
+      const allCompleted = housingCategories.reduce(
+        (prev, curr, index) => ({ ...prev, [index]: true }),
+        {}
+      );
+      setCategoryCompleted(allCompleted);
+      setMaxCategory(housingCategories.length);
     }
-  }, [initialFormFields, housingCategories])
+  }, [initialFormFields, housingCategories]);
 
   // Components
   const SingleChoiceQuestion = ({ question }) => (
     <>
       {/* Question */}
-      <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
+      <Typography variant="h6" color="textPrimary" gutterBottom>
+        {question.question_text}
+      </Typography>
 
       {/* Choices */}
       <FormControl>
         <RadioGroup
           name={question.id}
           value={formFields[currentCategory]?.[question.id]?.choice}
-          onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE)}
+          onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE)}
         >
-          {question.choice_set.map(choice => (
+          {question.choice_set.map((choice) => (
             <FormControlLabel
               key={choice}
               control={<Radio color="primary" />}
               value={choice}
               label={choice}
-            />))}
+            />
+          ))}
         </RadioGroup>
       </FormControl>
     </>
-  )
+  );
 
   const MultipleChoiceQuestion = ({ question }) => (
     <>
       {/* Question */}
-      <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
+      <Typography variant="h6" color="textPrimary" gutterBottom>
+        {question.question_text}
+      </Typography>
 
       {/* Choices */}
       <FormControl>
         <FormGroup>
-          {question.choice_set.map(choice => (
+          {question.choice_set.map((choice) => (
             <FormControlLabel
               key={choice}
               control={<Checkbox color="primary" />}
               name={question.id}
               value={choice}
               label={choice}
-              checked={formFields[currentCategory]?.[question.id]?.choice?.includes(choice)}
-              onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE)}
-            />))}
+              checked={formFields[currentCategory]?.[
+                question.id
+              ]?.choice?.includes(choice)}
+              onChange={(e) =>
+                handleChange(e, currentCategory, MULTIPLE_CHOICE)
+              }
+            />
+          ))}
         </FormGroup>
       </FormControl>
     </>
-  )
+  );
 
   const SelectQuestion = ({ question }) => (
     <>
       {/* Question */}
-      <Typography variant="h6" color="textPrimary">{question.question_text}</Typography>
+      <Typography variant="h6" color="textPrimary">
+        {question.question_text}
+      </Typography>
 
       {/* Choices */}
       <Select
@@ -229,15 +285,18 @@ const HousingForm = ({
         fullWidth
         name={question.id}
         value={formFields[currentCategory]?.[question.id]?.choice}
-        onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE)}
+        onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE)}
       >
-        {question.choice_set.map(choice => (
-          <MenuItem key={choice} value={choice}>{choice}</MenuItem>))}
+        {question.choice_set.map((choice) => (
+          <MenuItem key={choice} value={choice}>
+            {choice}
+          </MenuItem>
+        ))}
       </Select>
     </>
-  )
+  );
 
-  const stepper =
+  const stepper = (
     <Stepper nonLinear alternativeLabel activeStep={currentCategory}>
       {housingCategories.map((category, index) => (
         <Step key={category}>
@@ -251,14 +310,21 @@ const HousingForm = ({
         </Step>
       ))}
     </Stepper>
+  );
 
-  const summary =
+  const summary = (
     <Grid container>
       <Grid container item xs={12} style={{ padding: 48 }}>
         {housingCategories
-          .filter(category => category !== "Confirmation")
+          .filter((category) => category !== "Confirmation")
           .map((category, categoryIndex) => (
-            <Grid container item xs={12} key={category} style={{ marginBottom: 32 }}>
+            <Grid
+              container
+              item
+              xs={12}
+              key={category}
+              style={{ marginBottom: 32 }}
+            >
               <Grid container item xs={12}>
                 <Grid item xs={1} />
                 {/* Category */}
@@ -269,39 +335,54 @@ const HousingForm = ({
 
               <Grid container item xs={12}>
                 {housingQuestions
-                  .filter(question => question.category === category)
-                  .map(question => (
+                  .filter((question) => question.category === category)
+                  .map((question) => (
                     <Grid container item xs={12}>
                       <Grid item xs={1} />
                       {/* Question */}
                       <Grid item xs={6}>
-                        <Typography variant="body1" gutterBottom>{question.question_text}</Typography>
+                        <Typography variant="body1" gutterBottom>
+                          {question.question_text}
+                        </Typography>
                       </Grid>
                       {/* Choices */}
                       <Grid item xs={5}>
-                        {question.question_type === MULTIPLE_CHOICE
-                          ?
+                        {question.question_type === MULTIPLE_CHOICE ? (
                           // Multiple choice
                           <Typography variant="body1" gutterBottom>
-                            {formFields[categoryIndex]?.[question.id]?.choice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
+                            {formFields[categoryIndex]?.[
+                              question.id
+                            ]?.choice?.reduce(
+                              (prev, curr) =>
+                                (prev ? prev + ", " : prev) + curr,
+                              ""
+                            )}
                           </Typography>
-                          :
+                        ) : (
                           // Single choice
                           <Typography variant="body1" gutterBottom>
                             {formFields[categoryIndex]?.[question.id]?.choice}
-                          </Typography>}
+                          </Typography>
+                        )}
                       </Grid>
-                    </Grid>))}
+                    </Grid>
+                  ))}
               </Grid>
-            </Grid>))}
+            </Grid>
+          ))}
+        {/* Upload File */}
+        <input
+          type="file"
+          id="image"
+          accept="image/png, image/jpeg"
+          multiple
+          onChange={handleCapture}
+        />
       </Grid>
 
       {/* Back and submit buttons */}
-      < Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button
-          onClick={handleBack}
-          style={{ marginRight: 8 }}
-        >
+      <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
+        <Button onClick={handleBack} style={{ marginRight: 8 }}>
           Back
         </Button>
         <Button
@@ -313,26 +394,38 @@ const HousingForm = ({
         </Button>
       </Grid>
     </Grid>
+  );
 
-  const questionsBasedOnCategory =
+  const questionsBasedOnCategory = (
     <Grid container>
       <Grid container item xs={12} style={{ padding: 48 }}>
         {housingQuestions
-          .filter(question => question.category === housingCategories[currentCategory])
-          .map(question => (
+          .filter(
+            (question) =>
+              question.category === housingCategories[currentCategory]
+          )
+          .map((question) => (
             <Grid item xs={12} key={question.id} style={{ marginBottom: 32 }}>
-              {question.question_type === SINGLE_CHOICE
-                ? <SingleChoiceQuestion question={question} />
-                : question.question_type === MULTIPLE_CHOICE
-                  ? <MultipleChoiceQuestion question={question} />
-                  : question.question_type === TEXT
-                    ? <TextQuestion question={question} formFields={formFields} handleChange={handleChange} currentCategory={currentCategory} />
-                    : <SelectQuestion question={question} />}
-            </Grid>))}
+              {question.question_type === SINGLE_CHOICE ? (
+                <SingleChoiceQuestion question={question} />
+              ) : question.question_type === MULTIPLE_CHOICE ? (
+                <MultipleChoiceQuestion question={question} />
+              ) : question.question_type === TEXT ? (
+                <TextQuestion
+                  question={question}
+                  formFields={formFields}
+                  handleChange={handleChange}
+                  currentCategory={currentCategory}
+                />
+              ) : (
+                <SelectQuestion question={question} />
+              )}
+            </Grid>
+          ))}
       </Grid>
 
       {/* Back and next buttons */}
-      <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+      <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
         <Button
           onClick={handleBack}
           disabled={currentCategory === 0}
@@ -350,8 +443,9 @@ const HousingForm = ({
         </Button>
       </Grid>
     </Grid>
+  );
 
-  const confirmationDialog =
+  const confirmationDialog = (
     <Confirmation
       open={open}
       confirmationText={"Are you sure you want to submit?"}
@@ -361,25 +455,26 @@ const HousingForm = ({
       handleSubmit={handleSubmit}
       handleClose={handleClose}
     />
+  );
 
   return (
     <>
-      {housingQuestions.length !== 0 && housingCategories.length !== 0
-        ?
+      {housingQuestions.length !== 0 && housingCategories.length !== 0 ? (
         <Paper className={classes.paper}>
           {stepper}
 
           <div>
-            {currentCategory === housingCategories.length - 1 ? summary : questionsBasedOnCategory}
+            {currentCategory === housingCategories.length - 1
+              ? summary
+              : questionsBasedOnCategory}
           </div>
 
           {confirmationDialog}
         </Paper>
-        :
-        null}
+      ) : null}
     </>
-  )
-}
+  );
+};
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
@@ -394,7 +489,7 @@ const mapStateToProps = (state) => ({
   editPostSuccess: state.post.editPostSuccess,
   userPost: state.post.userPost,
   posts: state.post.posts,
-})
+});
 
 const mapDispatchToProps = {
   getQuestions,
@@ -404,6 +499,7 @@ const mapDispatchToProps = {
   resetEditPostSuccess,
   getUserPosts,
   getPostList,
-}
+  // addPic,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingForm)
+export default connect(mapStateToProps, mapDispatchToProps)(HousingForm);
