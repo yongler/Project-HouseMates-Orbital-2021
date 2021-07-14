@@ -6,13 +6,13 @@ import { Box, Container, Fab, Grid, Tooltip, Typography } from '@material-ui/cor
 import Pagination from '@material-ui/lab/Pagination'
 import AddIcon from '@material-ui/icons/Add'
 import HousingCard from '../components/HousingCard'
-import { getPostList, getUserHousingPosts } from '../redux/post/actions'
+import { getPostList, getUserPosts } from '../redux/post/actions'
 import { HOUSING_FORM, PAGINATION } from '../globalConstants'
 
 // Posts consists of list of Roommate and post button.
 const Housings = ({
   user, userHousingPosts, posts, postsType,
-  getUserHousingPosts, postLoading, getPostList, searchedPost, count
+  postLoading, getPostList, searchedPost, count, getUserPosts,
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
@@ -44,7 +44,7 @@ const Housings = ({
 
   // componentDidMount
   useEffect(() => { getPostList(HOUSING_FORM) }, [])
-  useEffect(() => user ? getUserHousingPosts(user.id) : null, [user])
+  useEffect(() => user ? getUserPosts(user.id, HOUSING_FORM) : null, [user])
 
   const postToRender = searchedPost ? searchedPost : posts
 
@@ -104,7 +104,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getPostList,
-  getUserHousingPosts,
+  getUserPosts,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Housings)

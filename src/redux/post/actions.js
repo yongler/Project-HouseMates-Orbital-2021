@@ -47,7 +47,7 @@ const cancelSearchErrorMsg = " Unable to cancel search";
 const changePicFailErrorMsg = " Unable to change pic";
 
 // Async actions creators
-export const getPostList = (formType, page) => async (dispatch) => {
+export const getPostList = (type, page) => async (dispatch) => {
   // Loading
   dispatch(postLoading());
 
@@ -57,17 +57,17 @@ export const getPostList = (formType, page) => async (dispatch) => {
   // Get request
   try {
     var res
-    if (formType === undefined && page == undefined) {
+    if (type === undefined && page == undefined) {
       res = await axios.get(`/form/post-list/`, config);
-    } else if (formType !== undefined && page === undefined) {
-      res = await axios.get(`/form/post-list/?form_type=${formType}`, config);
-    } else if (formType === undefined && page !== undefined) {
+    } else if (type !== undefined && page === undefined) {
+      res = await axios.get(`/form/post-list/?form_type=${type}`, config);
+    } else if (type === undefined && page !== undefined) {
       res = await axios.get(`/form/post-list/?page=${page}`, config);
     } else {
-      res = await axios.get(`/form/post-list/?form_type=${formType}&page=${page}`, config)
+      res = await axios.get(`/form/post-list/?form_type=${type}&page=${page}`, config)
     }
 
-    dispatch(getPostListSuccess(formType, res.data));
+    dispatch(getPostListSuccess(type, res.data));
   } catch (err) {
     dispatch(getPostListFail(getPostListErrorMsg));
   }
@@ -90,49 +90,54 @@ export const getPostDetail = (id) => async (dispatch) => {
   }
 };
 
-export const getUserPost = (owner) =>
+export const getUserPosts = (owner, type) =>
   async (dispatch) => {
     // Draft request
     const config = { headers: { "Content-Type": "application/json" } };
 
     // Get request
     try {
-      const res = await axios.get(`/form/post-list/?owner=${owner}`, config);
+      var res
+      if (type !== undefined) {
+        res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${type}`, config);
+      } else {
+        res = await axios.get(`/form/post-list/?owner=${owner}`, config);
+      }
 
-      dispatch(getUserPostsSuccess(res.data));
+      dispatch(getUserPostsSuccess(type, res.data));
     } catch (err) {
       dispatch(getUserPostsFail(getUserPostsErrorMsg));
     }
   };
 
-export const getUserRoommatePosts = (owner) =>
-  async (dispatch) => {
-    // Draft request
-    const config = { headers: { "Content-Type": "application/json" } };
+// export const getUserRoommatePosts = (owner) =>
+//   async (dispatch) => {
+//     // Draft request
+//     const config = { headers: { "Content-Type": "application/json" } };
 
-    // Get request
-    try {
-      const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${ROOMMATE_FORM}`, config);
+//     // Get request
+//     try {
+//       const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${ROOMMATE_FORM}`, config);
 
-      dispatch(getUserRoommatePostsSuccess(res.data));
-    } catch (err) {
-      dispatch(getUserRoommatePostsFail(getUserRoommatePostsErrorMsg));
-    }
-  };
+//       dispatch(getUserRoommatePostsSuccess(res.data));
+//     } catch (err) {
+//       dispatch(getUserRoommatePostsFail(getUserRoommatePostsErrorMsg));
+//     }
+//   };
 
-export const getUserHousingPosts = (owner) => async (dispatch) => {
-  // Draft request
-  const config = { headers: { "Content-Type": "application/json" } };
+// export const getUserHousingPosts = (owner) => async (dispatch) => {
+//   // Draft request
+//   const config = { headers: { "Content-Type": "application/json" } };
 
-  // Get request
-  try {
-    const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${HOUSING_FORM}`, config);
+//   // Get request
+//   try {
+//     const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${HOUSING_FORM}`, config);
 
-    dispatch(getUserHousingPostsSuccess(res.data));
-  } catch (err) {
-    dispatch(getUserHousingPostsFail(getUserHousingPostsErrorMsg));
-  }
-};
+//     dispatch(getUserHousingPostsSuccess(res.data));
+//   } catch (err) {
+//     dispatch(getUserHousingPostsFail(getUserHousingPostsErrorMsg));
+//   }
+// };
 
 export const createPost =
   (post_form_type, selected_choices, owner) => async (dispatch) => {
@@ -284,9 +289,9 @@ export const cancelSearch = () => async (dispatch) => {
 // };
 
 // Action Creators
-export const getPostListSuccess = (formType, resdata) => ({
+export const getPostListSuccess = (type, resdata) => ({
   type: GET_POST_LIST_SUCCESS,
-  payload: { formType, resdata },
+  payload: { type, resdata },
 });
 export const getPostListFail = (postErrorMsg) => ({
   type: GET_POST_LIST_FAIL,
@@ -302,32 +307,32 @@ export const getPostDetailFail = (postErrorMsg) => ({
   payload: postErrorMsg,
 });
 
-export const getUserPostsSuccess = (userPosts) => ({
+export const getUserPostsSuccess = (type, userPosts) => ({
   type: GET_USER_POSTS_SUCCESS,
-  payload: userPosts,
+  payload: { type, userPosts },
 });
 export const getUserPostsFail = (postErrorMsg) => ({
   type: GET_USER_POSTS_FAIL,
   payload: postErrorMsg,
 });
 
-export const getUserRoommatePostsSuccess = (userRoommatePosts) => ({
-  type: GET_USER_ROOMMATE_POSTS_SUCCESS,
-  payload: userRoommatePosts,
-});
-export const getUserRoommatePostsFail = (postErrorMsg) => ({
-  type: GET_USER_ROOMMATE_POSTS_FAIL,
-  payload: postErrorMsg,
-});
+// export const getUserRoommatePostsSuccess = (userRoommatePosts) => ({
+//   type: GET_USER_ROOMMATE_POSTS_SUCCESS,
+//   payload: userRoommatePosts,
+// });
+// export const getUserRoommatePostsFail = (postErrorMsg) => ({
+//   type: GET_USER_ROOMMATE_POSTS_FAIL,
+//   payload: postErrorMsg,
+// });
 
-export const getUserHousingPostsSuccess = (userHousingPosts) => ({
-  type: GET_USER_HOUSING_POSTS_SUCCESS,
-  payload: userHousingPosts,
-});
-export const getUserHousingPostsFail = (postErrorMsg) => ({
-  type: GET_USER_HOUSING_POSTS_FAIL,
-  payload: postErrorMsg,
-});
+// export const getUserHousingPostsSuccess = (userHousingPosts) => ({
+//   type: GET_USER_HOUSING_POSTS_SUCCESS,
+//   payload: userHousingPosts,
+// });
+// export const getUserHousingPostsFail = (postErrorMsg) => ({
+//   type: GET_USER_HOUSING_POSTS_FAIL,
+//   payload: postErrorMsg,
+// });
 
 export const createPostSuccess = () => ({ type: CREATE_POST_SUCCESS });
 export const createPostFail = (postErrorMsg) => ({

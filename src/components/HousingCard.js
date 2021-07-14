@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import { Card, CardActionArea, CardContent, CardMedia, IconButton, Tooltip, Typography } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -10,9 +11,16 @@ import Pic from '../static/housing.jpg'
 import { deletePost, resetDeletePostSuccess, getPostList } from "../redux/post/actions";
 import Confirmation from "../components/Confirmation";
 import { HOUSING_FORM } from '../globalConstants'
+import { editFavourites } from '../redux/auth/actions'
 
 // HousingCardCard consists of housing description: name and facilities, and pic.
-const HousingCard = ({ post, user, deletePostSuccess, deletePost, resetDeletePostSuccess, getPostList }) => {
+const HousingCard = ({ 
+  post, 
+  user, 
+  deletePost, deletePostSuccess, resetDeletePostSuccess, 
+  getPostList,
+  editFavourites,
+}) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     card: {
@@ -41,6 +49,12 @@ const HousingCard = ({ post, user, deletePostSuccess, deletePost, resetDeletePos
     icon: {
       color: "black",
     },
+    red: {
+      color: "red",
+    },
+    white: {
+      color: "white",
+    },
   }))
 
   // Hooks
@@ -58,8 +72,17 @@ const HousingCard = ({ post, user, deletePostSuccess, deletePost, resetDeletePos
   const handleClose = () => {
     resetDeletePostSuccess()
     getPostList(HOUSING_FORM)
-    // getUserPost(user.id)
+    // getUserPosts(user.id)
     setOpen(false)
+  }
+  const handleFavourites = () => {
+    if (user.favourites?.includes(post.id)) {
+      editFavourites(user.favourites.splice(user.favourites.indexOf(post.id)))
+    } else {
+      const favourites = user.favourites || []
+      favourites.push(post.id)
+      editFavourites(favourites)
+    }
   }
 
   return (
@@ -91,7 +114,13 @@ const HousingCard = ({ post, user, deletePostSuccess, deletePost, resetDeletePos
             title=""
             className={classes.edit}
           >
-            <IconButton className={classes.icon} style={{ color: 'red' }}>
+            <IconButton
+              className={clsx({
+                [classes.red]: user?.favourites?.includes(post.id),
+                [classes.white]: !user?.favourites?.includes(post.id),
+              })}
+              onClick={handleFavourites}
+            >
               <FavoriteIcon />
             </IconButton>
           </Tooltip>
@@ -163,6 +192,7 @@ const mapDispatchToProps = {
   deletePost,
   resetDeletePostSuccess,
   getPostList,
+  editFavourites
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HousingCard);

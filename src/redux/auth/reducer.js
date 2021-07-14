@@ -30,6 +30,8 @@ import {
   CHANGE_PROFILE_PIC_FAIL,
   EDIT_BIO_SUCCESS,
   EDIT_BIO_FAIL,
+  EDIT_FAVOURITES_SUCCESS,
+  EDIT_FAVOURITES_FAIL,
   SET_PREV_PATH,
 } from "./types";
 
@@ -285,6 +287,19 @@ const authReducer = (state = initialState, action) => {
         profileLoading: false,
         authErrorMsg: payload,
         editBioSuccess: false,
+      };
+
+    case EDIT_FAVOURITES_SUCCESS:
+      return {
+        ...state,
+        profileLoading: false,
+      };
+
+    case EDIT_FAVOURITES_FAIL:
+      return {
+        ...state,
+        profileLoading: false,
+        authErrorMsg: payload,
       };
 
     case RESET_EDIT_BIO_SUCCESS:

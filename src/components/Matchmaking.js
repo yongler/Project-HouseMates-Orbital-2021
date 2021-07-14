@@ -4,10 +4,10 @@ import { useHistory } from 'react-router-dom'
 import { Button, Paper, Typography } from '@material-ui/core'
 import { ROOMMATE_FORM, IRRELEVANT, A_LITTLE_IMPORTANT, SOMEWHAT_IMPORTANT, VERY_IMPORTANT, MANDATORY } from '../globalConstants'
 import { loadUser } from '../redux/auth/actions'
-import { getUserPost, getPostList, editPost, postLoading, resetEditPostSuccess } from '../redux/post/actions'
+import { getUserPosts, getPostList, editPost, postLoading, resetEditPostSuccess } from '../redux/post/actions'
 import './components.css'
 
-const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPost, getPostList, editPost, postLoading, loading, resetEditPostSuccess }) => {
+const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPosts, getPostList, editPost, postLoading, loading, resetEditPostSuccess }) => {
 
   // Hooks
   const history = useHistory()
@@ -146,7 +146,7 @@ const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPos
     }
   }, [next])
   useEffect(() => setAllPosts([...allPosts, ...posts]), [posts])
-  useEffect(() => user ? getUserPost(user.id) : null, [user])
+  useEffect(() => user ? getUserPosts(user.id) : null, [user])
   useEffect(() => userPosts.length > 0 && allPosts.length === count ? handleMatchmaking() : null, [userPosts, allPosts])
 
   return (
@@ -175,7 +175,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   loadUser,
-  getUserPost,
+  getUserPosts,
   getPostList,
   editPost,
   postLoading: () => (dispatch) => dispatch(postLoading()),

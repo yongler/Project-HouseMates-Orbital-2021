@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Chip, Fab, Grid, IconButton, Paper, Tooltip, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { getPostDetail, getUserPost } from "../redux/post/actions";
+import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import { getQuestions } from "../redux/form/actions";
 import { HOUSING_FORM } from "../globalConstants";
 import Pic from '../static/housing.jpg'
@@ -18,7 +18,8 @@ const HousingDetail = ({
   housingCategories,
   getPostDetail,
   getQuestions,
-  getUserPost,
+  getUserPosts,
+  prevPath,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -65,7 +66,7 @@ const HousingDetail = ({
   const { id } = useParams();
 
   // Handlers
-  const handleBack = () => { history.go(-1); };
+  const handleBack = () => { history.push(prevPath); };
   const handleClick = () => { history.push("/housing-form"); };
 
   // componentDidMount
@@ -73,7 +74,7 @@ const HousingDetail = ({
     if (housingCategories.length === 0) getQuestions(HOUSING_FORM);
     getPostDetail(id);
   }, []);
-  useEffect(() => (user ? getUserPost(user.id) : null), [user]);
+  useEffect(() => (user ? getUserPosts(user.id) : null), [user]);
 
   return (
     <div className={classes.card}>
@@ -201,12 +202,13 @@ const mapPropsToState = (state) => ({
   userHousingPosts: state.post.userHousingPosts,
   post: state.post.post,
   housingCategories: state.form.housingCategories,
+  prevPath: state.auth.prevPath,
 });
 
 const mapDispatchToProps = {
   getQuestions,
   getPostDetail,
-  getUserPost,
+  getUserPosts,
 };
 
 export default connect(mapPropsToState, mapDispatchToProps)(HousingDetail);

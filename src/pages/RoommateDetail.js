@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { getPostDetail, getUserPost } from "../redux/post/actions";
+import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import { getQuestions } from "../redux/form/actions";
 import { ROOMMATE_FORM } from "../globalConstants";
 
@@ -27,7 +27,8 @@ const RoommateDetail = ({
   roommateCategories,
   getPostDetail,
   getQuestions,
-  getUserPost,
+  getUserPosts,
+  prevPath,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -67,7 +68,7 @@ const RoommateDetail = ({
 
   // Handlers
   const handleBack = () => {
-    history.go(-1);
+    history.push(prevPath);
   };
   const handleClick = () => {
     history.push("/roommate-form");
@@ -80,7 +81,7 @@ const RoommateDetail = ({
     }
     getPostDetail(id);
   }, []);
-  useEffect(() => (user ? getUserPost(user.id) : null), [user]);
+  useEffect(() => (user ? getUserPosts(user.id) : null), [user]);
 
   return (
     <div className={classes.card}>
@@ -177,12 +178,13 @@ const mapPropsToState = (state) => ({
   userPost: state.post.userPost,
   post: state.post.post,
   roommateCategories: state.form.roommateCategories,
+  prevPath: state.auth.prevPath,
 });
 
 const mapDispatchToProps = {
   getQuestions,
   getPostDetail,
-  getUserPost,
+  getUserPosts,
 };
 
 export default connect(mapPropsToState, mapDispatchToProps)(RoommateDetail);

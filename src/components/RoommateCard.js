@@ -5,7 +5,7 @@ import { Link, useHistory } from "react-router-dom";
 import { Card, CardActionArea, CardContent, CardMedia, Chip, IconButton, Tooltip, Typography } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { deletePost, getPostList, getUserPost, getUserRoommatePosts, resetDeletePostSuccess } from "../redux/post/actions";
+import { deletePost, getPostList, getUserPosts, getUserPostsFail, resetDeletePostSuccess } from "../redux/post/actions";
 import Confirmation from "../components/Confirmation";
 import { ROOMMATE_FORM } from "../globalConstants";
 import { loadUser } from "../redux/auth/actions";
@@ -13,15 +13,14 @@ import { loadUser } from "../redux/auth/actions";
 // RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.fUSER
 const RoommateCard = ({
   user,
-  userPosts,
+  userRoommatePosts,
   post,
   deletePostSuccess,
   deletePost,
   resetDeletePostSuccess,
-  getUserPost,
+  getUserPosts,
   getPostList,
   loadUser,
-  getUserRoommatePosts
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -70,8 +69,7 @@ const RoommateCard = ({
   const handleClose = () => {
     resetDeletePostSuccess();
     getPostList(ROOMMATE_FORM);
-    getUserRoommatePosts(user.id)
-    getUserPost(user.id);
+    getUserPosts(user.id, ROOMMATE_FORM);
     setOpen(false);
   };
 
@@ -102,7 +100,7 @@ const RoommateCard = ({
 
   // componentDidMount
   useEffect(() => loadUser(), []);
-  useEffect(() => (user ? getUserPost(user.id) : null), [user]);
+  useEffect(() => (user ? getUserPosts(user.id) : null), [user]);
 
   return (
     <>
@@ -146,7 +144,7 @@ const RoommateCard = ({
               {/* Name */}
               <Typography variant="h5" gutterBottom>
                 {post.owner.first_name} {post.owner.last_name}{" "}
-                {userPosts?.map(userPost =>
+                {userRoommatePosts?.map(userPost =>
                   userPost.owner.id !== post.owner.id && userPost.post_form_type === ROOMMATE_FORM && post.score_list[userPost.id]?.score
                     ?
                     <Chip label={post.score_list[userPost.id]?.score + "%"} color="secondary"  className={classes.tag}/>
@@ -197,7 +195,7 @@ const RoommateCard = ({
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
-  userPosts: state.post.userPosts,
+  userRoommatePosts: state.post.userRoommatePosts,
   deletePostSuccess: state.post.deletePostSuccess,
 });
 
@@ -205,9 +203,8 @@ const mapDispatchToProps = {
   deletePost,
   resetDeletePostSuccess,
   getPostList,
-  getUserPost,
+  getUserPosts,
   loadUser,
-  getUserRoommatePosts
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoommateCard);

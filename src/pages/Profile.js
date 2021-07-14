@@ -39,15 +39,16 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { getPostDetail, getUserRoommatePosts } from "../redux/post/actions";
+import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import ProfileComponent from "../components/ProfileComponent";
+import { ROOMMATE_FORM } from "../globalConstants";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
   user, loadUser,
   changeProfilePic,
   editBio, editBioSuccess, resetEditBioSuccess,
-  userRoommatePosts, getUserRoommatePosts,
+  userRoommatePosts, getUserPosts,
   post, getPostDetail,
 }) => {
   // Styling
@@ -82,18 +83,10 @@ const Profile = ({
   const [topThreeRoommates, setTopThreeRoommates] = useState([])
 
   // Handlers
-  const handleChangePassword = () => {
-    history.push("/change-password");
-  };
-  const handleDeleteAccount = () => {
-    history.push("/delete-account");
-  };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleChangePassword = () => { history.push("/change-password"); };
+  const handleDeleteAccount = () => { history.push("/delete-account"); };
+  const handleClickOpen = () => { setOpen(true); };
+  const handleClose = () => { setOpen(false); };
   const handleCapture = ({ target }) => {
     setSelectedFile(target.files);
     // setSelectedFile(target.files[0]);
@@ -102,23 +95,15 @@ const Profile = ({
     changeProfilePic(selectedFile);
     setOpen(false);
   };
-  const handleClick = () => {
-    setEditBioTextFieldOpen(true);
-  };
-  const handleCancel = () => {
-    setEditBioTextFieldOpen(false);
-  };
-  const handleChange = (e) => {
-    setBio(e.target.value);
-  };
+  const handleClick = () => { setEditBioTextFieldOpen(true); };
+  const handleCancel = () => { setEditBioTextFieldOpen(false); };
+  const handleChange = (e) => { setBio(e.target.value); };
   const handleEditBio = (e) => {
     e.preventDefault();
-    editBio(user.first_name, user.last_name, bio);
+    editBio(bio);
     setEditBioTextFieldOpen(false);
   };
-  const handleEdit = () => {
-    setEditBioTextFieldOpen(true);
-  };
+  const handleEdit = () => { setEditBioTextFieldOpen(true); };
 
   // componentDidMount
   useEffect(() => {
@@ -126,26 +111,36 @@ const Profile = ({
     resetEditBioSuccess();
   }, [editBioSuccess]);
 
+  // Top 3 roommates
   // Get user roommate post
-  useEffect(() => { if (user) getUserRoommatePosts(user.id) }, [user])
+  useEffect(() => {
+    if (user) {
+      getUserPosts(user.id, ROOMMATE_FORM)
+    }
+  }, [user])
   // After getting user roommate post, sort user roommate post score list and extract roommate id of the top 3 scores
   useEffect(() => {
     if (userRoommatePosts.length > 0) {
       const unsortedScoreList = Object.values(userRoommatePosts[0].score_list)
       const sortedScoreList = unsortedScoreList.sort((a, b) => (a.score > b.score) ? -1 : (a.score === b.score) ? ((a.post < b.post) ? -1 : 1) : 1)
       const topThreeRoommatesId = []
-      for (let i = 0; i < 3; i++) { if (i <= sortedScoreList.length) topThreeRoommatesId.push(sortedScoreList[i].post) }
+      for (let i = 0; i < 3; i++) {
+        if (i < sortedScoreList.length) topThreeRoommatesId.push(sortedScoreList[i].post)
+      }
       setTopThreeRoommatesId(topThreeRoommatesId)
     }
   }, [userRoommatePosts])
   // After extracting top 3 roommates id, get post detail page of that id
   useEffect(() => {
-    if (topThreeRoommates.length < topThreeRoommatesId.length) getPostDetail(topThreeRoommatesId[topThreeRoommates.length])
+    if (topThreeRoommatesId.length > 0 && topThreeRoommates.length < topThreeRoommatesId.length) {
+      getPostDetail(topThreeRoommatesId[topThreeRoommates.length])
+    }
   }, [topThreeRoommatesId, topThreeRoommates])
   // After getting post detail page, add to top 3 roommates array
   useEffect(() => {
-    if (post) topThreeRoommates.push(post)
-    setTopThreeRoommates(topThreeRoommates)
+    if (post && post.id === topThreeRoommatesId[topThreeRoommates.length]) {
+      setTopThreeRoommates([...topThreeRoommates, post])
+    }
   }, [post])
 
   return (
@@ -190,7 +185,7 @@ const Profile = ({
                       <Button
                         variant="contained"
                         component="label"
-                        // startIcon={<CloudUploadIcon />}
+                      // startIcon={<CloudUploadIcon />}
                       >
                         {/* Upload File */}
                         <input
@@ -334,6 +329,8 @@ const Profile = ({
                       name={post.owner.first_name + " " + post.owner.last_name}
                       desc={post.owner.bio}
                       pic={post.owner.profile_pic}
+                      type={ROOMMATE_FORM}
+                      id={post.id}
                     />))}
               </Paper>
             </Grid>
@@ -390,8 +387,8 @@ const mapDispatchToProps = {
   editBio,
   resetEditBioSuccess,
   loadUser,
-  getUserRoommatePosts,
   getPostDetail,
+  getUserPosts,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

@@ -1,3 +1,4 @@
+import { HOUSING_FORM, ROOMMATE_FORM } from "../../globalConstants";
 import {
   GET_POST_LIST_SUCCESS,
   GET_POST_LIST_FAIL,
@@ -58,7 +59,7 @@ const postReducer = (state = initialState, action) => {
         count: payload.resdata.count,
         next: payload.resdata.next,
         previous: payload.resdata.previous,
-        postsType: payload.formType,
+        postsType: payload.type,
       };
 
     case GET_POST_LIST_FAIL:
@@ -84,49 +85,65 @@ const postReducer = (state = initialState, action) => {
       };
 
     case GET_USER_POSTS_SUCCESS:
-      return {
-        ...state,
-        postLoading: false,
-        userPosts: payload.results,
-      };
+      if (payload.type === ROOMMATE_FORM) {
+        return {
+          ...state,
+          postLoading: false,
+          userRoommatePosts: payload.userPosts.results,
+        };
+      } else if (payload.type === HOUSING_FORM) {
+        return {
+          ...state,
+          postLoading: false,
+          userHousingPosts: payload.userPosts.results,
+        };
+      } else {
+        return {
+          ...state,
+          postLoading: false,
+          userPosts: payload.userPosts.results,
+        };
+      }
 
     case GET_USER_POSTS_FAIL:
       return {
         ...state,
         postLoading: false,
         userPosts: null,
-        postErrorMsg: payload,
-      };
-
-    case GET_USER_ROOMMATE_POSTS_SUCCESS:
-      return {
-        ...state,
-        postLoading: false,
-        userRoommatePosts: payload.results,
-      };
-
-    case GET_USER_ROOMMATE_POSTS_FAIL:
-      return {
-        ...state,
-        postLoading: false,
         userRoommatePosts: null,
-        postErrorMsg: payload,
-      };
-
-    case GET_USER_HOUSING_POSTS_SUCCESS:
-      return {
-        ...state,
-        postLoading: false,
-        userHousingPosts: payload.results,
-      };
-
-    case GET_USER_HOUSING_POSTS_FAIL:
-      return {
-        ...state,
-        postLoading: false,
         userHousingPosts: null,
         postErrorMsg: payload,
       };
+
+    // case GET_USER_ROOMMATE_POSTS_SUCCESS:
+    //   return {
+    //     ...state,
+    //     postLoading: false,
+    //     userRoommatePosts: payload.results,
+    //   };
+
+    // case GET_USER_ROOMMATE_POSTS_FAIL:
+    //   return {
+    //     ...state,
+    //     postLoading: false,
+    //     userRoommatePosts: null,
+    //     postErrorMsg: payload,
+    //   };
+
+    // case GET_USER_HOUSING_POSTS_SUCCESS:
+    //   return {
+    //     ...state,
+    //     postLoading: false,
+    //     userHousingPosts: payload.results,
+    //   };
+
+    // case GET_USER_HOUSING_POSTS_FAIL:
+    //   return {
+    //     ...state,
+    //     postLoading: false,
+    //     userHousingPosts: null,
+    //     postErrorMsg: payload,
+    //   };
 
     case CREATE_POST_SUCCESS:
       return {

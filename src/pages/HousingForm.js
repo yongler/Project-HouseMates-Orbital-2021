@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
-import { getUserPost, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
+import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
 import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT } from '../globalConstants'
 
 // HousingForm consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
@@ -402,7 +402,7 @@ const mapDispatchToProps = {
   editPost,
   resetCreatePostSuccess,
   resetEditPostSuccess,
-  getUserPost,
+  getUserPosts,
   getPostList,
 }
 
