@@ -35,8 +35,8 @@ class PostSerializer(serializers.ModelSerializer):
         "first_name":temp.first_name, 
         "last_name":temp.last_name, 
         "profile_pic":str(temp.profile_pic),
-        "bio":temp.bio }
-    # owner = userProfileSerializer()
+        "bio":temp.bio ,
+        "favourites": temp.favourites}
 
     class Meta:
         model = Post
