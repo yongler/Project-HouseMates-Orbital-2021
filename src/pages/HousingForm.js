@@ -47,7 +47,6 @@ const HousingForm = ({
   resetEditPostSuccess,
   initialFormFields,
   id,
-  // addPic,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({

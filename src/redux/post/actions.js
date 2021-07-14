@@ -8,10 +8,6 @@ import {
   GET_POST_DETAIL_FAIL,
   GET_USER_POSTS_SUCCESS,
   GET_USER_POSTS_FAIL,
-  GET_USER_ROOMMATE_POSTS_SUCCESS,
-  GET_USER_ROOMMATE_POSTS_FAIL,
-  GET_USER_HOUSING_POSTS_SUCCESS,
-  GET_USER_HOUSING_POSTS_FAIL,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAIL,
   EDIT_POST_SUCCESS,
@@ -56,48 +52,48 @@ const cancelSearchErrorMsg = " Unable to cancel search";
 const addPicFailErrorMsg = " Unable to add pic";
 
 // Async actions creators
-export const getPostList = (type, page) => async (dispatch) => {
-  // Loading
-  dispatch(postLoading());
+export const getPostList = (type, page) =>
+  async (dispatch) => {
+    // Loading
+    dispatch(postLoading());
 
-  // Draft request
-  const config = { headers: { "Content-Type": "application/json" } };
+    // Draft request
+    const config = { headers: { "Content-Type": "application/json" } };
 
-  // Get request
-  try {
-    var res
-    if (type === undefined && page == undefined) {
-      res = await axios.get(`/form/post-list/`, config);
-    } else if (type !== undefined && page === undefined) {
-      res = await axios.get(`/form/post-list/?form_type=${type}`, config);
-    } else if (type === undefined && page !== undefined) {
-      res = await axios.get(`/form/post-list/?page=${page}`, config);
-    } else {
-      res = await axios.get(`/form/post-list/?form_type=${type}&page=${page}`, config)
+    // Get request
+    try {
+      var res
+      if (type === undefined && page == undefined) {
+        res = await axios.get(`/form/post-list/`, config);
+      } else if (type !== undefined && page === undefined) {
+        res = await axios.get(`/form/post-list/?form_type=${type}`, config);
+      } else if (type === undefined && page !== undefined) {
+        res = await axios.get(`/form/post-list/?page=${page}`, config);
+      } else {
+        res = await axios.get(`/form/post-list/?form_type=${type}&page=${page}`, config)
+      }
+      dispatch(getPostListSuccess(type, res.data));
+    } catch (err) {
+      dispatch(getPostListFail(getPostListErrorMsg));
     }
+  };
 
-    dispatch(getPostListSuccess(type, res.data));
-  } catch (err) {
-    dispatch(getPostListFail(getPostListErrorMsg));
-  }
-};
+export const getPostDetail = (id) =>
+  async (dispatch) => {
+    // Loading
+    dispatch(postLoading());
 
-export const getPostDetail = (id) => async (dispatch) => {
-  // Loading
-  dispatch(postLoading());
+    // Draft request
+    const config = { headers: { "Content-Type": "application/json" } };
 
-  // Draft request
-  const config = { headers: { "Content-Type": "application/json" } };
-
-  // Get request
-  try {
-    const res = await axios.get(`/form/post-list/${id}/`, config);
-
-    dispatch(getPostDetailSuccess(res.data));
-  } catch (err) {
-    dispatch(getPostDetailFail(getPostDetailErrorMsg));
-  }
-};
+    // Get request
+    try {
+      const res = await axios.get(`/form/post-list/${id}/`, config);
+      dispatch(getPostDetailSuccess(res.data));
+    } catch (err) {
+      dispatch(getPostDetailFail(getPostDetailErrorMsg));
+    }
+  };
 
 export const getUserPosts = (owner, type) =>
   async (dispatch) => {
@@ -112,44 +108,20 @@ export const getUserPosts = (owner, type) =>
       } else {
         res = await axios.get(`/form/post-list/?owner=${owner}`, config);
       }
-
       dispatch(getUserPostsSuccess(type, res.data));
     } catch (err) {
-      dispatch(getUserPostsFail(getUserPostsErrorMsg));
+      if (type === ROOMMATE_FORM) {
+        dispatch(getUserPostsFail(getUserRoommatePostsErrorMsg));
+      } else if (type === HOUSING_FORM) {
+        dispatch(getUserPostsFail(getUserHousingPostsErrorMsg));
+      } else {
+        dispatch(getUserPostsFail(getUserPostsErrorMsg));
+      }
     }
   };
 
-// export const getUserRoommatePosts = (owner) =>
-//   async (dispatch) => {
-//     // Draft request
-//     const config = { headers: { "Content-Type": "application/json" } };
-
-//     // Get request
-//     try {
-//       const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${ROOMMATE_FORM}`, config);
-
-//       dispatch(getUserRoommatePostsSuccess(res.data));
-//     } catch (err) {
-//       dispatch(getUserRoommatePostsFail(getUserRoommatePostsErrorMsg));
-//     }
-//   };
-
-// export const getUserHousingPosts = (owner) => async (dispatch) => {
-//   // Draft request
-//   const config = { headers: { "Content-Type": "application/json" } };
-
-//   // Get request
-//   try {
-//     const res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${HOUSING_FORM}`, config);
-
-//     dispatch(getUserHousingPostsSuccess(res.data));
-//   } catch (err) {
-//     dispatch(getUserHousingPostsFail(getUserHousingPostsErrorMsg));
-//   }
-// };
-
-export const createPost =
-  (post_form_type, selected_choices, owner, picture) => async (dispatch) => {
+export const createPost = (post_form_type, selected_choices, owner, picture) =>
+  async (dispatch) => {
     // Loading
     dispatch(postLoading());
 
@@ -160,7 +132,7 @@ export const createPost =
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `JWT ${token}`,
+        "Authorization": `JWT ${token}`,
       },
     };
     if (picture) {
@@ -220,6 +192,73 @@ export const editPost =
     total_score,
     picture
   ) =>
+    async (dispatch) => {
+      // Loading
+      dispatch(postLoading());
+
+      // Get access token from local storage
+      const token = localStorage.getItem("access");
+
+      // Draft request
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${token}`,
+        },
+      };
+
+      if (picture) {
+        const images = [];
+        const dummy = Array.from(Array(picture.length).keys());
+
+        dummy.forEach((i) => {
+          S3FileUpload.uploadFile(picture[i], s3config)
+            .then((data) => {
+              images.push(data.location);
+            })
+            .then(async () => {
+              if (images.length === picture.length) {
+                const body = JSON.stringify({
+                  post_form_type,
+                  selected_choices,
+                  owner,
+                  score_list,
+                  total_score,
+                  images,
+                });
+
+                // Put request
+                try {
+                  await axios.put(`/form/post-list/${id}/`, body, config);
+
+                  dispatch(editPostSuccess());
+                } catch (err) {
+                  dispatch(editPostFail(editPostErrorMsg));
+                }
+              }
+            });
+        });
+      } else {
+        const body = JSON.stringify({
+          post_form_type,
+          selected_choices,
+          owner,
+          score_list,
+          total_score,
+        });
+
+        // Put request
+        try {
+          await axios.put(`/form/post-list/${id}/`, body, config);
+
+          dispatch(editPostSuccess());
+        } catch (err) {
+          dispatch(editPostFail(editPostErrorMsg));
+        }
+      }
+    };
+
+export const deletePost = (id) =>
   async (dispatch) => {
     // Loading
     dispatch(postLoading());
@@ -231,108 +270,38 @@ export const editPost =
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `JWT ${token}`,
+        "Authorization": `JWT ${token}`,
       },
     };
 
-    if (picture) {
-      const images = [];
-      const dummy = Array.from(Array(picture.length).keys());
-
-      dummy.forEach((i) => {
-        S3FileUpload.uploadFile(picture[i], s3config)
-          .then((data) => {
-            images.push(data.location);
-          })
-          .then(async () => {
-            if (images.length === picture.length) {
-              const body = JSON.stringify({
-                post_form_type,
-                selected_choices,
-                owner,
-                score_list,
-                total_score,
-                images,
-              });
-
-              // Put request
-              try {
-                await axios.put(`/form/post-list/${id}/`, body, config);
-
-                dispatch(editPostSuccess());
-              } catch (err) {
-                dispatch(editPostFail(editPostErrorMsg));
-              }
-            }
-          });
-      });
-    } else {
-      const body = JSON.stringify({
-        post_form_type,
-        selected_choices,
-        owner,
-        score_list,
-        total_score,
-      });
-
-      // Put request
-      try {
-        await axios.put(`/form/post-list/${id}/`, body, config);
-
-        dispatch(editPostSuccess());
-      } catch (err) {
-        dispatch(editPostFail(editPostErrorMsg));
-      }
+    // Post request
+    try {
+      await axios.delete(`/form/post-list/${id}/`, config);
+      dispatch(deletePostSuccess());
+    } catch (err) {
+      dispatch(deletePostFail(deletePostErrorMsg));
     }
   };
 
-export const deletePost = (id) => async (dispatch) => {
-  // Loading
-  dispatch(postLoading());
+export const searchPost = (formType, searchItem) =>
+  async (dispatch) => {
+    dispatch(postLoading());
 
-  // Get access token from local storage
-  const token = localStorage.getItem("access");
+    // Request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-  // Draft request
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `JWT ${token}`,
-    },
+    // Get request
+    try {
+      const res = await axios.get(`/form/post-list/?form_type=${formType}&search=${searchItem}`, config);
+      dispatch(searchPostSuccess(res.data));
+    } catch (err) {
+      dispatch(searchPostFail(searchPostErrorMsg));
+    }
   };
-
-  // Post request
-  try {
-    await axios.delete(`/form/post-list/${id}/`, config);
-
-    dispatch(deletePostSuccess());
-  } catch (err) {
-    dispatch(deletePostFail(deletePostErrorMsg));
-  }
-};
-
-export const searchPost = (formType, searchItem) => async (dispatch) => {
-  dispatch(postLoading());
-
-  // Request
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  // Get request
-  try {
-    const res = await axios.get(
-      `/form/post-list/?form_type=${formType}&search=${searchItem}`,
-      config
-    );
-
-    dispatch(searchPostSuccess(res.data));
-  } catch (err) {
-    dispatch(searchPostFail(searchPostErrorMsg));
-  }
-};
 
 export const cancelSearch = () => async (dispatch) => {
   try {
@@ -341,6 +310,8 @@ export const cancelSearch = () => async (dispatch) => {
     dispatch(cancelSearchFail(cancelSearchErrorMsg));
   }
 };
+
+
 
 // Action Creators
 export const getPostListSuccess = (type, resdata) => ({
