@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -6,16 +6,11 @@ import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Input
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
-import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT } from '../globalConstants'
+import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT, SELECT, FILE } from '../globalConstants'
 
 // HousingForm consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 
-const TextQuestion = ({
-  question,
-  formFields,
-  handleChange,
-  currentCategory,
-}) => (
+const TextQuestion = ({ question, formFields, handleChange, currentCategory }) => (
   <>
     {/* Question */}
     <Typography variant="h6" color="textPrimary">
@@ -33,20 +28,48 @@ const TextQuestion = ({
   </>
 );
 
+const FileQuestion = ({ question, formFields, handleCapture, currentCategory }) => {
+  // Hooks
+  const inputButton = useRef()
+
+  // Handlers
+  const handleClick = () => { inputButton.current.click() }
+
+  return (
+    <>
+      {/* Question */}
+      <Typography variant="h6" color="textPrimary">
+        {question.question_text}
+      </Typography>
+
+      {/* Choices */}
+      <input
+        type="file"
+        id="image"
+        accept="image/png, image/jpeg"
+        multiple
+        onChange={(e) => handleCapture(e, currentCategory)}
+        name={question.id}
+        ref={inputButton}
+        style={{ display: "none" }}
+      />
+
+      <Button variant="contained" color="primary" onClick={handleClick}>Upload</Button>
+
+      <Typography variant="body1" display="inline" style={{ marginLeft: 10 }}>
+        {formFields[currentCategory]?.[question.id]?.choice?.join(', ') || "No photo(s) uploaded."}
+      </Typography>
+    </>
+  )
+}
+
 const HousingForm = ({
   user,
-  getQuestions,
-  housingCategories,
-  getPostList,
-  housingQuestions,
-  createPost,
-  createPostSuccess,
-  resetCreatePostSuccess,
-  editPost,
-  editPostSuccess,
-  resetEditPostSuccess,
-  initialFormFields,
-  id,
+  getQuestions, housingQuestions,
+  getPostList, housingCategories,
+  createPost, createPostSuccess, resetCreatePostSuccess,
+  editPost, editPostSuccess, resetEditPostSuccess,
+  initialFormFields, id,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -96,6 +119,7 @@ const HousingForm = ({
   const [selectedFile, setSelectedFile] = useState(undefined);
 
   // Handlers
+  // Stepper
   const handleNext = () => {
     window.scrollTo(0, 0);
     setCurrentCategory((prev) => prev + 1);
@@ -110,9 +134,9 @@ const HousingForm = ({
     window.scrollTo(0, 0);
     setCurrentCategory((prev) => prev - 1);
   };
-  const handleStep = (category) => () =>
-    category <= maxCategory ? setCurrentCategory(category) : null;
+  const handleStep = (category) => () => category <= maxCategory ? setCurrentCategory(category) : null;
 
+  // Form fields
   const handleChange = (e, category, type) => {
     switch (type) {
       case SINGLE_CHOICE:
@@ -153,29 +177,32 @@ const HousingForm = ({
         break;
     }
   };
-
-  const handleConfirmation = () => {
-    setOpen(true);
+  const handleCapture = (e, category) => {
+    setSelectedFile(e.target.files);
+    setFormFields({
+      ...formFields,
+      [category]: {
+        ...formFields[category],
+        [e.target.name]: {
+          ...formFields[category]?.[e.target.name],
+          question: e.target.name,
+          choice: Array.from(e.target.files).map(file => file.name),
+        },
+      },
+    });
   };
+
+  // Confirmation dialog
+  const handleConfirmation = () => { setOpen(true); };
   const handleCancel = () => setOpen(false);
   const handleSubmit = () => {
-    const data = Object.values(formFields).map((category) =>
-      Object.values(category)
-    );
+    const data = Object.values(formFields).map((category) => Object.values(category));
     const userObj = {
       first_name: user.first_name,
       last_name: user.last_name,
     };
     if (id) {
-      editPost(
-        id,
-        HOUSING_FORM,
-        data,
-        userObj,
-        undefined,
-        undefined,
-        selectedFile
-      );
+      editPost(id, HOUSING_FORM, data, userObj, undefined, undefined, selectedFile);
     } else {
       createPost(HOUSING_FORM, data, userObj, selectedFile);
     }
@@ -187,27 +214,16 @@ const HousingForm = ({
     history.push("/housings");
   };
 
-  const handleCapture = ({ target }) => {
-    setSelectedFile(target.files);
-  };
-
   // componentDidMount
   // Get housing form questions
-  useEffect(() => {
-    if (housingQuestions.length === 0) getQuestions(HOUSING_FORM);
-  }, []);
+  useEffect(() => { if (housingQuestions.length === 0) getQuestions(HOUSING_FORM); }, []);
   // Get housing form categories
-  useEffect(() => {
-    if (housingCategories.length === 0) getPostList(HOUSING_FORM);
-  }, []);
+  useEffect(() => { if (housingCategories.length === 0) getPostList(HOUSING_FORM); }, []);
   // Get existing housing form data
   useEffect(() => {
     if (initialFormFields) {
       setFormFields(initialFormFields);
-      const allCompleted = housingCategories.reduce(
-        (prev, curr, index) => ({ ...prev, [index]: true }),
-        {}
-      );
+      const allCompleted = housingCategories.reduce((prev, curr, index) => ({ ...prev, [index]: true }), {});
       setCategoryCompleted(allCompleted);
       setMaxCategory(housingCategories.length);
     }
@@ -346,37 +362,23 @@ const HousingForm = ({
                       </Grid>
                       {/* Choices */}
                       <Grid item xs={5}>
-                        {question.question_type === MULTIPLE_CHOICE ? (
+                        {question.question_type === MULTIPLE_CHOICE ||
+                          question.question_type === FILE
+                          ?
                           // Multiple choice
                           <Typography variant="body1" gutterBottom>
-                            {formFields[categoryIndex]?.[
-                              question.id
-                            ]?.choice?.reduce(
-                              (prev, curr) =>
-                                (prev ? prev + ", " : prev) + curr,
-                              ""
-                            )}
+                            {formFields[categoryIndex]?.[question.id]?.choice?.join(", ")}
                           </Typography>
-                        ) : (
+                          :
                           // Single choice
                           <Typography variant="body1" gutterBottom>
                             {formFields[categoryIndex]?.[question.id]?.choice}
                           </Typography>
-                        )}
+                        }
                       </Grid>
-                    </Grid>
-                  ))}
+                    </Grid>))}
               </Grid>
-            </Grid>
-          ))}
-        {/* Upload File */}
-        <input
-          type="file"
-          id="image"
-          accept="image/png, image/jpeg"
-          multiple
-          onChange={handleCapture}
-        />
+            </Grid>))}
       </Grid>
 
       {/* Back and submit buttons */}
@@ -405,22 +407,26 @@ const HousingForm = ({
           )
           .map((question) => (
             <Grid item xs={12} key={question.id} style={{ marginBottom: 32 }}>
-              {question.question_type === SINGLE_CHOICE ? (
-                <SingleChoiceQuestion question={question} />
-              ) : question.question_type === MULTIPLE_CHOICE ? (
-                <MultipleChoiceQuestion question={question} />
-              ) : question.question_type === TEXT ? (
-                <TextQuestion
-                  question={question}
-                  formFields={formFields}
-                  handleChange={handleChange}
-                  currentCategory={currentCategory}
-                />
-              ) : (
-                <SelectQuestion question={question} />
-              )}
-            </Grid>
-          ))}
+              {question.question_type === SINGLE_CHOICE
+                ? <SingleChoiceQuestion question={question} />
+                : question.question_type === MULTIPLE_CHOICE
+                  ? <MultipleChoiceQuestion question={question} />
+                  : question.question_type === TEXT
+                    ? <TextQuestion
+                      question={question}
+                      formFields={formFields}
+                      handleChange={handleChange}
+                      currentCategory={currentCategory}
+                    />
+                    : question.question_type === SELECT
+                      ? <SelectQuestion question={question} />
+                      : <FileQuestion
+                        question={question}
+                        formFields={formFields}
+                        handleCapture={handleCapture}
+                        currentCategory={currentCategory}
+                      />}
+            </Grid>))}
       </Grid>
 
       {/* Back and next buttons */}
@@ -498,7 +504,6 @@ const mapDispatchToProps = {
   resetEditPostSuccess,
   getUserPosts,
   getPostList,
-  // addPic,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HousingForm);

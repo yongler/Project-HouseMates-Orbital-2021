@@ -67,9 +67,7 @@ const RoommateDetail = ({
   const { id } = useParams();
 
   // Handlers
-  const handleBack = () => {
-    history.push(prevPath);
-  };
+  const handleBack = () => { history.push(prevPath); };
   const handleClick = () => {
     history.push("/roommate-form");
   };

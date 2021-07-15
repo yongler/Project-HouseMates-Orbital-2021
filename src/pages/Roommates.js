@@ -7,7 +7,7 @@ import Pagination from '@material-ui/lab/Pagination'
 import AddIcon from "@material-ui/icons/Add"
 import EditIcon from "@material-ui/icons/Edit"
 import RoommateCard from '../components/RoommateCard'
-import { getPostDetail, getPostList, getUserPosts } from "../redux/post/actions"
+import { getPostList, getUserPosts } from "../redux/post/actions"
 import { PAGINATION, ROOMMATE_FORM } from '../globalConstants'
 
 // Posts consists of list of Roommate and post button.

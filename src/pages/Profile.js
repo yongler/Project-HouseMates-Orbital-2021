@@ -41,7 +41,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import ProfileComponent from "../components/ProfileComponent";
-import { ROOMMATE_FORM } from "../globalConstants";
+import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
+import Pic from '../static/housing.jpg'
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
@@ -49,7 +50,7 @@ const Profile = ({
   changeProfilePic,
   editBio, editBioSuccess, resetEditBioSuccess,
   userRoommatePosts, getUserPosts,
-  post, getPostDetail,
+  post, housingPost, getPostDetail,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -81,6 +82,7 @@ const Profile = ({
   const [bio, setBio] = useState("");
   const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([])
   const [topThreeRoommates, setTopThreeRoommates] = useState([])
+  const [starredHousings, setStarredHousings] = useState([])
 
   // Handlers
   const handleChangePassword = () => { history.push("/change-password"); };
@@ -112,12 +114,8 @@ const Profile = ({
 
   // Top 3 roommates
   // Get user roommate post
-  useEffect(() => {
-    if (user) {
-      getUserPosts(user.id, ROOMMATE_FORM)
-    }
-  }, [user])
-  // After getting user roommate post, sort user roommate post score list and extract roommate id of the top 3 scores
+  useEffect(() => { if (user) { getUserPosts(user.id, ROOMMATE_FORM) } }, [user])
+  // Sort user roommate post score list and get top 3 roommates id
   useEffect(() => {
     if (userRoommatePosts.length > 0) {
       const unsortedScoreList = Object.values(userRoommatePosts[0].score_list)
@@ -129,18 +127,32 @@ const Profile = ({
       setTopThreeRoommatesId(topThreeRoommatesId)
     }
   }, [userRoommatePosts])
-  // After extracting top 3 roommates id, get post detail page of that id
+  // Get post detail page of top 3 roommates id
   useEffect(() => {
     if (topThreeRoommatesId.length > 0 && topThreeRoommates.length < topThreeRoommatesId.length) {
       getPostDetail(topThreeRoommatesId[topThreeRoommates.length])
     }
   }, [topThreeRoommatesId, topThreeRoommates])
-  // After getting post detail page, add to top 3 roommates array
+  // Add to top 3 roommates array
   useEffect(() => {
     if (post && post.id === topThreeRoommatesId[topThreeRoommates.length]) {
       setTopThreeRoommates([...topThreeRoommates, post])
     }
   }, [post])
+
+  // Starred Housings
+  // Get post detail page of starred housings
+  useEffect(() => {
+    if (user?.favourites.length > 0 && starredHousings.length < user.favourites.length) {
+      getPostDetail(user.favourites[starredHousings.length])
+    }
+  }, [user, starredHousings])
+  // Add to starred housings array
+  useEffect(() => {
+    if (housingPost && housingPost.id === user?.favourites[starredHousings.length]) {
+      setStarredHousings([...starredHousings, housingPost])
+    }
+  }, [housingPost])
 
   return (
     <div className={classes.card}>
@@ -341,13 +353,25 @@ const Profile = ({
                     Starred Housings
                   </Typography>
                 </span>
-                <Typography
-                  variant="body1"
-                  color="textSecondary"
-                  align="center"
-                >
-                  No starred housings.
-                </Typography>
+                {starredHousings.length === 0
+                  ?
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    No starred housings.
+                  </Typography>
+                  :
+                  starredHousings.map(post => (
+                    <ProfileComponent
+                      key={post.id}
+                      name={post.selected_choices[0][0].choice}
+                      desc={post.selected_choices[0][1].choice}
+                      pic={Pic}
+                      type={HOUSING_FORM}
+                      id={post.id}
+                    />))}
               </Paper>
             </Grid>
             <Grid item xs={4}>
@@ -379,6 +403,7 @@ const mapStateToProps = (state) => ({
   editBioSuccess: state.auth.editBioSuccess,
   userRoommatePosts: state.post.userRoommatePosts,
   post: state.post.post,
+  housingPost: state.post.housingPost,
 });
 
 const mapDispatchToProps = {

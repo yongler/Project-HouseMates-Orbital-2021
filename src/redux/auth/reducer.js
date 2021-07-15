@@ -26,6 +26,7 @@ import {
   RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
   RESET_EDIT_BIO_SUCCESS,
+  RESET_EDIT_FAVOURITES_SUCCESS,
   CHANGE_PROFILE_PIC_SUCCESS,
   CHANGE_PROFILE_PIC_FAIL,
   EDIT_BIO_SUCCESS,
@@ -49,6 +50,7 @@ const initialState = {
   resetPasswordConfirmSuccess: false,
   changePasswordSuccess: false,
   editBioSuccess: false,
+  editFavouritesSuccess: false,
   authErrorMsg: "",
   authLoading: false,
   profileLoading: false,
@@ -293,6 +295,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         profileLoading: false,
+        editFavouritesSuccess: true,
       };
 
     case EDIT_FAVOURITES_FAIL:
@@ -300,12 +303,19 @@ const authReducer = (state = initialState, action) => {
         ...state,
         profileLoading: false,
         authErrorMsg: payload,
+        editFavouritesSuccess: false,
       };
 
     case RESET_EDIT_BIO_SUCCESS:
       return {
         ...state,
         editBioSuccess: false,
+      };
+
+    case RESET_EDIT_FAVOURITES_SUCCESS:
+      return {
+        ...state,
+        editFavouritesSuccess: false,
       };
 
     case SET_PREV_PATH:

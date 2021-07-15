@@ -28,6 +28,7 @@ import {
   RESET_AUTH_ERROR_MSG,
   RESET_CHANGE_PASSWORD_SUCCESS,
   RESET_EDIT_BIO_SUCCESS,
+  RESET_EDIT_FAVOURITES_SUCCESS,
   CHANGE_PROFILE_PIC_SUCCESS,
   CHANGE_PROFILE_PIC_FAIL,
   EDIT_BIO_SUCCESS,
@@ -452,9 +453,6 @@ export const editBio = (bio) =>
 // Edit favourites
 export const editFavourites = (favourites) =>
   async (dispatch) => {
-    // Loading
-    dispatch(profileLoading());
-
     // Get access token from local storage
     const token = localStorage.getItem("access");
 
@@ -466,7 +464,6 @@ export const editFavourites = (favourites) =>
       },
     };
     const body = JSON.stringify({ favourites });
-    console.log(body)
 
     // Put request
     try {
@@ -561,6 +558,7 @@ export const resetChangePasswordSuccess = () => ({
   type: RESET_CHANGE_PASSWORD_SUCCESS,
 });
 export const resetEditBioSuccess = () => ({ type: RESET_EDIT_BIO_SUCCESS });
+export const resetEditFavouritesSuccess = () => ({ type: RESET_EDIT_FAVOURITES_SUCCESS });
 
 export const changeProfilePicSuccess = (picture) => ({
   type: CHANGE_PROFILE_PIC_SUCCESS,

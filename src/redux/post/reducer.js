@@ -33,6 +33,7 @@ const initialState = {
   posts: [],
   postsType: [],
   post: null,
+  housingPost: null,
   userPosts: [],
   userRoommatePosts: [],
   userHousingPosts: [],
@@ -70,11 +71,20 @@ const postReducer = (state = initialState, action) => {
       };
 
     case GET_POST_DETAIL_SUCCESS:
-      return {
-        ...state,
-        postLoading: false,
-        post: payload,
-      };
+      if (payload.post_form_type === ROOMMATE_FORM) {
+        return {
+          ...state,
+          postLoading: false,
+          post: payload,
+        };
+      } else {
+        return {
+          ...state,
+          postLoading: false,
+          housingPost: payload,
+        };
+      }
+
 
     case GET_POST_DETAIL_FAIL:
       return {
