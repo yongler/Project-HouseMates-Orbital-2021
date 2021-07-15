@@ -221,8 +221,8 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": " /reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
-    # "SEND_CONFIRMATION_EMAIL": True,
-    # "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     # 'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
@@ -232,12 +232,6 @@ DJOSER = {
         "current_user": "accounts.serializers.userProfileSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
-    # "PERMISSIONS": {
-    #     'user': ['rest_framework.permissions.AllowAny'],
-    #     'user_list': ['rest_framework.permissions.AllowAny'],
-    #     # 'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-    #     # 'user_list': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-    # }
 }
 
 # Default primary key field type

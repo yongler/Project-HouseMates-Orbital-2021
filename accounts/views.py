@@ -1,5 +1,6 @@
 from rest_framework.generics import (ListCreateAPIView,RetrieveUpdateDestroyAPIView,)
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 from .models import CustomUser
 from .permissions import IsOwnerProfileOrReadOnly
 from .serializers import userProfileSerializer
@@ -8,8 +9,25 @@ from .serializers import userProfileSerializer
 from django.views import View
 from django.http import HttpResponse, HttpResponseNotFound
 import os
-
+from djoser import signals, utils
+from rest_framework import generics, status, views, viewsets
+from rest_framework.decorators import action
+from djoser.compat import get_user_email
+from djoser.conf import settings
 # Create your views here.   
+from djoser.views import UserViewSet as DjoserUserViewSet
+
+class UserProfileListViewSet(DjoserUserViewSet):
+    queryset=CustomUser.objects.all()
+    serializer_class=userProfileSerializer
+    permission_classes=[IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        user=self.request.user
+        serializer.save(user=user)
+
+    def perform_update(self, serializer):
+        viewsets.ModelViewSet.perform_update(self, serializer)
 
 class UserProfileListCreateView(ListCreateAPIView):
     queryset=CustomUser.objects.all()
@@ -20,6 +38,13 @@ class UserProfileListCreateView(ListCreateAPIView):
         user=self.request.user
         serializer.save(user=user)
 
+    def partial_update(self, request, *args, **kwargs):
+        user=self.request.user
+        serializer = userProfileSerializer(user, request, partial=True)
+        if serializer.is_valid:
+            serializer.save(user=user)
+
+        return Response(self.get_serializer(request.user).data)
 
 class userProfileDetailView(RetrieveUpdateDestroyAPIView):
     queryset=CustomUser.objects.all()
