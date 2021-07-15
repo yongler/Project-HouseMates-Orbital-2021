@@ -341,24 +341,6 @@ export const getUserPostsFail = (postErrorMsg) => ({
   payload: postErrorMsg,
 });
 
-// export const getUserRoommatePostsSuccess = (userRoommatePosts) => ({
-//   type: GET_USER_ROOMMATE_POSTS_SUCCESS,
-//   payload: userRoommatePosts,
-// });
-// export const getUserRoommatePostsFail = (postErrorMsg) => ({
-//   type: GET_USER_ROOMMATE_POSTS_FAIL,
-//   payload: postErrorMsg,
-// });
-
-// export const getUserHousingPostsSuccess = (userHousingPosts) => ({
-//   type: GET_USER_HOUSING_POSTS_SUCCESS,
-//   payload: userHousingPosts,
-// });
-// export const getUserHousingPostsFail = (postErrorMsg) => ({
-//   type: GET_USER_HOUSING_POSTS_FAIL,
-//   payload: postErrorMsg,
-// });
-
 export const createPostSuccess = () => ({ type: CREATE_POST_SUCCESS });
 export const createPostFail = (postErrorMsg) => ({
   type: CREATE_POST_FAIL,

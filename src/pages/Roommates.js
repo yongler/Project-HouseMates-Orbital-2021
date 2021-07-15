@@ -70,7 +70,7 @@ const Roommates = ({
                   key={post.id}
                   className={classes.grid}
                 >
-                  <RoommateCard post={post} />
+                  <RoommateCard post={post} page={page}/>
                 </Grid>
               ))}
             </Grid>

@@ -12,15 +12,11 @@ import { loadUser } from "../redux/auth/actions";
 
 // RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.fUSER
 const RoommateCard = ({
-  user,
-  userRoommatePosts,
-  post,
-  deletePostSuccess,
-  deletePost,
-  resetDeletePostSuccess,
-  getUserPosts,
+  post, page,
+  user, loadUser,
+  deletePost, deletePostSuccess, resetDeletePostSuccess,
   getPostList,
-  loadUser,
+  userRoommatePosts, getUserPosts,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -68,7 +64,7 @@ const RoommateCard = ({
   const handleDelete = () => { deletePost(post.id); };
   const handleClose = () => {
     resetDeletePostSuccess();
-    getPostList(ROOMMATE_FORM);
+    getPostList(ROOMMATE_FORM, page);
     getUserPosts(user.id, ROOMMATE_FORM);
     setOpen(false);
   };

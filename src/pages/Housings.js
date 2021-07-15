@@ -58,7 +58,7 @@ const Housings = ({
             <Grid container spacing={2}>
               {postToRender.map(post => (
                 <Grid item xs={12} key={post.id} className={classes.grid}>
-                  <HousingCard post={post} />
+                  <HousingCard post={post} page={page}/>
                 </Grid>
               ))}
             </Grid>

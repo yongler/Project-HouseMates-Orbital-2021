@@ -15,7 +15,7 @@ import { editFavourites, loadUser, resetEditFavouritesSuccess } from '../redux/a
 
 // HousingCardCard consists of housing description: name and facilities, and pic.
 const HousingCard = ({
-  post,
+  post, page,
   user, loadUser,
   deletePost, deletePostSuccess, resetDeletePostSuccess,
   getPostList,
@@ -65,21 +65,13 @@ const HousingCard = ({
   const [open, setOpen] = useState(false);
 
   // Handlers
-  const handleEdit = () => {
-    history.push(`/edit-housing-form/${post.id}`);
-  };
-  const handleOpenConfirmationDialog = () => {
-    setOpen(true);
-  };
-  const handleCancel = () => {
-    setOpen(false);
-  };
-  const handleDelete = () => {
-    deletePost(post.id);
-  };
+  const handleEdit = () => { history.push(`/edit-housing-form/${post.id}`); };
+  const handleOpenConfirmationDialog = () => { setOpen(true); };
+  const handleCancel = () => { setOpen(false); };
+  const handleDelete = () => { deletePost(post.id); };
   const handleClose = () => {
     resetDeletePostSuccess()
-    getPostList(HOUSING_FORM)
+    getPostList(HOUSING_FORM, page)
     setOpen(false)
   }
   const handleFavourites = () => {
