@@ -5,7 +5,6 @@ import { Link, useHistory } from 'react-router-dom'
 import { getPostList } from '../redux/post/actions'
 import { Paper, Typography } from '@material-ui/core'
 import ProfileComponent from '../components/ProfileComponent'
-import Pic from '../static/housing.jpg'
 import { HOUSING_FORM, ROOMMATE_FORM } from '../globalConstants'
 
 const Home = ({ posts, postLoading, getPostList }) => {
@@ -41,7 +40,7 @@ const Home = ({ posts, postLoading, getPostList }) => {
                   key={post.id}
                   name={post.selected_choices[0][0].choice}
                   desc={post.selected_choices[0][1].choice}
-                  pic={Pic}
+                  pic={post.images[0]}
                   type={HOUSING_FORM}
                   id={post.id}
                 />

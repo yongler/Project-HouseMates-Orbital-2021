@@ -2,39 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Avatar,
-  Box,
-  Button,
-  ButtonBase,
-  Card,
-  CardContent,
-  CardHeader,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  TextField,
-  Typography,
-  MenuItem,
-  MenuList,
-} from "@material-ui/core";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Avatar, Badge, Box, Button, Grid, IconButton, Paper, TextField, Typography, MenuItem, MenuList } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import ChatIcon from "@material-ui/icons/Chat";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import HomeIcon from "@material-ui/icons/Home";
 import PeopleIcon from "@material-ui/icons/People";
-import Badge from "@material-ui/core/Badge";
-import {
-  loadUser,
-  changeProfilePic,
-  editBio,
-  resetEditBioSuccess,
-} from "../redux/auth/actions";
+import { loadUser, changeProfilePic, editBio, resetEditBioSuccess } from "../redux/auth/actions";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -42,7 +16,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import ProfileComponent from "../components/ProfileComponent";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
-import Pic from '../static/housing.jpg'
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
@@ -89,9 +62,7 @@ const Profile = ({
   const handleDeleteAccount = () => { history.push("/delete-account"); };
   const handleClickOpen = () => { setOpen(true); };
   const handleClose = () => { setOpen(false); };
-  const handleCapture = ({ target }) => {
-    setSelectedFile(target.files[0]);
-  };
+  const handleCapture = ({ target }) => { setSelectedFile(target.files[0]); };
   const handleSubmit = () => {
     changeProfilePic(selectedFile);
     setOpen(false);
@@ -368,7 +339,7 @@ const Profile = ({
                       key={post.id}
                       name={post.selected_choices[0][0].choice}
                       desc={post.selected_choices[0][1].choice}
-                      pic={Pic}
+                      pic={post.images[0]}
                       type={HOUSING_FORM}
                       id={post.id}
                     />))}
