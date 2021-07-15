@@ -40,7 +40,6 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     "django.contrib.admin",
@@ -57,8 +56,9 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "main",
-    "scrapypost"
-    # 'storages',
+    "scrapypost",
+    "chat",
+    "channels", 
 ]
 
 MIDDLEWARE = [
@@ -81,6 +81,16 @@ ROOT_URLCONF = "HouseMates.urls"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+        # "BACKEND": "asgi_redis.RedisChannelLayer",
+    #     "CONFIG": {
+    #         "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+    #     },
+    #     "ROUTING": "chat.routing.channel_routing",
+    },
+}
 
 TEMPLATES = [
     {
@@ -240,3 +250,5 @@ CORS_ALLOW_CREDENTIALS = True
 django_heroku.settings(locals())
 options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
+
+ASGI_APPLICATION = "HouseMates.routing.application"

@@ -1,5 +1,4 @@
 appdirs==1.4.4
-asgiref==3.3.4
 attrs==21.2.0
 Automat==20.2.0
 beautifulsoup4==4.9.3

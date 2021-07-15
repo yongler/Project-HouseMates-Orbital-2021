@@ -21,7 +21,6 @@ from django.views import View
 from django.http import HttpResponse, HttpResponseNotFound
 import os
 
-# class QuestionView(generics.ListAPIView):
 class QuestionView(viewsets.ModelViewSet):
 	serializer_class = QuestionSerializer
 

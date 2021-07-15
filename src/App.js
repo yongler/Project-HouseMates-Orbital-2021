@@ -28,6 +28,7 @@ import Matchmaking from './components/Matchmaking'
 import EditHousingForm from './pages/EditHousingForm'
 import HousingDetail from './pages/HousingDetail'
 import EditRoommateForm from './pages/EditRoommateForm'
+import Chat from './pages/Chat'
 
 const App = () => {
   // Styling
@@ -70,6 +71,7 @@ const App = () => {
               <RouteWrapper path="/edit-housing-form/:id" component={EditHousingForm} layout={LayoutTwo} />
               <RouteWrapper path="/profile" component={Profile} layout={LayoutTwo} />
               <RouteWrapper path="/matchmaking" component={Matchmaking} layout={LayoutTwo} />
+              <RouteWrapper exact path="/chat" component={Chat} layout={LayoutTwo} />
               <RouteWrapper path="*" component={Home} layout={LayoutTwo} />
             </Switch>
           </Layout>
