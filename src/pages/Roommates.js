@@ -7,12 +7,12 @@ import Pagination from '@material-ui/lab/Pagination'
 import AddIcon from "@material-ui/icons/Add"
 import EditIcon from "@material-ui/icons/Edit"
 import RoommateCard from '../components/RoommateCard'
-import { getPostDetail, getPostList, getUserRoommatePosts } from "../redux/post/actions"
+import { getPostList, getUserPosts } from "../redux/post/actions"
 import { PAGINATION, ROOMMATE_FORM } from '../globalConstants'
 
 // Posts consists of list of Roommate and post button.
 const Roommates = ({
-  user, userRoommatePosts, getUserRoommatePosts,
+  user, userRoommatePosts, getUserPosts,
   posts, postsType, getPostList,
   postLoading,
   searchedPost,
@@ -50,7 +50,7 @@ const Roommates = ({
 
   // componentDidMount
   useEffect(() => { getPostList(ROOMMATE_FORM) }, [])
-  useEffect(() => (user ? getUserRoommatePosts(user.id) : null), [user])
+  useEffect(() => (user ? getUserPosts(user.id, ROOMMATE_FORM) : null), [user])
 
   const postToRender = searchedPost ? searchedPost : posts
 
@@ -70,7 +70,7 @@ const Roommates = ({
                   key={post.id}
                   className={classes.grid}
                 >
-                  <RoommateCard post={post} />
+                  <RoommateCard post={post} page={page}/>
                 </Grid>
               ))}
             </Grid>
@@ -127,7 +127,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getPostList,
-  getUserRoommatePosts,
+  getUserPosts,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Roommates)

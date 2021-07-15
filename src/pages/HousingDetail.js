@@ -5,20 +5,22 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Chip, Fab, Grid, IconButton, Paper, Tooltip, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { getPostDetail, getUserPost } from "../redux/post/actions";
+import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import { getQuestions } from "../redux/form/actions";
 import { HOUSING_FORM } from "../globalConstants";
 import Pic from '../static/housing.jpg'
+import ImageGallery from "../components/ImageGallery";
 
 // HousingDetail consists of profile pic, name, categories of tags and post button.
 const HousingDetail = ({
   user,
   userHousingPosts,
-  post,
+  housingPost,
   housingCategories,
   getPostDetail,
   getQuestions,
-  getUserPost,
+  getUserPosts,
+  prevPath,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -65,7 +67,7 @@ const HousingDetail = ({
   const { id } = useParams();
 
   // Handlers
-  const handleBack = () => { history.go(-1); };
+  const handleBack = () => { history.push(prevPath); };
   const handleClick = () => { history.push("/housing-form"); };
 
   // componentDidMount
@@ -73,11 +75,11 @@ const HousingDetail = ({
     if (housingCategories.length === 0) getQuestions(HOUSING_FORM);
     getPostDetail(id);
   }, []);
-  useEffect(() => (user ? getUserPost(user.id) : null), [user]);
+  useEffect(() => (user ? getUserPosts(user.id) : null), [user]);
 
   return (
     <div className={classes.card}>
-      {post?.id.toString() === id.toString()
+      {housingPost?.id.toString() === id.toString()
         ?
         <>
           <Card>
@@ -90,23 +92,24 @@ const HousingDetail = ({
             />
 
             <CardContent className={classes.content}>
-              <CardMedia
+              {/* <CardMedia
                 className={classes.media}
                 image={Pic}
-                title={post.selected_choices[0][0].choice}
-              />
+                title={housingPost.selected_choices[0][0].choice}
+              /> */}
+              <ImageGallery tutorialSteps={housingPost.images} />
 
               <br />
 
-              <Typography variant="h5">{post.selected_choices[0][0].choice}</Typography>
-              <Typography variant="body2" color="textSecondary">{post.selected_choices[0][1].choice}</Typography>
+              <Typography variant="h5">{housingPost.selected_choices[0][0].choice}</Typography>
+              <Typography variant="body2" color="textSecondary">{housingPost.selected_choices[0][1].choice}</Typography>
 
               <br /><br />
 
               <Grid container>
                 <Grid item xs={0} md={1} />
                 <Grid item xs={12} md={6}>
-                  {post.selected_choices.map((category, index) => (
+                  {housingPost.selected_choices.map((category, index) => (
                     index !== 0
                       ?
                       <div key={category} className={classes.category}>
@@ -147,12 +150,12 @@ const HousingDetail = ({
                   <Paper style={{ padding: 20 }}>
                     {/* Price */}
                     <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-                      <Typography variant="h6">SGD {post.selected_choices[0][3].choice}</Typography>
+                      <Typography variant="h6">SGD {housingPost.selected_choices[0][3].choice}</Typography>
                       <Typography variant="body2" color="textSecondary">&nbsp;/ night</Typography>
                     </div>
 
                     {/* Location */}
-                    <Typography variant="body2" color="textSecondary">Located at {post.selected_choices[0][2].choice}</Typography>
+                    <Typography variant="body2" color="textSecondary">Located at {housingPost.selected_choices[0][2].choice}</Typography>
 
                     <br />
 
@@ -160,14 +163,14 @@ const HousingDetail = ({
                       {/* Profile pic */}
                       <Avatar
                         className={classes.avatar}
-                        src={post.owner.profile_pic}
+                        src={housingPost.owner.profile_pic}
                       />
 
                       <div>
                         {/* Name */}
-                        <Typography>{post.owner.first_name} {post.owner.last_name}</Typography>
+                        <Typography>{housingPost.owner.first_name} {housingPost.owner.last_name}</Typography>
                         {/* Bio */}
-                        <Typography variant="body1" color="textSecondary">{post.owner.bio}</Typography>
+                        <Typography variant="body1" color="textSecondary">{housingPost.owner.bio}</Typography>
                       </div>
                     </div>
 
@@ -199,14 +202,15 @@ const HousingDetail = ({
 const mapPropsToState = (state) => ({
   user: state.auth.user,
   userHousingPosts: state.post.userHousingPosts,
-  post: state.post.post,
+  housingPost: state.post.housingPost,
   housingCategories: state.form.housingCategories,
+  prevPath: state.auth.prevPath,
 });
 
 const mapDispatchToProps = {
   getQuestions,
   getPostDetail,
-  getUserPost,
+  getUserPosts,
 };
 
 export default connect(mapPropsToState, mapDispatchToProps)(HousingDetail);

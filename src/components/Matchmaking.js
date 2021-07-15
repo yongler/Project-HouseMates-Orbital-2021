@@ -4,10 +4,10 @@ import { useHistory } from 'react-router-dom'
 import { Button, Paper, Typography } from '@material-ui/core'
 import { ROOMMATE_FORM, IRRELEVANT, A_LITTLE_IMPORTANT, SOMEWHAT_IMPORTANT, VERY_IMPORTANT, MANDATORY } from '../globalConstants'
 import { loadUser } from '../redux/auth/actions'
-import { getUserPost, getPostList, editPost, postLoading, resetEditPostSuccess } from '../redux/post/actions'
+import { getUserPosts, getPostList, editPost, postLoading, resetEditPostSuccess } from '../redux/post/actions'
 import './components.css'
 
-const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPost, getPostList, editPost, postLoading, loading, resetEditPostSuccess }) => {
+const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPosts, getPostList, editPost, postLoading, loading, resetEditPostSuccess }) => {
 
   // Hooks
   const history = useHistory()
@@ -71,17 +71,31 @@ const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPos
             otherPost.selected_choices.forEach((category, i) => {
               category.forEach((question, j) => {
                 // Update my post score
-                if (otherPost.selected_choices[i][j].myChoice === myPost.selected_choices[i][j].otherChoice ||
-                  Array.isArray(otherPost.selected_choices[i][j].myChoice) && equals(otherPost.selected_choices[i][j].myChoice, myPost.selected_choices[i][j].otherChoice)
-                ) myScore += getScore(myPost.selected_choices[i][j].priority)
+                if (Array.isArray(otherPost.selected_choices[i][j].myChoice)) {
+                  var same = 0
+                  var total = myPost.selected_choices[i][j].otherChoice.length
+                  for (let choice in otherPost.selected_choices[i][j].myChoice) {
+                    if (choice in myPost.selected_choices[i][j].otherChoice) same++
+                  }
+                  myScore += (getScore(myPost.selected_choices[i][j].priority) * (same / total))
+                } else {
+                  myScore += getScore(myPost.selected_choices[i][j].priority)
+                }
 
                 // Update my post total score
                 myTotalScore += getScore(myPost.selected_choices[i][j].priority)
 
                 // Update other post score
-                if (myPost.selected_choices[i][j].myChoice === otherPost.selected_choices[i][j].otherChoice ||
-                  Array.isArray(myPost.selected_choices[i][j].myChoice) && equals(myPost.selected_choices[i][j].myChoice, otherPost.selected_choices[i][j].otherChoice)
-                ) otherScore += getScore(otherPost.selected_choices[i][j].priority)
+                if (Array.isArray(myPost.selected_choices[i][j].otherChoice)) {
+                  var same = 0
+                  var total = otherPost.selected_choices[i][j].otherChoice.length
+                  for (let choice in myPost.selected_choices[i][j].myChoice) {
+                    if (choice in otherPost.selected_choices[i][j].otherChoice) same++
+                  }
+                  otherScore += (getScore(otherPost.selected_choices[i][j].priority) * (same / total))
+                } else {
+                  otherScore += getScore(otherPost.selected_choices[i][j].priority)
+                }
 
                 // Update other post total score
                 otherTotalScore += getScore(otherPost.selected_choices[i][j].priority)
@@ -132,7 +146,7 @@ const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPos
     }
   }, [next])
   useEffect(() => setAllPosts([...allPosts, ...posts]), [posts])
-  useEffect(() => user ? getUserPost(user.id) : null, [user])
+  useEffect(() => user ? getUserPosts(user.id) : null, [user])
   useEffect(() => userPosts.length > 0 && allPosts.length === count ? handleMatchmaking() : null, [userPosts, allPosts])
 
   return (
@@ -161,7 +175,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   loadUser,
-  getUserPost,
+  getUserPosts,
   getPostList,
   editPost,
   postLoading: () => (dispatch) => dispatch(postLoading()),

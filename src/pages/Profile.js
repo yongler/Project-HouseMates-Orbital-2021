@@ -2,56 +2,28 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Avatar,
-  Box,
-  Button,
-  ButtonBase,
-  Card,
-  CardContent,
-  CardHeader,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  TextField,
-  Typography,
-  MenuItem,
-  MenuList,
-} from "@material-ui/core";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Avatar, Badge, Box, Button, Grid, IconButton, Paper, TextField, Typography, MenuItem, MenuList } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import ChatIcon from "@material-ui/icons/Chat";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import HomeIcon from "@material-ui/icons/Home";
 import PeopleIcon from "@material-ui/icons/People";
-import Badge from "@material-ui/core/Badge";
-import {
-  loadUser,
-  changeProfilePic,
-  editBio,
-  resetEditBioSuccess,
-} from "../redux/auth/actions";
+import { loadUser, changeProfilePic, editBio, resetEditBioSuccess } from "../redux/auth/actions";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { getPostList } from "../redux/post/actions";
+import { getPostDetail, getUserPosts } from "../redux/post/actions";
+import ProfileComponent from "../components/ProfileComponent";
+import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
-  user,
+  user, loadUser,
   changeProfilePic,
-  editBio,
-  loadUser,
-  editBioSuccess,
-  resetEditBioSuccess,
-  prevPath,
-  posts,
-  getPostList,
+  editBio, editBioSuccess, resetEditBioSuccess,
+  userRoommatePosts, getUserPosts,
+  post, housingPost, getPostDetail,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -81,50 +53,77 @@ const Profile = ({
   const [selectedFile, setSelectedFile] = useState(null);
   const [editBioTextFieldOpen, setEditBioTextFieldOpen] = useState(false);
   const [bio, setBio] = useState("");
+  const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([])
+  const [topThreeRoommates, setTopThreeRoommates] = useState([])
+  const [starredHousings, setStarredHousings] = useState([])
 
   // Handlers
-  const handleChangePassword = () => {
-    history.push("/change-password");
-  };
-  const handleDeleteAccount = () => {
-    history.push("/delete-account");
-  };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleCapture = ({ target }) => {
-    setSelectedFile(target.files[0]);
-  };
+  const handleChangePassword = () => { history.push("/change-password"); };
+  const handleDeleteAccount = () => { history.push("/delete-account"); };
+  const handleClickOpen = () => { setOpen(true); };
+  const handleClose = () => { setOpen(false); };
+  const handleCapture = ({ target }) => { setSelectedFile(target.files[0]); };
   const handleSubmit = () => {
     changeProfilePic(selectedFile);
     setOpen(false);
   };
-  const handleClick = () => {
-    setEditBioTextFieldOpen(true);
-  };
-  const handleCancel = () => {
-    setEditBioTextFieldOpen(false);
-  };
-  const handleChange = (e) => {
-    setBio(e.target.value);
-  };
+  const handleClick = () => { setEditBioTextFieldOpen(true); };
+  const handleCancel = () => { setEditBioTextFieldOpen(false); };
+  const handleChange = (e) => { setBio(e.target.value); };
   const handleEditBio = (e) => {
     e.preventDefault();
-    editBio(user.first_name, user.last_name, bio);
+    editBio(bio);
     setEditBioTextFieldOpen(false);
   };
-  const handleEdit = () => {
-    setEditBioTextFieldOpen(true);
-  };
+  const handleEdit = () => { setEditBioTextFieldOpen(true); };
 
   // componentDidMount
   useEffect(() => {
     loadUser();
     resetEditBioSuccess();
   }, [editBioSuccess]);
+
+  // Top 3 roommates
+  // Get user roommate post
+  useEffect(() => { if (user) { getUserPosts(user.id, ROOMMATE_FORM) } }, [user])
+  // Sort user roommate post score list and get top 3 roommates id
+  useEffect(() => {
+    if (userRoommatePosts.length > 0) {
+      const unsortedScoreList = Object.values(userRoommatePosts[0].score_list)
+      const sortedScoreList = unsortedScoreList.sort((a, b) => (a.score > b.score) ? -1 : (a.score === b.score) ? ((a.post < b.post) ? -1 : 1) : 1)
+      const topThreeRoommatesId = []
+      for (let i = 0; i < 3; i++) {
+        if (i < sortedScoreList.length) topThreeRoommatesId.push(sortedScoreList[i].post)
+      }
+      setTopThreeRoommatesId(topThreeRoommatesId)
+    }
+  }, [userRoommatePosts])
+  // Get post detail page of top 3 roommates id
+  useEffect(() => {
+    if (topThreeRoommatesId.length > 0 && topThreeRoommates.length < topThreeRoommatesId.length) {
+      getPostDetail(topThreeRoommatesId[topThreeRoommates.length])
+    }
+  }, [topThreeRoommatesId, topThreeRoommates])
+  // Add to top 3 roommates array
+  useEffect(() => {
+    if (post && post.id === topThreeRoommatesId[topThreeRoommates.length]) {
+      setTopThreeRoommates([...topThreeRoommates, post])
+    }
+  }, [post])
+
+  // Starred Housings
+  // Get post detail page of starred housings
+  useEffect(() => {
+    if (user?.favourites.length > 0 && starredHousings.length < user.favourites.length) {
+      getPostDetail(user.favourites[starredHousings.length])
+    }
+  }, [user, starredHousings])
+  // Add to starred housings array
+  useEffect(() => {
+    if (housingPost && housingPost.id === user?.favourites[starredHousings.length]) {
+      setStarredHousings([...starredHousings, housingPost])
+    }
+  }, [housingPost])
 
   return (
     <div className={classes.card}>
@@ -168,7 +167,7 @@ const Profile = ({
                       <Button
                         variant="contained"
                         component="label"
-                        // startIcon={<CloudUploadIcon />}
+                      // startIcon={<CloudUploadIcon />}
                       >
                         {/* Upload File */}
                         <input
@@ -302,13 +301,19 @@ const Profile = ({
                     Top 3 Roommates
                   </Typography>
                 </span>
-                <Typography
-                  variant="body1"
-                  color="textSecondary"
-                  align="center"
-                >
-                  Create posts to find your ideal roommates now!
-                </Typography>
+                {topThreeRoommates.length === 0
+                  ?
+                  <Typography variant="body1" color="textSecondary" align="center">Create posts to find your ideal roommates now!</Typography>
+                  :
+                  topThreeRoommates.map(post => (
+                    <ProfileComponent
+                      key={post.owner.id}
+                      name={post.owner.first_name + " " + post.owner.last_name}
+                      desc={post.owner.bio}
+                      pic={post.owner.profile_pic}
+                      type={ROOMMATE_FORM}
+                      id={post.id}
+                    />))}
               </Paper>
             </Grid>
             <Grid item xs={4}>
@@ -319,13 +324,25 @@ const Profile = ({
                     Starred Housings
                   </Typography>
                 </span>
-                <Typography
-                  variant="body1"
-                  color="textSecondary"
-                  align="center"
-                >
-                  No starred housings.
-                </Typography>
+                {starredHousings.length === 0
+                  ?
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    No starred housings.
+                  </Typography>
+                  :
+                  starredHousings.map(post => (
+                    <ProfileComponent
+                      key={post.id}
+                      name={post.selected_choices[0][0].choice}
+                      desc={post.selected_choices[0][1].choice}
+                      pic={post.images[0]}
+                      type={HOUSING_FORM}
+                      id={post.id}
+                    />))}
               </Paper>
             </Grid>
             <Grid item xs={4}>
@@ -355,8 +372,9 @@ const Profile = ({
 const mapStateToProps = (state) => ({
   user: state.auth.user,
   editBioSuccess: state.auth.editBioSuccess,
-  prevPath: state.auth.prevPath,
-  posts: state.post.posts,
+  userRoommatePosts: state.post.userRoommatePosts,
+  post: state.post.post,
+  housingPost: state.post.housingPost,
 });
 
 const mapDispatchToProps = {
@@ -364,7 +382,8 @@ const mapDispatchToProps = {
   editBio,
   resetEditBioSuccess,
   loadUser,
-  getPostList,
+  getPostDetail,
+  getUserPosts,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

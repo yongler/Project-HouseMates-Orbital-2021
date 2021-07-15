@@ -49,9 +49,9 @@ const Layout = ({
   const button = useRef()
 
   // componentDidUpdate
-  useEffect(() => { 
-    window.scroll(0, 0) 
-    return () => { if (location.pathname !== prevPath) setPrevPath(location.pathname) }
+  useEffect(() => {
+    window.scroll(0, 0)
+    return () => { setPrevPath(location.pathname) }
   }, [location.pathname])
 
   // componentDidMount

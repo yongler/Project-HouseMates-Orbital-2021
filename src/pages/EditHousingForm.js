@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { getPostDetail } from "../redux/post/actions";
 import HousingForm from "./HousingForm";
 
-const EditHousingForm = ({ post, getPostDetail }) => {
+const EditHousingForm = ({ housingPost, getPostDetail }) => {
   // Hooks
   const { id } = useParams();
   const [initialFormFields, setInitialFormFields] = useState({});
@@ -15,12 +15,13 @@ const EditHousingForm = ({ post, getPostDetail }) => {
   }, []);
 
   useEffect(() => {
-    const categories = post?.selected_choices.map((category) =>
-      category.reduce((prev, curr) => ({ ...prev, [curr.question]: curr }), {})
-    );
-    const initialFormFields = Object.assign({}, categories);
-    setInitialFormFields(initialFormFields);
-  }, [post]);
+    const categories = housingPost?.selected_choices
+      .map(category => category
+        .reduce((prev, curr) => ({ ...prev, [curr.question]: curr}), {})
+      )
+    const initialFormFields = Object.assign({}, categories)
+    setInitialFormFields(initialFormFields)
+  }, [housingPost])
 
   return (
     <div>
@@ -29,9 +30,9 @@ const EditHousingForm = ({ post, getPostDetail }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  post: state.post.post,
-});
+const mapStateToProps = state => ({
+  housingPost: state.post.housingPost,
+})
 
 const mapDispatchToProps = {
   getPostDetail,
