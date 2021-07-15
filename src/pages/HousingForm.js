@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, MenuItem, Paper, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
-import { ROOMMATE_FORM, HOUSING_FORM, PROFILE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT, SELECT, FILE } from '../globalConstants'
+import { HOUSING_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT, SELECT, FILE } from '../globalConstants'
 
 // HousingForm consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 
@@ -30,10 +30,10 @@ const TextQuestion = ({ question, formFields, handleChange, currentCategory }) =
 
 const FileQuestion = ({ question, formFields, handleCapture, currentCategory }) => {
   // Hooks
-  const inputButton = useRef()
+  const fileInput = useRef()
 
   // Handlers
-  const handleClick = () => { inputButton.current.click() }
+  const handleClick = () => { fileInput.current.click() }
 
   return (
     <>
@@ -50,7 +50,7 @@ const FileQuestion = ({ question, formFields, handleCapture, currentCategory }) 
         multiple
         onChange={(e) => handleCapture(e, currentCategory)}
         name={question.id}
-        ref={inputButton}
+        ref={fileInput}
         style={{ display: "none" }}
       />
 

@@ -182,81 +182,57 @@ export const createPost = (post_form_type, selected_choices, owner, picture) =>
     }
   };
 
-export const editPost =
-  (
-    id,
-    post_form_type,
-    selected_choices,
-    owner,
-    score_list,
-    total_score,
-    picture
-  ) =>
-    async (dispatch) => {
-      // Loading
-      dispatch(postLoading());
+export const editPost = (id, post_form_type, selected_choices, owner, score_list, total_score, picture) =>
+  async (dispatch) => {
+    // Loading
+    dispatch(postLoading());
 
-      // Get access token from local storage
-      const token = localStorage.getItem("access");
+    // Get access token from local storage
+    const token = localStorage.getItem("access");
 
-      // Draft request
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${token}`,
-        },
-      };
-
-      if (picture) {
-        const images = [];
-        const dummy = Array.from(Array(picture.length).keys());
-
-        dummy.forEach((i) => {
-          S3FileUpload.uploadFile(picture[i], s3config)
-            .then((data) => {
-              images.push(data.location);
-            })
-            .then(async () => {
-              if (images.length === picture.length) {
-                const body = JSON.stringify({
-                  post_form_type,
-                  selected_choices,
-                  owner,
-                  score_list,
-                  total_score,
-                  images,
-                });
-
-                // Put request
-                try {
-                  await axios.put(`/form/post-list/${id}/`, body, config);
-
-                  dispatch(editPostSuccess());
-                } catch (err) {
-                  dispatch(editPostFail(editPostErrorMsg));
-                }
-              }
-            });
-        });
-      } else {
-        const body = JSON.stringify({
-          post_form_type,
-          selected_choices,
-          owner,
-          score_list,
-          total_score,
-        });
-
-        // Put request
-        try {
-          await axios.put(`/form/post-list/${id}/`, body, config);
-
-          dispatch(editPostSuccess());
-        } catch (err) {
-          dispatch(editPostFail(editPostErrorMsg));
-        }
-      }
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `JWT ${token}`,
+      },
     };
+
+    if (picture) {
+      const images = [];
+      const dummy = Array.from(Array(picture.length).keys());
+
+      dummy.forEach((i) => {
+        S3FileUpload.uploadFile(picture[i], s3config)
+          .then((data) => {
+            images.push(data.location);
+          })
+          .then(async () => {
+            if (images.length === picture.length) {
+              const body = JSON.stringify({ post_form_type, selected_choices, owner, score_list, total_score, images });
+
+              // Put request
+              try {
+                await axios.put(`/form/post-list/${id}/`, body, config);
+                dispatch(editPostSuccess());
+              } catch (err) {
+                dispatch(editPostFail(editPostErrorMsg));
+              }
+            }
+          });
+      });
+    } else {
+      const body = JSON.stringify({ post_form_type, selected_choices, owner, score_list, total_score });
+
+      // Put request
+      try {
+        await axios.put(`/form/post-list/${id}/`, body, config);
+        dispatch(editPostSuccess());
+      } catch (err) {
+        dispatch(editPostFail(editPostErrorMsg));
+      }
+    }
+  };
 
 export const deletePost = (id) =>
   async (dispatch) => {
@@ -288,11 +264,7 @@ export const searchPost = (formType, searchItem) =>
     dispatch(postLoading());
 
     // Request
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+    const config = { headers: { "Content-Type": "application/json" } };
 
     // Get request
     try {
@@ -303,13 +275,14 @@ export const searchPost = (formType, searchItem) =>
     }
   };
 
-export const cancelSearch = () => async (dispatch) => {
-  try {
-    dispatch(cancelSearchSuccess());
-  } catch (err) {
-    dispatch(cancelSearchFail(cancelSearchErrorMsg));
-  }
-};
+export const cancelSearch = () =>
+  async (dispatch) => {
+    try {
+      dispatch(cancelSearchSuccess());
+    } catch (err) {
+      dispatch(cancelSearchFail(cancelSearchErrorMsg));
+    }
+  };
 
 
 

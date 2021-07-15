@@ -207,7 +207,7 @@ const postReducer = (state = initialState, action) => {
         ...state,
         postLoading: false,
         searchPostSuccess: true,
-        searchedPost: payload,
+        searchedPost: payload.results,
       };
 
     case SEARCH_POST_FAIL:

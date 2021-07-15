@@ -2,20 +2,10 @@ import React, { useState, Fragment } from "react";
 import { useHistory, Link, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles, fade } from "@material-ui/core/styles";
-import {
-  AppBar,
-  Avatar,
-  Button,
-  IconButton,
-  InputBase,
-  Menu,
-  MenuItem,
-  Paper,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
+import { AppBar, Avatar, Button, IconButton, InputBase, Menu, MenuItem, Paper, Toolbar, Typography } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import ClearIcon from '@material-ui/icons/Clear';
 import { logout } from "../redux/auth/actions";
 import Logo from "../static/housemates-logo-without-text-white.svg";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
@@ -80,6 +70,7 @@ const NavBar = ({
       marginRight: theme.spacing(2),
       marginLeft: 0,
       width: 400,
+      height: 40,
     },
     searchIcon: {
       padding: theme.spacing(0, 2),
@@ -107,6 +98,9 @@ const NavBar = ({
       marginLeft: 10,
       cursor: "pointer",
     },
+    white: {
+      color: "white",
+    }
   }));
 
   const [theme, setTheme] = useState(true);
@@ -123,12 +117,8 @@ const NavBar = ({
   const [data, setData] = useState({ search: "" });
 
   // Handlers
-  const handleMenuOpen = (e) => {
-    setAnchorEl(e.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  const handleMenuOpen = (e) => { setAnchorEl(e.currentTarget); };
+  const handleMenuClose = () => { setAnchorEl(null); };
   const handleProfile = () => {
     setAnchorEl(null);
     history.push("/profile");
@@ -138,17 +128,9 @@ const NavBar = ({
     logout();
     history.push("/login");
   };
-  const handleClick = () => {
-    history.push("/profile");
-  };
-
-  const handleSearch = (searchItem) => {
-    searchPost(ROOMMATE_FORM, searchItem);
-  };
-
-  const handleCancelSearch = () => {
-    cancelSearch();
-  };
+  const handleClick = () => { history.push("/profile"); };
+  const handleSearch = (searchItem) => { searchPost(ROOMMATE_FORM, searchItem); };
+  const handleCancelSearch = () => { cancelSearch(); };
 
   return (
     <div>
@@ -197,6 +179,12 @@ const NavBar = ({
               onRequestSearch={() => handleSearch(data.search)}
               onCancelSearch={handleCancelSearch}
               cancelOnEscape
+              searchIcon={<ClearIcon style={{ color: 'white' }} />}
+              closeIcon={<ClearIcon style={{ color: 'white' }} />}
+              placeholder={"Search..."}
+              classes={{
+                input: classes.white
+              }}
             />
           )}
 
