@@ -28,7 +28,9 @@
     "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
+    "unique-names-generator": "^4.5.0",
     "web-vitals": "^1.0.1",
+    "websocket": "^1.0.34",
     "yup": "^0.32.9"
   },
   "scripts": {

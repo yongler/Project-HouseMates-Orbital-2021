@@ -2,7 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Badge, Box, Button, Grid, IconButton, Paper, TextField, Typography, MenuItem, MenuList } from "@material-ui/core";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Paper,
+  TextField,
+  Typography,
+  MenuItem,
+  MenuList,
+} from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import ChatIcon from "@material-ui/icons/Chat";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
@@ -15,11 +27,17 @@ import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
-  user, loadUser,
+  user,
+  loadUser,
   changeProfilePic,
-  editBio, editBioSuccess, resetEditBioSuccess,
-  userRoommatePosts, getUserPosts,
-  post, housingPost, getPostDetail,
+  editBio,
+  editBioSuccess,
+  resetEditBioSuccess,
+  userRoommatePosts,
+  getUserPosts,
+  post,
+  housingPost,
+  getPostDetail,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -48,9 +66,9 @@ const Profile = ({
   // States
   const [editBioTextFieldOpen, setEditBioTextFieldOpen] = useState(false);
   const [bio, setBio] = useState("");
-  const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([])
-  const [topThreeRoommates, setTopThreeRoommates] = useState([])
-  const [starredHousings, setStarredHousings] = useState([])
+  const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([]);
+  const [topThreeRoommates, setTopThreeRoommates] = useState([]);
+  const [starredHousings, setStarredHousings] = useState([]);
 
   // Handlers
   // Account settings
@@ -67,10 +85,12 @@ const Profile = ({
   const handleChange = (e) => { setBio(e.target.value); };
   const handleEditBio = (e) => {
     e.preventDefault();
-    editBio(bio);
+    editBio(user.first_name, user.last_name, user.id, bio);
     setEditBioTextFieldOpen(false);
   };
-  const handleEdit = () => { setEditBioTextFieldOpen(true); };
+  const handleEdit = () => {
+    setEditBioTextFieldOpen(true);
+  };
 
   // componentDidMount
   useEffect(() => {
@@ -80,45 +100,67 @@ const Profile = ({
 
   // Top 3 roommates
   // Get user roommate post
-  useEffect(() => { if (user) { getUserPosts(user.id, ROOMMATE_FORM) } }, [user])
+  useEffect(() => {
+    if (user) {
+      getUserPosts(user.id, ROOMMATE_FORM);
+    }
+  }, [user]);
   // Sort user roommate post score list and get top 3 roommates id
   useEffect(() => {
     if (userRoommatePosts.length > 0) {
-      const unsortedScoreList = Object.values(userRoommatePosts[0].score_list)
-      const sortedScoreList = unsortedScoreList.sort((a, b) => (a.score > b.score) ? -1 : (a.score === b.score) ? ((a.post < b.post) ? -1 : 1) : 1)
-      const topThreeRoommatesId = []
+      const unsortedScoreList = Object.values(userRoommatePosts[0].score_list);
+      const sortedScoreList = unsortedScoreList.sort((a, b) =>
+        a.score > b.score
+          ? -1
+          : a.score === b.score
+          ? a.post < b.post
+            ? -1
+            : 1
+          : 1
+      );
+      const topThreeRoommatesId = [];
       for (let i = 0; i < 3; i++) {
-        if (i < sortedScoreList.length) topThreeRoommatesId.push(sortedScoreList[i].post)
+        if (i < sortedScoreList.length)
+          topThreeRoommatesId.push(sortedScoreList[i].post);
       }
-      setTopThreeRoommatesId(topThreeRoommatesId)
+      setTopThreeRoommatesId(topThreeRoommatesId);
     }
-  }, [userRoommatePosts])
+  }, [userRoommatePosts]);
   // Get post detail page of top 3 roommates id
   useEffect(() => {
-    if (topThreeRoommatesId.length > 0 && topThreeRoommates.length < topThreeRoommatesId.length) {
-      getPostDetail(topThreeRoommatesId[topThreeRoommates.length])
+    if (
+      topThreeRoommatesId.length > 0 &&
+      topThreeRoommates.length < topThreeRoommatesId.length
+    ) {
+      getPostDetail(topThreeRoommatesId[topThreeRoommates.length]);
     }
-  }, [topThreeRoommatesId, topThreeRoommates])
+  }, [topThreeRoommatesId, topThreeRoommates]);
   // Add to top 3 roommates array
   useEffect(() => {
     if (post && post.id === topThreeRoommatesId[topThreeRoommates.length]) {
-      setTopThreeRoommates([...topThreeRoommates, post])
+      setTopThreeRoommates([...topThreeRoommates, post]);
     }
-  }, [post])
+  }, [post]);
 
   // Starred Housings
   // Get post detail page of starred housings
   useEffect(() => {
-    if (user?.favourites.length > 0 && starredHousings.length < user.favourites.length) {
-      getPostDetail(user.favourites[starredHousings.length])
+    if (
+      user?.favourites.length > 0 &&
+      starredHousings.length < user.favourites.length
+    ) {
+      getPostDetail(user.favourites[starredHousings.length]);
     }
-  }, [user, starredHousings])
+  }, [user, starredHousings]);
   // Add to starred housings array
   useEffect(() => {
-    if (housingPost && housingPost.id === user?.favourites[starredHousings.length]) {
-      setStarredHousings([...starredHousings, housingPost])
+    if (
+      housingPost &&
+      housingPost.id === user?.favourites[starredHousings.length]
+    ) {
+      setStarredHousings([...starredHousings, housingPost]);
     }
-  }, [housingPost])
+  }, [housingPost]);
 
   return (
     <div className={classes.card}>
@@ -271,11 +313,16 @@ const Profile = ({
                     Top 3 Roommates
                   </Typography>
                 </span>
-                {topThreeRoommates.length === 0
-                  ?
-                  <Typography variant="body1" color="textSecondary" align="center">Create posts to find your ideal roommates now!</Typography>
-                  :
-                  topThreeRoommates.map(post => (
+                {topThreeRoommates.length === 0 ? (
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    Create posts to find your ideal roommates now!
+                  </Typography>
+                ) : (
+                  topThreeRoommates.map((post) => (
                     <ProfileComponent
                       key={post.owner.id}
                       name={post.owner.first_name + " " + post.owner.last_name}
@@ -283,7 +330,9 @@ const Profile = ({
                       pic={post.owner.profile_pic}
                       type={ROOMMATE_FORM}
                       id={post.id}
-                    />))}
+                    />
+                  ))
+                )}
               </Paper>
             </Grid>
             <Grid item xs={4}>
@@ -294,8 +343,7 @@ const Profile = ({
                     Starred Housings
                   </Typography>
                 </span>
-                {starredHousings.length === 0
-                  ?
+                {starredHousings.length === 0 ? (
                   <Typography
                     variant="body1"
                     color="textSecondary"
@@ -303,8 +351,8 @@ const Profile = ({
                   >
                     No starred housings.
                   </Typography>
-                  :
-                  starredHousings.map(post => (
+                ) : (
+                  starredHousings.map((post) => (
                     <ProfileComponent
                       key={post.id}
                       name={post.selected_choices[0][0].choice}
@@ -312,7 +360,9 @@ const Profile = ({
                       pic={post.images[0]}
                       type={HOUSING_FORM}
                       id={post.id}
-                    />))}
+                    />
+                  ))
+                )}
               </Paper>
             </Grid>
             <Grid item xs={4}>

@@ -1,25 +1,47 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
-import clsx from 'clsx'
-import { Card, CardActionArea, CardContent, CardMedia, IconButton, Tooltip, Typography } from '@material-ui/core'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteIcon from '@material-ui/icons/Delete'
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import Pic from '../static/housing.jpg'
-import { deletePost, resetDeletePostSuccess, getPostList } from "../redux/post/actions";
+import React, { Fragment, useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import Pic from "../static/housing.jpg";
+import {
+  deletePost,
+  resetDeletePostSuccess,
+  getPostList,
+} from "../redux/post/actions";
 import Confirmation from "../components/Confirmation";
-import { HOUSING_FORM } from '../globalConstants'
-import { editFavourites, loadUser, resetEditFavouritesSuccess } from '../redux/auth/actions'
+import { HOUSING_FORM } from "../globalConstants";
+import {
+  editFavourites,
+  loadUser,
+  resetEditFavouritesSuccess,
+} from "../redux/auth/actions";
 
 // HousingCardCard consists of housing description: name and facilities, and pic.
 const HousingCard = ({
-  post, page,
-  user, loadUser,
-  deletePost, deletePostSuccess, resetDeletePostSuccess,
+  post,
+  page,
+  user,
+  loadUser,
+  deletePost,
+  deletePostSuccess,
+  resetDeletePostSuccess,
   getPostList,
-  editFavourites, editFavouritesSuccess, resetEditFavouritesSuccess
+  editFavourites,
+  editFavouritesSuccess,
+  resetEditFavouritesSuccess,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -55,7 +77,7 @@ const HousingCard = ({
     white: {
       color: "white",
     },
-  }))
+  }));
 
   // Hooks
   const classes = useStyles();
@@ -65,36 +87,42 @@ const HousingCard = ({
   const [open, setOpen] = useState(false);
 
   // Handlers
-  const handleEdit = () => { history.push(`/edit-housing-form/${post.id}`); };
-  const handleOpenConfirmationDialog = () => { setOpen(true); };
-  const handleCancel = () => { setOpen(false); };
-  const handleDelete = () => { deletePost(post.id); };
+  const handleEdit = () => {
+    history.push(`/edit-housing-form/${post.id}`);
+  };
+  const handleOpenConfirmationDialog = () => {
+    setOpen(true);
+  };
+  const handleCancel = () => {
+    setOpen(false);
+  };
+  const handleDelete = () => {
+    deletePost(post.id);
+  };
   const handleClose = () => {
-    resetDeletePostSuccess()
-    getPostList(HOUSING_FORM, page)
-    setOpen(false)
-  }
+    resetDeletePostSuccess();
+    getPostList(HOUSING_FORM, page);
+    setOpen(false);
+  };
   const handleFavourites = () => {
-    resetEditFavouritesSuccess()
-    const favourites = user.favourites || []
+    resetEditFavouritesSuccess();
+    const favourites = user.favourites || [];
     if (favourites.includes(post.id)) {
-      favourites.splice(favourites.indexOf(post.id), 1)
-      editFavourites(favourites)
+      favourites.splice(favourites.indexOf(post.id), 1);
+      editFavourites(user.first_name, user.last_name, user.id, favourites);
     } else {
-      favourites.push(post.id)
-      editFavourites(favourites)
+      favourites.push(post.id);
+      editFavourites(user.first_name, user.last_name, user.id, favourites);
     }
-  }
+  };
 
   useEffect(() => { if (editFavouritesSuccess) loadUser() }, [editFavouritesSuccess])
 
   return (
     <>
       <Card className={classes.card}>
-        {user
-          ?
-          user?.id === post.owner.id
-            ?
+        {user ? (
+          user?.id === post.owner.id ? (
             <>
               {/* Edit button */}
               <Tooltip title="" className={classes.edit} onClick={handleEdit}>
@@ -114,12 +142,9 @@ const HousingCard = ({
                 </IconButton>
               </Tooltip>
             </>
-            :
+          ) : (
             // Favourite button
-            <Tooltip
-              title=""
-              className={classes.edit}
-            >
+            <Tooltip title="" className={classes.edit}>
               <IconButton
                 className={clsx({
                   [classes.red]: user?.favourites?.includes(post.id),
@@ -130,8 +155,8 @@ const HousingCard = ({
                 <FavoriteIcon />
               </IconButton>
             </Tooltip>
-          :
-          null}
+          )
+        ) : null}
 
         <Link
           to={`/housings/${post.id}`}

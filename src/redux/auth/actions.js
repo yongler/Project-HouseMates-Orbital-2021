@@ -81,12 +81,12 @@ const editBioFailErrorMsg = "Unable to edit bio";
 const bioCannotBeEmptyErrorMsg = "Bio cannot be empty";
 
 // Edit favourites
-const editFavouritesFailErrorMsg = "Unable to edit favourites"
+const editFavouritesFailErrorMsg = "Unable to edit favourites";
 
 // Async Action Creators
 // Register
-export const register = (first_name, last_name, email, password, re_password) =>
-  async (dispatch) => {
+export const register =
+  (first_name, last_name, email, password, re_password) => async (dispatch) => {
     // Loading
     dispatch(authLoading());
 
@@ -96,7 +96,13 @@ export const register = (first_name, last_name, email, password, re_password) =>
         "Content-Type": "application/json",
       },
     };
-    const body = JSON.stringify({ first_name, last_name, email, password, re_password });
+    const body = JSON.stringify({
+      first_name,
+      last_name,
+      email,
+      password,
+      re_password,
+    });
 
     // Post request
     try {
@@ -114,210 +120,203 @@ export const register = (first_name, last_name, email, password, re_password) =>
   };
 
 // Activate
-export const activate = (uid, token) =>
-  async (dispatch) => {
-    // Loading
-    dispatch(authLoading());
+export const activate = (uid, token) => async (dispatch) => {
+  // Loading
+  dispatch(authLoading());
 
-    // Draft request
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const body = JSON.stringify({ uid, token });
-
-    // Post request
-    try {
-      await axios.post(`/auth/users/activation/`, body, config);
-      dispatch(activateSuccess());
-    } catch (err) {
-      if (err.response.data.uid || err.response.data.token) {
-        dispatch(activateFail(expiredActivationTokenErrorMsg));
-      } else {
-        dispatch(activateFail(unableToActivateErrorMsg));
-      }
-    }
+  // Draft request
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
   };
+  const body = JSON.stringify({ uid, token });
+
+  // Post request
+  try {
+    await axios.post(`/auth/users/activation/`, body, config);
+    dispatch(activateSuccess());
+  } catch (err) {
+    if (err.response.data.uid || err.response.data.token) {
+      dispatch(activateFail(expiredActivationTokenErrorMsg));
+    } else {
+      dispatch(activateFail(unableToActivateErrorMsg));
+    }
+  }
+};
 
 // Resend activation email
-export const resendActivationEmail = (email) =>
-  async (dispatch) => {
-    // Loading
-    dispatch(authLoading());
+export const resendActivationEmail = (email) => async (dispatch) => {
+  // Loading
+  dispatch(authLoading());
 
-    // Draft request
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const body = JSON.stringify({ email });
-
-    // Post request
-    try {
-      await axios.post(`/auth/users/resend_activation/`, body, config);
-      dispatch(resendActivationEmailSuccess());
-    } catch (err) {
-      dispatch(
-        resendActivationEmailFail(userDoesNotExistResendActivationEmailErrorMsg)
-      );
-    }
+  // Draft request
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
   };
+  const body = JSON.stringify({ email });
+
+  // Post request
+  try {
+    await axios.post(`/auth/users/resend_activation/`, body, config);
+    dispatch(resendActivationEmailSuccess());
+  } catch (err) {
+    dispatch(
+      resendActivationEmailFail(userDoesNotExistResendActivationEmailErrorMsg)
+    );
+  }
+};
 
 // Load user
-export const loadUser = () =>
-  async (dispatch) => {
-    // Loading
-    dispatch(authLoading());
+export const loadUser = () => async (dispatch) => {
+  // Loading
+  dispatch(authLoading());
 
-    // Get access token from local storage
-    const token = localStorage.getItem("access");
+  // Get access token from local storage
+  const token = localStorage.getItem("access");
 
-    if (token) {
-      // Draft request
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `JWT ${token}`,
-          "Accept": "application/json",
-        },
-      };
+  if (token) {
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${token}`,
+        Accept: "application/json",
+      },
+    };
 
-      // Get request
-      try {
-        const res = await axios.get(`/auth/users/me/`, config);
-        dispatch(loadUserSuccess(res.data));
-      } catch (err) {
-        dispatch(loadUserFail());
-      }
-    } else {
+    // Get request
+    try {
+      const res = await axios.get(`/auth/users/me/`, config);
+      dispatch(loadUserSuccess(res.data));
+    } catch (err) {
       dispatch(loadUserFail());
     }
-  };
+  } else {
+    dispatch(loadUserFail());
+  }
+};
 
 // Check authentication
-export const checkAuthentication = () =>
-  async (dispatch) => {
-    // Get access token from local storage
-    const token = localStorage.getItem("access");
+export const checkAuthentication = () => async (dispatch) => {
+  // Get access token from local storage
+  const token = localStorage.getItem("access");
 
-    if (token) {
-      // Draft request
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-      };
-      const body = JSON.stringify({ token });
+  if (token) {
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+    const body = JSON.stringify({ token });
 
-      // Post request
-      try {
-        const res = await axios.post(`/auth/jwt/verify/`, body, config);
-        if (res.data.code !== "token_not_valid") {
-          dispatch(checkAuthenticationSuccess());
-          dispatch(loadUser());
-        } else {
-          dispatch(checkAuthenticationFail());
-        }
-      } catch (err) {
+    // Post request
+    try {
+      const res = await axios.post(`/auth/jwt/verify/`, body, config);
+      if (res.data.code !== "token_not_valid") {
+        dispatch(checkAuthenticationSuccess());
+        dispatch(loadUser());
+      } else {
         dispatch(checkAuthenticationFail());
       }
-    } else {
+    } catch (err) {
       dispatch(checkAuthenticationFail());
     }
-  };
+  } else {
+    dispatch(checkAuthenticationFail());
+  }
+};
 
 // Login
-export const login = (email, password) =>
-  async (dispatch) => {
-    // Loading
-    dispatch(authLoading());
+export const login = (email, password) => async (dispatch) => {
+  // Loading
+  dispatch(authLoading());
 
-    // Draft request
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const body = JSON.stringify({ email, password });
-
-    // Post request
-    try {
-      const res = await axios.post(`/auth/jwt/create/`, body, config);
-      dispatch(loginSuccess(res.data));
-      dispatch(checkAuthentication());
-    } catch (err) {
-      dispatch(loginFail(incorrectPasswordErrorMsg));
-    }
+  // Draft request
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
   };
+  const body = JSON.stringify({ email, password });
+
+  // Post request
+  try {
+    const res = await axios.post(`/auth/jwt/create/`, body, config);
+    dispatch(loginSuccess(res.data));
+    dispatch(checkAuthentication());
+  } catch (err) {
+    dispatch(loginFail(incorrectPasswordErrorMsg));
+  }
+};
 
 // Delete account
-export const deleteAccount = (current_password) =>
-  async (dispatch) => {
-    // Loading
-    dispatch(authLoading());
+export const deleteAccount = (current_password) => async (dispatch) => {
+  // Loading
+  dispatch(authLoading());
 
-    // Get access token from local storage
-    const token = localStorage.getItem("access");
+  // Get access token from local storage
+  const token = localStorage.getItem("access");
 
-    if (token) {
-      // Draft request
-      const request = {
-        data: JSON.stringify({ current_password }),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `JWT ${token}`,
-        },
-      };
-
-      // Delete request
-      try {
-        await axios.delete(`/auth/users/me/`, request);
-        dispatch(deleteAccountSuccess());
-      } catch (err) {
-        if (err.response.data.current_password) {
-          dispatch(deleteAccountFail(incorrectPasswordErrorMsg));
-        } else {
-          dispatch(deleteAccountFail(unableToDeleteAccountErrorMsg));
-        }
-      }
-    } else {
-      dispatch(deleteAccountFail(unableToDeleteAccountErrorMsg));
-    }
-  };
-
-// Reset password
-export const resetPassword = (email) =>
-  async (dispatch) => {
-    // Loading
-    dispatch(authLoading());
-
+  if (token) {
     // Draft request
-    const config = {
+    const request = {
+      data: JSON.stringify({ current_password }),
       headers: {
         "Content-Type": "application/json",
+        Authorization: `JWT ${token}`,
       },
     };
-    const body = JSON.stringify({ email });
 
-    // Post request
+    // Delete request
     try {
-      await axios.post(`/auth/users/reset_password/`, body, config);
-      dispatch(resetPasswordSuccess());
+      await axios.delete(`/auth/users/me/`, request);
+      dispatch(deleteAccountSuccess());
     } catch (err) {
-      if (err.response.data) {
-        dispatch(resetPasswordFail(userDoesNotExistResetPasswordErrorMsg));
+      if (err.response.data.current_password) {
+        dispatch(deleteAccountFail(incorrectPasswordErrorMsg));
       } else {
-        dispatch(resetPasswordFail(unableToResetPasswordErrorMsg));
+        dispatch(deleteAccountFail(unableToDeleteAccountErrorMsg));
       }
     }
+  } else {
+    dispatch(deleteAccountFail(unableToDeleteAccountErrorMsg));
+  }
+};
+
+// Reset password
+export const resetPassword = (email) => async (dispatch) => {
+  // Loading
+  dispatch(authLoading());
+
+  // Draft request
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
   };
+  const body = JSON.stringify({ email });
+
+  // Post request
+  try {
+    await axios.post(`/auth/users/reset_password/`, body, config);
+    dispatch(resetPasswordSuccess());
+  } catch (err) {
+    if (err.response.data) {
+      dispatch(resetPasswordFail(userDoesNotExistResetPasswordErrorMsg));
+    } else {
+      dispatch(resetPasswordFail(unableToResetPasswordErrorMsg));
+    }
+  }
+};
 
 // Reset password confirm
-export const resetPasswordConfirm = (uid, token, new_password, re_new_password) =>
-  async (dispatch) => {
+export const resetPasswordConfirm =
+  (uid, token, new_password, re_new_password) => async (dispatch) => {
     // Loading
     dispatch(authLoading());
 
@@ -345,8 +344,8 @@ export const resetPasswordConfirm = (uid, token, new_password, re_new_password) 
   };
 
 // Change password
-export const changePassword = (current_password, new_password, re_new_password) =>
-  async (dispatch) => {
+export const changePassword =
+  (current_password, new_password, re_new_password) => async (dispatch) => {
     // Loading
     dispatch(authLoading());
 
@@ -357,10 +356,14 @@ export const changePassword = (current_password, new_password, re_new_password) 
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `JWT ${token}`,
+        Authorization: `JWT ${token}`,
       },
     };
-    const body = JSON.stringify({ current_password, new_password, re_new_password });
+    const body = JSON.stringify({
+      current_password,
+      new_password,
+      re_new_password,
+    });
 
     // Post request
     try {
@@ -378,20 +381,55 @@ export const changePassword = (current_password, new_password, re_new_password) 
   };
 
 // Change Profile Picture
-export const changeProfilePic = (picture) => async (dispatch) => {
+export const changeProfilePic =
+  (first_name, last_name, id, picture) => async (dispatch) => {
+    // Loading
+    dispatch(profileLoading());
+
+    // Get access token from local storage
+    const token = localStorage.getItem("access");
+
+    const s3config = {
+      bucketName: "housematesorbital",
+      dirName: "images",
+      region: "us-east-2",
+      accessKeyId: "AKIA2VQMUMOWCECPYUOU",
+      secretAccessKey: "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",
+    };
+
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${token}`,
+      },
+    };
+
+    // Patch request
+    let body;
+    let profile_pic;
+    try {
+      S3FileUpload.uploadFile(picture, s3config)
+        .then((data) => {
+          profile_pic = data.location;
+          body = JSON.stringify({ first_name, last_name, profile_pic });
+        })
+        .then(async () => {
+          await axios.put(`/accounts/profiles/${id}/`, body, config);
+          dispatch(changeProfilePicSuccess(profile_pic));
+        });
+    } catch (err) {
+      dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg));
+    }
+  };
+
+// Edit bio
+export const editBio = (first_name, last_name, id, bio) => async (dispatch) => {
   // Loading
   dispatch(profileLoading());
 
   // Get access token from local storage
   const token = localStorage.getItem("access");
-
-  const s3config = {
-    bucketName: "housematesorbital",
-    dirName: "images",
-    region: "us-east-2",
-    accessKeyId: "AKIA2VQMUMOWCECPYUOU",
-    secretAccessKey: "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",
-  };
 
   // Draft request
   const config = {
@@ -400,59 +438,25 @@ export const changeProfilePic = (picture) => async (dispatch) => {
       Authorization: `JWT ${token}`,
     },
   };
+  const body = JSON.stringify({ first_name, last_name, bio });
+  console.log(body);
 
-  // Patch request
-  let body;
-  let profile_pic;
+  // Put request
   try {
-    S3FileUpload.uploadFile(picture, s3config)
-      .then((data) => {
-        profile_pic = data.location;
-        body = JSON.stringify({ profile_pic });
-      })
-      .then(async () => {
-        await axios.patch(`/auth/users/me/`, body, config);
-        dispatch(changeProfilePicSuccess(profile_pic));
-      });
+    await axios.put(`/accounts/profiles/${id}/`, body, config);
+    dispatch(editBioSuccess());
   } catch (err) {
-    dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg));
+    if (err.response.data.bio) {
+      dispatch(editBioFail(bioCannotBeEmptyErrorMsg));
+    } else {
+      dispatch(editBioFail(editBioFailErrorMsg));
+    }
   }
 };
 
-// Edit bio
-export const editBio = (bio) =>
-  async (dispatch) => {
-    // Loading
-    dispatch(profileLoading());
-
-    // Get access token from local storage
-    const token = localStorage.getItem("access");
-
-    // Draft request
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `JWT ${token}`,
-      },
-    };
-    const body = JSON.stringify({ bio });
-
-    // Put request
-    try {
-      await axios.patch(`/auth/users/me/`, body, config);
-      dispatch(editBioSuccess());
-    } catch (err) {
-      if (err.response.data.bio) {
-        dispatch(editBioFail(bioCannotBeEmptyErrorMsg));
-      } else {
-        dispatch(editBioFail(editBioFailErrorMsg));
-      }
-    }
-  };
-
 // Edit favourites
-export const editFavourites = (favourites) =>
-  async (dispatch) => {
+export const editFavourites =
+  (first_name, last_name, id, favourites) => async (dispatch) => {
     // Get access token from local storage
     const token = localStorage.getItem("access");
 
@@ -460,21 +464,19 @@ export const editFavourites = (favourites) =>
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `JWT ${token}`,
+        Authorization: `JWT ${token}`,
       },
     };
-    const body = JSON.stringify({ favourites });
+    const body = JSON.stringify({ first_name, last_name, favourites });
 
     // Put request
     try {
-      await axios.patch(`/auth/users/me/`, body, config);
+      await axios.put(`/accounts/profiles/${id}/`, body, config);
       dispatch(editFavouritesSuccess());
     } catch (err) {
       dispatch(editFavouritesFail(editFavouritesFailErrorMsg));
     }
   };
-
-
 
 // Action Creators
 export const registerSuccess = () => ({ type: REGISTER_SUCCESS });
@@ -558,7 +560,9 @@ export const resetChangePasswordSuccess = () => ({
   type: RESET_CHANGE_PASSWORD_SUCCESS,
 });
 export const resetEditBioSuccess = () => ({ type: RESET_EDIT_BIO_SUCCESS });
-export const resetEditFavouritesSuccess = () => ({ type: RESET_EDIT_FAVOURITES_SUCCESS });
+export const resetEditFavouritesSuccess = () => ({
+  type: RESET_EDIT_FAVOURITES_SUCCESS,
+});
 
 export const changeProfilePicSuccess = (picture) => ({
   type: CHANGE_PROFILE_PIC_SUCCESS,

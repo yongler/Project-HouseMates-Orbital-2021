@@ -10,9 +10,11 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("form/", include("form.urls")),
+
+    path("chat/", include("chat.urls")),
     
-    path("main/", include("main.urls")),
-    path("scrapypost/", include("scrapypost.urls")),
+    # path("main/", include("main.urls")),
+    # path("scrapypost/", include("scrapypost.urls")),
 
     path("accounts/", include("accounts.urls")),
     path("auth/", include("djoser.urls")),

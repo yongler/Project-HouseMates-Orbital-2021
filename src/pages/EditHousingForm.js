@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import { useParams } from 'react-router'
-import { getPostDetail } from '../redux/post/actions'
-import HousingForm from './HousingForm'
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { useParams } from "react-router";
+import { getPostDetail } from "../redux/post/actions";
+import HousingForm from "./HousingForm";
 
 const EditHousingForm = ({ housingPost, getPostDetail }) => {
   // Hooks
-  const { id } = useParams()
-  const [initialFormFields, setInitialFormFields] = useState({})
+  const { id } = useParams();
+  const [initialFormFields, setInitialFormFields] = useState({});
 
   // componentDidMount
-  useEffect(() => { getPostDetail(id) }, [])
+  useEffect(() => {
+    getPostDetail(id);
+  }, []);
 
   useEffect(() => {
     const categories = housingPost?.selected_choices
@@ -23,13 +25,10 @@ const EditHousingForm = ({ housingPost, getPostDetail }) => {
 
   return (
     <div>
-      <HousingForm
-        initialFormFields={initialFormFields}
-        id={id}
-      />
+      <HousingForm initialFormFields={initialFormFields} id={id} />
     </div>
-  )
-}
+  );
+};
 
 const mapStateToProps = state => ({
   housingPost: state.post.housingPost,
@@ -37,6 +36,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getPostDetail,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditHousingForm)
+export default connect(mapStateToProps, mapDispatchToProps)(EditHousingForm);

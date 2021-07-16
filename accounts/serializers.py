@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser
-
+from django.db import IntegrityError, transaction
 
 class userProfileSerializer(serializers.ModelSerializer):
     # profile_pic = serializers.SerializerMethodField()

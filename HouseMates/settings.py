@@ -40,7 +40,6 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     "django.contrib.admin",
@@ -57,8 +56,9 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "main",
-    "scrapypost"
-    # 'storages',
+    "scrapypost",
+    "chat",
+    "channels", 
 ]
 
 MIDDLEWARE = [
@@ -81,6 +81,16 @@ ROOT_URLCONF = "HouseMates.urls"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+        # "BACKEND": "asgi_redis.RedisChannelLayer",
+    #     "CONFIG": {
+    #         "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+    #     },
+    #     "ROUTING": "chat.routing.channel_routing",
+    },
+}
 
 TEMPLATES = [
     {
@@ -211,8 +221,8 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": " /reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
-    # "SEND_CONFIRMATION_EMAIL": True,
-    # "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     # 'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
@@ -222,12 +232,6 @@ DJOSER = {
         "current_user": "accounts.serializers.userProfileSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
-    # "PERMISSIONS": {
-    #     'user': ['rest_framework.permissions.AllowAny'],
-    #     'user_list': ['rest_framework.permissions.AllowAny'],
-    #     # 'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-    #     # 'user_list': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-    # }
 }
 
 # Default primary key field type
@@ -240,3 +244,5 @@ CORS_ALLOW_CREDENTIALS = True
 django_heroku.settings(locals())
 options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
+
+ASGI_APPLICATION = "HouseMates.routing.application"
