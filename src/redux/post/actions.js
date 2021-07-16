@@ -95,7 +95,7 @@ export const getPostDetail = (id) =>
     }
   };
 
-export const getUserPosts = (owner, type) =>
+export const getUserPosts = (owner, type, page) =>
   async (dispatch) => {
     // Draft request
     const config = { headers: { "Content-Type": "application/json" } };
@@ -103,8 +103,12 @@ export const getUserPosts = (owner, type) =>
     // Get request
     try {
       var res
-      if (type !== undefined) {
+      if (type !== undefined && page === undefined) {
         res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${type}`, config);
+      } else if (type === undefined && page !== undefined) {
+        res = await axios.get(`/form/post-list/?owner=${owner}&page=${page}`, config);
+      } else if (type !== undefined && page !== undefined) {
+        res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${type}&page=${page}`, config);
       } else {
         res = await axios.get(`/form/post-list/?owner=${owner}`, config);
       }
@@ -259,7 +263,7 @@ export const deletePost = (id) =>
     }
   };
 
-export const searchPost = (formType, searchItem) =>
+export const searchPost = (formType, searchItem, page) =>
   async (dispatch) => {
     dispatch(postLoading());
 
@@ -268,8 +272,13 @@ export const searchPost = (formType, searchItem) =>
 
     // Get request
     try {
-      const res = await axios.get(`/form/post-list/?form_type=${formType}&search=${searchItem}`, config);
-      dispatch(searchPostSuccess(res.data));
+      var res
+      if (page !== undefined) {
+        res = await axios.get(`/form/post-list/?form_type=${formType}&search=${searchItem}&page=${page}`, config);
+      } else {
+        res = await axios.get(`/form/post-list/?form_type=${formType}&search=${searchItem}`, config);
+      }
+      dispatch(searchPostSuccess(res.data, searchItem));
     } catch (err) {
       dispatch(searchPostFail(searchPostErrorMsg));
     }
@@ -345,9 +354,9 @@ export const resetDeletePostSuccess = () => ({
   type: RESET_DELETE_POST_SUCCESS,
 });
 
-export const searchPostSuccess = (searchedPost) => ({
+export const searchPostSuccess = (searchedPost, searchItem) => ({
   type: SEARCH_POST_SUCCESS,
-  payload: searchedPost,
+  payload: { searchedPost, searchItem },
 });
 export const searchPostFail = (searchPostErrorMsg) => ({
   type: SEARCH_POST_FAIL,

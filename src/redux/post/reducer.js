@@ -34,6 +34,11 @@ const initialState = {
   userRoommatePosts: [],
   userHousingPosts: [],
   count: 0,
+  userRoommatePostsCount: 0,
+  userHousingPostsCount: 0,
+  searchedPost: null,
+  searchItem: null,
+  searchedPostCount: 0,
   next: null,
   previous: null,
   postErrorMsg: "",
@@ -96,12 +101,14 @@ const postReducer = (state = initialState, action) => {
           ...state,
           postLoading: false,
           userRoommatePosts: payload.userPosts.results,
+          userRoommatePostsCount: payload.userPosts.count,
         };
       } else if (payload.type === HOUSING_FORM) {
         return {
           ...state,
           postLoading: false,
           userHousingPosts: payload.userPosts.results,
+          userHousingPostsCount: payload.userPosts.count,
         };
       } else {
         return {
@@ -207,7 +214,9 @@ const postReducer = (state = initialState, action) => {
         ...state,
         postLoading: false,
         searchPostSuccess: true,
-        searchedPost: payload.results,
+        searchedPost: payload.searchPost.results,
+        searchItem: payload.searchItem,
+        searchedPostCount: payload.searchPost.count,
       };
 
     case SEARCH_POST_FAIL:
@@ -223,6 +232,7 @@ const postReducer = (state = initialState, action) => {
         postLoading: false,
         cancelSearchSuccess: true,
         searchedPost: null,
+        searchedItem: null,
       };
 
     case CANCEL_SEARCH_FAIL:

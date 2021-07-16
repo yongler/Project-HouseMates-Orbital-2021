@@ -86,7 +86,7 @@ const HousingCard = ({
     }
   }
 
-  useEffect(() => loadUser(), [editFavouritesSuccess])
+  useEffect(() => { if (editFavouritesSuccess) loadUser() }, [editFavouritesSuccess])
 
   return (
     <>
