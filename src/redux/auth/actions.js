@@ -36,6 +36,8 @@ import {
   EDIT_FAVOURITES_SUCCESS,
   EDIT_FAVOURITES_FAIL,
   SET_PREV_PATH,
+  GOOGLE_AUTH_SUCCESS,
+  GOOGLE_AUTH_FAIL,
 } from "./types";
 
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -196,6 +198,38 @@ export const loadUser = () => async (dispatch) => {
     }
   } else {
     dispatch(loadUserFail());
+  }
+};
+
+export const googleAuthenticate = (state, code) => async dispatch => {
+  if (state && code && !localStorage.getItem('access')) {
+      const config = {
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          }
+      };
+
+      const details = {
+          'state': state,
+          'code': code
+      };
+
+      const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
+
+      try {
+          const res = await axios.post(`/auth/o/google-oauth2/?${formBody}`, config);
+
+          dispatch({
+              type: GOOGLE_AUTH_SUCCESS,
+              payload: res.data
+          });
+
+          dispatch(loadUser());
+      } catch (err) {
+          dispatch({
+              type: GOOGLE_AUTH_FAIL
+          });
+      }
   }
 };
 

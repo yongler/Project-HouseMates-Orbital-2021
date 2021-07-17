@@ -34,6 +34,8 @@ import {
   EDIT_FAVOURITES_SUCCESS,
   EDIT_FAVOURITES_FAIL,
   SET_PREV_PATH,
+  GOOGLE_AUTH_SUCCESS,
+  GOOGLE_AUTH_FAIL,
 } from "./types";
 
 // Initial states
@@ -125,7 +127,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isAuthenticated: true,
-      };
+      };  
 
     case CHECK_AUTHENTICATION_FAIL:
       return {
@@ -133,6 +135,7 @@ const authReducer = (state = initialState, action) => {
         isAuthenticated: false,
       };
 
+    case GOOGLE_AUTH_SUCCESS:
     case LOGIN_SUCCESS:
       localStorage.setItem("access", payload.access);
       localStorage.setItem("refresh", payload.refresh);
@@ -143,6 +146,7 @@ const authReducer = (state = initialState, action) => {
         authLoading: false,
       };
 
+    case GOOGLE_AUTH_FAIL:
     case LOGIN_FAIL:
       return {
         ...state,

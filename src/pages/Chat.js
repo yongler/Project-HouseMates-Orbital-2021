@@ -58,7 +58,7 @@ const Chat = ({ user, getRoomList, postRoom }) => {
 
   const classes = useStyles();
 
-  // conditional url 
+  // conditional url
   const host =
     window.location.host === "localhost:8000"
       ? "localhost:8000/"
@@ -76,18 +76,18 @@ const Chat = ({ user, getRoomList, postRoom }) => {
       JSON.stringify({
         type: "message",
         message: value,
-        owner: user.first_name,
+        owner: user.id,
       })
     );
     setValue("");
   };
 
-  // start new chat 
+  // start new chat
   const newGroup = () => {
     const shortName = uniqueNamesGenerator({
       dictionaries: [colors, adjectives, animals],
     });
-    console.log(shortName)
+    console.log(shortName);
     postRoom(1, 2, shortName);
     setRoom(shortName);
   };
@@ -101,8 +101,8 @@ const Chat = ({ user, getRoomList, postRoom }) => {
     client.onopen = () => {
       console.log("WebSocket Client Connected");
     };
-    
-    //receive 
+
+    //receive
     client.onmessage = (message) => {
       const dataFromServer = JSON.parse(message.data);
       console.log("got reply! ", dataFromServer.type);
