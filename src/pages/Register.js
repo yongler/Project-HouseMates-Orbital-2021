@@ -1,14 +1,36 @@
-import React, { useState } from 'react'
-import { NavLink, Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
-import { Button, Container, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core'
-import { register } from '../redux/auth/actions'
+import React, { useState } from "react";
+import { NavLink, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Button,
+  Container,
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import { register } from "../redux/auth/actions";
+
+import GoogleButton from "react-google-button";
+
+import axios from "axios";
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 // Register consists of title, ((confirmation text), or (first name input, last name input, email input, password input, confirm password input, account input, register button and login link)), from top to bottom.
-const Register = ({ isAuthenticated, authLoading, registrationSuccess, register }) => {
+const Register = ({
+  isAuthenticated,
+  authLoading,
+  registrationSuccess,
+  register,
+}) => {
   // Styling
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     paper: {
       display: "flex",
       flexDirection: "column",
@@ -17,115 +39,164 @@ const Register = ({ isAuthenticated, authLoading, registrationSuccess, register 
     submit: {
       margin: theme.spacing(3, 0, 2),
     },
-  }))
+  }));
 
   // Hooks
-  const classes = useStyles()
+  const classes = useStyles();
 
   // States
-  const [lastName, setLastName] = useState("")
-  const [firstName, setFirstName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [account, setAccount] = useState("tenant")
-  const [lastNameError, setLastNameError] = useState(false)
-  const [firstNameError, setFirstNameError] = useState(false)
-  const [emailError, setEmailError] = useState(false)
-  const [passwordError, setPasswordError] = useState(false)
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false)
-  const [samePasswordError, setSamePasswordError] = useState(false)
-  const [accountError, setAccountError] = useState(false)
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [account, setAccount] = useState("tenant");
+  const [lastNameError, setLastNameError] = useState(false);
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [samePasswordError, setSamePasswordError] = useState(false);
+  const [accountError, setAccountError] = useState(false);
 
   // Handlers
-  const handleFirstNameChange = e => {
-    setFirstName(e.target.value)
-    if (e.target.value === "") { setFirstNameError(true); } else { setFirstNameError(false) }
-  }
-  const handleLastNameChange = e => {
-    setLastName(e.target.value)
-    if (e.target.value === "") { setLastNameError(true); } else { setLastNameError(false) }
-  }
-  const handleEmailChange = e => {
-    setEmail(e.target.value)
-    if (e.target.value === "") { setEmailError(true); } else { setEmailError(false) }
-  }
-  const handlePasswordChange = e => {
-    setPassword(e.target.value)
-    if (e.target.value === '') {
-      setPasswordError(true)
-      setSamePasswordError(false)
+  const handleFirstNameChange = (e) => {
+    setFirstName(e.target.value);
+    if (e.target.value === "") {
+      setFirstNameError(true);
+    } else {
+      setFirstNameError(false);
+    }
+  };
+  const handleLastNameChange = (e) => {
+    setLastName(e.target.value);
+    if (e.target.value === "") {
+      setLastNameError(true);
+    } else {
+      setLastNameError(false);
+    }
+  };
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (e.target.value === "") {
+      setEmailError(true);
+    } else {
+      setEmailError(false);
+    }
+  };
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (e.target.value === "") {
+      setPasswordError(true);
+      setSamePasswordError(false);
     } else if (confirmPassword && e.target.value !== confirmPassword) {
-      setSamePasswordError(true)
-      setPasswordError(false)
+      setSamePasswordError(true);
+      setPasswordError(false);
     } else {
-      setPasswordError(false)
-      setSamePasswordError(false)
+      setPasswordError(false);
+      setSamePasswordError(false);
     }
-  }
-  const handleConfirmPasswordChange = e => {
-    setConfirmPassword(e.target.value)
-    if (e.target.value === '') {
-      setConfirmPasswordError(true)
-      setSamePasswordError(false)
+  };
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    if (e.target.value === "") {
+      setConfirmPasswordError(true);
+      setSamePasswordError(false);
     } else if (e.target.value !== password) {
-      setSamePasswordError(true)
-      setConfirmPasswordError(false)
+      setSamePasswordError(true);
+      setConfirmPasswordError(false);
     } else {
-      setConfirmPasswordError(false)
-      setSamePasswordError(false)
+      setConfirmPasswordError(false);
+      setSamePasswordError(false);
     }
-  }
-  const handleAccountChange = e => {
-    setAccount(e.target.value)
-    if (e.target.value === "") { setAccountError(true) } else { setAccountError(false) }
-  }
-  const handleSubmit = e => {
-    e.preventDefault()
+  };
+  // const handleAccountChange = (e) => {
+  //   setAccount(e.target.value);
+  //   if (e.target.value === "") {
+  //     setAccountError(true);
+  //   } else {
+  //     setAccountError(false);
+  //   }
+  // };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    setFirstNameError(false)
-    setLastNameError(false)
-    setEmailError(false)
-    setPasswordError(false)
-    setConfirmPasswordError(false)
-    setSamePasswordError(false)
-    setAccountError(false)
+    setFirstNameError(false);
+    setLastNameError(false);
+    setEmailError(false);
+    setPasswordError(false);
+    setConfirmPasswordError(false);
+    setSamePasswordError(false);
+    setAccountError(false);
 
-    if (firstName === "") { setFirstNameError(true) }
-    if (lastName === "") { setLastNameError(true) }
-    if (email === "") { setEmailError(true) }
-    if (password === "") { setPasswordError(true) }
-    if (confirmPassword === "") { setConfirmPasswordError(true) }
-    if (confirmPassword !== password) { setSamePasswordError(true) }
-    if (account === "") { setAccountError(true) }
-
-    if (firstName && lastName && email && password && confirmPassword && !samePasswordError && account) {
-      register(firstName, lastName, email, password, confirmPassword)
+    if (firstName === "") {
+      setFirstNameError(true);
+    }
+    if (lastName === "") {
+      setLastNameError(true);
+    }
+    if (email === "") {
+      setEmailError(true);
+    }
+    if (password === "") {
+      setPasswordError(true);
+    }
+    if (confirmPassword === "") {
+      setConfirmPasswordError(true);
+    }
+    if (confirmPassword !== password) {
+      setSamePasswordError(true);
+    }
+    if (account === "") {
+      setAccountError(true);
     }
 
-    window.scroll(0, 0) 
-  }
+    if (
+      firstName &&
+      lastName &&
+      email &&
+      password &&
+      confirmPassword &&
+      !samePasswordError &&
+      account
+    ) {
+      register(firstName, lastName, email, password, confirmPassword);
+    }
 
-  if (isAuthenticated) { return <Redirect to="/" /> }
+    window.scroll(0, 0);
+  };
+  const continueWithGoogle = async () => {
+    try {
+      const res = await axios.get(
+        `/auth/o/google-oauth2/?redirect_uri=${process.env.REACT_APP_API_URL}/google`
+      );
+
+      window.location.replace(res.data.authorization_url);
+    } catch (err) {}
+  };
+
+  if (isAuthenticated) {
+    return <Redirect to="/" />;
+  }
 
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
-        {registrationSuccess
-          ?
+        {registrationSuccess ? (
           // Confirmation text
           <div>
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
               Thank you for your registration.
             </Typography>
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
-              Kindly check your email for account verification to complete the registration process.
+              Kindly check your email for account verification to complete the
+              registration process.
             </Typography>
             <Typography variant="h6" noWrap style={{ textAlign: "center" }}>
               You may close this window.
             </Typography>
           </div>
-          :
+        ) : (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -184,7 +255,11 @@ const Register = ({ isAuthenticated, authLoading, registrationSuccess, register 
               margin="normal"
               onChange={handlePasswordChange}
               error={passwordError}
-              helperText={passwordError ? "This is a required field" : "Minimum 8 characters with a mixture of lower and upper case letters, numbers and symbols"}
+              helperText={
+                passwordError
+                  ? "This is a required field"
+                  : "Minimum 8 characters with a mixture of lower and upper case letters, numbers and symbols"
+              }
             />
 
             {/* Confirm password input */}
@@ -202,12 +277,12 @@ const Register = ({ isAuthenticated, authLoading, registrationSuccess, register 
                 confirmPasswordError
                   ? "This is a required field"
                   : samePasswordError
-                    ? "Password does not match"
-                    : ""
+                  ? "Password does not match"
+                  : ""
               }
             />
 
-            {/* Account input */}
+            {/* Account input
             <FormControl
               variant="outlined"
               margin="normal"
@@ -224,8 +299,10 @@ const Register = ({ isAuthenticated, authLoading, registrationSuccess, register 
                 <MenuItem value="tenant">Tenant</MenuItem>
                 <MenuItem value="host">Host</MenuItem>
               </Select>
-              <FormHelperText>{accountError ? "This is a required field" : ""}</FormHelperText>
-            </FormControl>
+              <FormHelperText>
+                {accountError ? "This is a required field" : ""}
+              </FormHelperText>
+            </FormControl> */}
 
             {/* Register button */}
             <Button
@@ -238,30 +315,39 @@ const Register = ({ isAuthenticated, authLoading, registrationSuccess, register 
             >
               Register
             </Button>
-
             {/* Login link */}
             <Grid container justify="flex-end">
               <Grid item>
                 <NavLink to="/login" variant="body2">
                   Already have an account? Login
-              </NavLink>
+                </NavLink>
               </Grid>
             </Grid>
+            <br />
+            <div className={classes.paper}>
+              <GoogleButton
+                fullWidth
+                className="btn btn-danger mt-3"
+                onClick={continueWithGoogle}
+              >
+                Continue With Google
+              </GoogleButton>
+            </div>
           </form>
-        }
+        )}
       </div>
     </Container>
-  )
-}
+  );
+};
 
-const mapStateToProps = state => ({ 
+const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   authLoading: state.auth.authLoading,
   registrationSuccess: state.auth.registrationSuccess,
-})
+});
 
 const mapDispatchToProps = {
   register,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register)
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

@@ -14,6 +14,11 @@ import {
   TextField,
 } from "@material-ui/core";
 import { login } from "../redux/auth/actions";
+import GoogleButton from "react-google-button";
+
+import axios from "axios";
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 // Login consists of title, email input, password input, account input, login button, and (forgot password and register links), from top to bottom.
 const Login = ({ isAuthenticated, authLoading, login }) => {
@@ -57,14 +62,14 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
       setPasswordError(false);
     }
   };
-  const handleAccountChange = (e) => {
-    setAccount(e.target.value);
-    if (e.target.value === "") {
-      setAccountError(true);
-    } else {
-      setAccountError(false);
-    }
-  };
+  // const handleAccountChange = (e) => {
+  //   setAccount(e.target.value);
+  //   if (e.target.value === "") {
+  //     setAccountError(true);
+  //   } else {
+  //     setAccountError(false);
+  //   }
+  // };
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -86,7 +91,17 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
       login(email, password);
     }
 
-    window.scroll(0, 0) 
+    window.scroll(0, 0);
+  };
+
+  const continueWithGoogle = async () => {
+    try {
+      const res = await axios.get(
+        `/auth/o/google-oauth2/?redirect_uri=${process.env.REACT_APP_API_URL}/google`
+      );
+
+      window.location.replace(res.data.authorization_url);
+    } catch (err) {}
   };
 
   if (isAuthenticated) {
@@ -125,7 +140,7 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
             helperText={passwordError ? "This is a required field" : ""}
           />
 
-          {/* Account input */}
+          {/* Account input
           <FormControl
             variant="outlined"
             margin="normal"
@@ -145,7 +160,7 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
             <FormHelperText>
               {accountError ? "This is a required field" : ""}
             </FormHelperText>
-          </FormControl>
+          </FormControl> */}
 
           {/* Login button*/}
           <Button
@@ -158,7 +173,16 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
           >
             Login
           </Button>
-
+          <div className={classes.paper}>
+            <GoogleButton
+              fullWidth
+              className="btn btn-danger mt-3"
+              onClick={continueWithGoogle}
+            >
+              Continue With Google
+            </GoogleButton>
+          </div>
+          <br />
           {/* Forgot password and register links */}
           <Grid container>
             <Grid item xs>

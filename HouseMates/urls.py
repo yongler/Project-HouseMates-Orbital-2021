@@ -10,16 +10,13 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("form/", include("form.urls")),
-
     path("chat/", include("chat.urls")),
-    
-    # path("main/", include("main.urls")),
-    # path("scrapypost/", include("scrapypost.urls")),
-
     path("accounts/", include("accounts.urls")),
+
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
-    # path('auth/', include('djoser.social.urls')),
+    path('auth/', include('djoser.social.urls')),
+    
     path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")))
 ]
 

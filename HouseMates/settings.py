@@ -54,14 +54,17 @@ INSTALLED_APPS = [
     "form.apps.FormConfig",
     "accounts.apps.AccountsConfig",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "main",
     "scrapypost",
     "chat",
     "channels", 
+    "social_django"
 ]
 
 MIDDLEWARE = [
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     "django.middleware.security.SecurityMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -105,6 +108,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect'
             ],
         },
     },
@@ -152,6 +157,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    # 'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend'
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -209,7 +219,17 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_TOKEN_CLASSES': (
+        'rest_framework_simplejwt.tokens.AccessToken',
+    )
 }
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '677098566735-j2bkpa87srurhercjmsdl1fu5i2l98t6.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '7blLgRZx6wCjhDo85SPkkMwi'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
+
+
 
 DJOSER = {
     "LOGIN_FIELD": "email",
@@ -224,8 +244,8 @@ DJOSER = {
     "SEND_CONFIRMATION_EMAIL": True,
     "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
-    # 'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
-    # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
+    'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
     "SERIALIZERS": {
         "user_create": "accounts.serializers.userProfileSerializer",
         "user": "accounts.serializers.userProfileSerializer",
@@ -246,3 +266,31 @@ options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
 
 ASGI_APPLICATION = "HouseMates.routing.application"
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'NOTSET',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose'
+#         }
+#     },
+#     'loggers': {
+#         '': {
+#             'handlers': ['console'],
+#             'level': 'NOTSET',
+#         },
+#         'django.request': {
+#             'handlers': ['console'],
+#             'propagate': False,
+#             'level': 'ERROR'
+#         }
+#     }
+# }
