@@ -97,7 +97,8 @@ const RoommateDetail = ({
                 <Typography variant="h5" display="inline">
                   {post.owner.first_name} {post.owner.last_name}
                 </Typography>
-                {user && <IconButton style={{ marginLeft: 5 }} onClick={handleChat}><ChatIcon /></IconButton>}
+                {user && user.id !== post.owner.id &&
+                  <IconButton style={{ marginLeft: 5 }} onClick={handleChat}><ChatIcon /></IconButton>}
               </span>
 
               {/* Text */}
