@@ -19,27 +19,33 @@ class RoomSerializer(serializers.ModelSerializer):
 
     def get_owner1(self, instance):
         temp = CustomUser.objects.all().filter(id=instance.user1).first()
-        return {
+        if temp:
+            return {
         "id":temp.id, 
         "first_name":temp.first_name, 
         "last_name":temp.last_name, 
         "profile_pic":str(temp.profile_pic),
         "bio":temp.bio ,
         "favourites": temp.favourites}
+        else:
+            return None
 
     def get_owner2(self, instance):
         temp = CustomUser.objects.all().filter(id=instance.user2).first()
-        return {
+        if temp:
+            return {
         "id":temp.id, 
         "first_name":temp.first_name, 
         "last_name":temp.last_name, 
         "profile_pic":str(temp.profile_pic),
         "bio":temp.bio ,
         "favourites": temp.favourites}
+        else:
+            return None
 
     class Meta:
         model = Room
-        fields = ['label', 'owner1', 'owner2', 'messages']
-        # fields = '__all__'
+        # fields = ['label', 'owner1', 'owner2', 'messages']
+        fields = '__all__'
 
 

@@ -41,6 +41,7 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
+    "corsheaders",
     'whitenoise.runserver_nostatic',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -53,21 +54,22 @@ INSTALLED_APPS = [
     "djoser",
     "form.apps.FormConfig",
     "accounts.apps.AccountsConfig",
-    "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",
-    "corsheaders",
+    
     "main",
     "scrapypost",
     "chat",
     "channels", 
-    "social_django"
+
+    "social_django",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
-    'social_django.middleware.SocialAuthExceptionMiddleware',
     "django.middleware.security.SecurityMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -159,9 +161,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
-    # 'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend'
 )
+    # 'social_core.backends.facebook.FacebookOAuth2',
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -206,8 +208,8 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
     ),
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
