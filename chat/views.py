@@ -13,11 +13,14 @@ class RoomView(viewsets.ModelViewSet):
         queryset = Room.objects.all()
         user1 = self.request.query_params.get('user1')
         user2 = self.request.query_params.get('user2')
+        current = self.request.query_params.get('current')
         if user1 is not None and user2 is not None:
             if queryset.filter(user1=user1).filter(user2=user2).exists():
                 return queryset.filter(user1=user1).filter(user2=user2)
             else:
                 return queryset.filter(user1=user2).filter(user2=user1)
+        if current is not None:
+            return queryset.filter(user1=current) | queryset.filter(user2=current)
         return queryset
     
     # def perform_create(self, serializer):

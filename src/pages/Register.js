@@ -110,14 +110,14 @@ const Register = ({
       setSamePasswordError(false);
     }
   };
-  const handleAccountChange = (e) => {
-    setAccount(e.target.value);
-    if (e.target.value === "") {
-      setAccountError(true);
-    } else {
-      setAccountError(false);
-    }
-  };
+  // const handleAccountChange = (e) => {
+  //   setAccount(e.target.value);
+  //   if (e.target.value === "") {
+  //     setAccountError(true);
+  //   } else {
+  //     setAccountError(false);
+  //   }
+  // };
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -168,7 +168,7 @@ const Register = ({
   const continueWithGoogle = async () => {
     try {
       const res = await axios.get(
-        `/auth/o/google-oauth2/?redirect_uri=${process.env.REACT_APP_API_URL}`
+        `/auth/o/google-oauth2/?redirect_uri=${process.env.REACT_APP_API_URL}/google`
       );
 
       window.location.replace(res.data.authorization_url);
@@ -282,7 +282,7 @@ const Register = ({
               }
             />
 
-            {/* Account input */}
+            {/* Account input
             <FormControl
               variant="outlined"
               margin="normal"
@@ -302,7 +302,7 @@ const Register = ({
               <FormHelperText>
                 {accountError ? "This is a required field" : ""}
               </FormHelperText>
-            </FormControl>
+            </FormControl> */}
 
             {/* Register button */}
             <Button
