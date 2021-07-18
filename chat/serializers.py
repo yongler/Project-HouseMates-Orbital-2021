@@ -6,20 +6,40 @@ from accounts.serializers import userProfileSerializer
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    owner = userProfileSerializer()
-
     class Meta:
         model = Message
-        fields = ['owner', 'message']
+        fields = ['user_id', 'message']
 
 
         
 class RoomSerializer(serializers.ModelSerializer):
-    # messages = serializers.StringRelatedField(many=True)
     messages = MessageSerializer(many=True, read_only=True)
+    owner1 = serializers.SerializerMethodField()
+    owner2 = serializers.SerializerMethodField()
+
+    def get_owner1(self, instance):
+        temp = CustomUser.objects.all().filter(id=instance.user1).first()
+        return {
+        "id":temp.id, 
+        "first_name":temp.first_name, 
+        "last_name":temp.last_name, 
+        "profile_pic":str(temp.profile_pic),
+        "bio":temp.bio ,
+        "favourites": temp.favourites}
+
+    def get_owner2(self, instance):
+        temp = CustomUser.objects.all().filter(id=instance.user2).first()
+        return {
+        "id":temp.id, 
+        "first_name":temp.first_name, 
+        "last_name":temp.last_name, 
+        "profile_pic":str(temp.profile_pic),
+        "bio":temp.bio ,
+        "favourites": temp.favourites}
 
     class Meta:
         model = Room
-        fields = '__all__'
+        fields = ['label', 'owner1', 'owner2', 'messages']
+        # fields = '__all__'
 
 

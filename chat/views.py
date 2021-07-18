@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework import permissions, viewsets, generics
 from .models import Room, Message
 from .serializers import RoomSerializer, MessageSerializer
+from accounts.models import CustomUser
+
 
 
 class RoomView(viewsets.ModelViewSet):
@@ -17,13 +19,14 @@ class RoomView(viewsets.ModelViewSet):
             else:
                 return queryset.filter(user1=user2).filter(user2=user1)
         return queryset
-
-# class MessageView(viewsets.ModelViewSet):
-#     serializer_class = MessageSerializer
-
-#     def perform_create(self, serializer):
-#         serializer.save(owner=self.request.user)
-
+    
+    # def perform_create(self, serializer):
+    #     temp1 = serializer.data['user1']
+    #     temp2 = serializer.data['user2']
+    #     owner1 = CustomUser.objects.all().filter(id=temp1).first()
+    #     owner2 = CustomUser.objects.all().filter(id=temp2).first()
+    #     serializer.save(owner1=owner1, owner2=owner2)
+  
 
 def room(request, room_name):
     return render(request, 'index.html', {

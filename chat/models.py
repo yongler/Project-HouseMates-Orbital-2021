@@ -5,8 +5,10 @@ from django.utils import timezone
 from accounts.models import CustomUser
 
 class Room(models.Model):
-    user1 = models.IntegerField(default=0, null=True)
-    user2 = models.IntegerField(default=0, null=True)
+    user1 = models.IntegerField(default=0)
+    user2 = models.IntegerField(default=0)
+    owner1 = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='owner1')
+    owner2 = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True,blank=True, related_name='owner2')
     label = models.SlugField(unique=True)
  
     def __unicode__(self):
@@ -15,7 +17,6 @@ class Room(models.Model):
 class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='messages')
     user_id = models.TextField(default='')
-    owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='owner')
     message = models.TextField()
     timestamp = models.DateTimeField(default=timezone.now, db_index=True)
 
