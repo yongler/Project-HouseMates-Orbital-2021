@@ -81,7 +81,8 @@ const Housings = ({
     <div>
       {/* Filter button */}
       {user &&
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20, marginRight: 30 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, marginLeft: 30, marginRight: 30 }}>
+          <Typography variant="h6">Housing Dashboard</Typography>
           <Button
             ref={anchorRef}
             onClick={handleOpen}

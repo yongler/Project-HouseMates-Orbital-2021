@@ -1,245 +1,243 @@
-import React, { Component, useState, useEffect } from "react";
-import { w3cwebsocket as W3CWebSocket } from "websocket";
+import React, { useState, useEffect, useRef } from "react"
+import { connect } from 'react-redux'
+import { makeStyles } from "@material-ui/core/styles"
+import { uniqueNamesGenerator, adjectives, colors, animals } from "unique-names-generator"
+import { w3cwebsocket as W3CWebSocket } from "websocket"
+import { Avatar, ButtonBase, Grid, IconButton, List, Paper, TextField, Typography } from "@material-ui/core"
+import AddIcon from '@material-ui/icons/Add'
+import ClearIcon from '@material-ui/icons/Clear'
+import SearchBar from "material-ui-search-bar"
+import SendIcon from '@material-ui/icons/Send'
+import ChatListItem from "../components/ChatListItem"
+import ChatMessage from "../components/ChatMessage"
+import { checkChatHistory, getRoomList, postRoom, resetChatHistory } from "../redux/chat/actions"
+import "./pages.css"
 
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import Paper from "@material-ui/core/Paper";
-import Avatar from "@material-ui/core/Avatar";
+const Chat = ({
+  user,
+  roomList, getRoomList,
+  postRoom,
+  chatUser,
+  chatHistory, checkChatHistory, resetChatHistory,
+}) => {
+  // Styling
+  const useStyles = makeStyles(theme => ({
+    search: {
+      width: "100%",
+      height: 40,
+    },
+    list: {
+      overflow: "auto",
+      height: "45vh",
+    },
+    content: {
+      width: "100%",
+      height: "55vh",
+      overflow: "auto",
+    },
+  }))
 
-import { connect } from "react-redux";
-import { getRoomList, postRoom } from "../redux/chat/actions";
+  // States
+  const [messages, setMessages] = useState([])
+  const [activeRoom, setActiveRoom] = useState(null)
+  const [msgText, setMsgText] = useState("")
+  const [room, setRoom] = useState("kiwi")
+  const [roomListByLabel, setRoomListByLabel] = useState([])
 
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  uniqueNamesGenerator,
-  adjectives,
-  colors,
-  animals,
-} from "unique-names-generator";
+  // Hooks
+  const classes = useStyles()
+  const messagesEndRef = useRef()
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%",
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  root: {
-    boxShadow: "none",
-  },
-}));
+  // Constants
+  const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws"
+  const host = window.location.host === "localhost:8000" ? "localhost:8000/" : "housematesorbital.herokuapp.com/"
+  const client = new W3CWebSocket(ws_scheme + "://" + host + "ws/chat/" + room + "/")
 
-const Chat = ({ user, getRoomList, postRoom }) => {
-  const [isLoggedIn] = useState(true);
-  const [messages, setMessages] = useState([]);
-  const [value, setValue] = useState("");
-  const [name, setName] = useState("");
-  const [room, setRoom] = useState("kiwi");
+  // Helper functions
+  const scrollToBottom = () => { messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" }) }
 
-  const ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+  // Handlers
+  const handleChange = e => setMsgText(e.target.value)
+  const handleSend = (e) => {
+    e.preventDefault()
+    client.send(JSON.stringify({
+      type: "message",
+      message: msgText,
+      owner: user.first_name,
+    }))
+    setMsgText("")
+  }
 
-  const classes = useStyles();
-
-  // conditional url 
-  const host =
-    window.location.host === "localhost:8000"
-      ? "localhost:8000/"
-      : "housematesorbital.herokuapp.com/";
-
-  const client = new W3CWebSocket(
-    ws_scheme + "://" + host + "ws/chat/" + room + "/"
-  );
-
-  // send message
-  const onButtonClicked = (e) => {
-    e.preventDefault();
-
-    client.send(
-      JSON.stringify({
-        type: "message",
-        message: value,
-        owner: user.first_name,
-      })
-    );
-    setValue("");
-  };
-
-  // start new chat 
-  const newGroup = () => {
-    const shortName = uniqueNamesGenerator({
-      dictionaries: [colors, adjectives, animals],
-    });
-    console.log(shortName)
-    postRoom(1, 2, shortName);
-    setRoom(shortName);
-  };
+  useEffect(() => { if (user) getRoomList(user.id) }, [user])
+  useEffect(() => {
+    const temp = roomList.reduce((prev, curr) => ({ ...prev, [curr.label]: curr }), {})
+    setRoomListByLabel(temp)
+  }, [roomList])
+  useEffect(() => {
+    setActiveRoom(roomListByLabel[room])
+    setMessages(roomListByLabel[room]?.messages)
+  }, [roomListByLabel])
+  useEffect(() => {
+    client.onopen = () => { console.log("WebSocket Client Connected: ", room) }
+    setActiveRoom(roomListByLabel[room])
+    setMessages(roomListByLabel[room]?.messages)
+  }, [room])
 
   useEffect(() => {
-    getRoomList();
-  });
-
-  // to connect to backend
-  useEffect(() => {
-    client.onopen = () => {
-      console.log("WebSocket Client Connected");
-    };
-    
-    //receive 
     client.onmessage = (message) => {
-      const dataFromServer = JSON.parse(message.data);
-      console.log("got reply! ", dataFromServer.type);
+      const dataFromServer = JSON.parse(message.data)
+      console.log("got reply! ", dataFromServer.type)
       if (dataFromServer) {
         setMessages([
           ...messages,
           {
-            msg: dataFromServer.message,
-            name: dataFromServer.name,
+            message: dataFromServer.message,
+            owner: dataFromServer.owner,
           },
-        ]);
+        ])
       }
-    };
-  });
+    }
+  })
+  useEffect(() => scrollToBottom(), [messages])
+
+  useEffect(() => { if (chatUser) checkChatHistory(user.id, chatUser.id) }, [chatUser])
+  useEffect(() => {
+    if (chatHistory) {
+      if (chatHistory.length === 0) {
+        const shortName = uniqueNamesGenerator({ dictionaries: [colors, adjectives, animals] })
+        postRoom(user.id, chatUser.id, shortName)
+        getRoomList(user.id)
+        setRoom(shortName)
+      } else {
+        setRoom(chatHistory[0].label)
+      }
+      resetChatHistory()
+    }
+  }, [chatHistory])
 
   return (
-    <Container component="main" maxWidth="xs">
-      {isLoggedIn ? (
-        <div style={{ marginTop: 50 }}>
-          Room Name: {room}
-          <Paper
-            style={{
-              height: 500,
-              maxHeight: 500,
-              overflow: "auto",
-              boxShadow: "none",
+    <Grid container spacing={3}>
+      {/* Chat list */}
+      <Grid container item spacing={2} xs={3} >
+        {/* Title */}
+        <Grid item xs={12}>
+          <Typography variant="h6" style={{ marginLeft: 5 }}>Chat</Typography>
+        </Grid>
+
+        {/* Search bar */}
+        <Grid item xs={12}>
+          <SearchBar
+            className={classes.search}
+            cancelOnEscape
+            searchIcon={<ClearIcon />}
+            closeIcon={<ClearIcon />}
+            placeholder={"Search..."}
+            classes={{
+              input: { color: "white" }
             }}
-          >
-            {messages.map((message) => (
-              <>
-                <Card className={classes.root}>
-                  <CardHeader
-                    avatar={<Avatar className={classes.avatar}>R</Avatar>}
-                    title={message.name}
-                    subheader={message.msg}
-                  />
-                </Card>
-              </>
+          />
+        </Grid>
+
+        {/* Add button */}
+        <Grid item xs={12}>
+          <ButtonBase style={{ width: "100%" }}>
+            <Paper style={{ width: "100%", display: 'flex', padding: 10 }}>
+              <AddIcon />
+              <Typography variant="body1" style={{ marginLeft: 10 }}>Start a new conversation</Typography>
+            </Paper>
+          </ButtonBase>
+        </Grid>
+
+        {/* Chat list */}
+        <Grid item xs={12}>
+          <List className={classes.list}>
+            {roomList.map((room, index) => (
+              <ButtonBase style={{ width: "100%" }}>
+                <ChatListItem
+                  key={room.id}
+                  name={room.user1 === user.id ? room.user2 : room.user1}
+                  animationDelay={index + 1}
+                  image={room.image}
+                  setRoom={setRoom}
+                  room={room.label}
+                  active={room.id === activeRoom?.id}
+                />
+              </ButtonBase>
             ))}
+          </List>
+        </Grid>
+      </Grid>
+
+      {/* Chat content */}
+      <Grid container item spacing={1} xs={9} style={{ width: "100%" }}>
+        {/* Header */}
+        <Grid item xs={12}>
+          <Paper style={{ width: "100%", display: "flex", padding: 10, alignItems: 'center' }}>
+            <Avatar />
+            <Typography variant="h6" style={{ marginLeft: 20 }}>{activeRoom?.user1 === user?.id ? activeRoom?.user2 : activeRoom?.user1}</Typography>
           </Paper>
-          <form className={classes.form} noValidate onSubmit={onButtonClicked}>
-            <TextField
-              id="outlined-helperText"
-              label="Make a comment"
-              defaultValue="Default Value"
-              variant="outlined"
-              value={value}
-              fullWidth
-              onChange={(e) => {
-                setValue(e.target.value);
-              }}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Start Chatting
-            </Button>
-          </form>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={newGroup}
-          >
-            New Group
-          </Button>
-        </div>
-      ) : (
-        <div>
-          <CssBaseline />
-          <div className={classes.paper}>
-            <Typography component="h1" variant="h5">
-              ChattyRooms
-            </Typography>
+        </Grid>
+
+        {/* Body */}
+        <Grid item xs={12} style={{ width: "100%" }}>
+          <Paper style={{ width: "100%", padding: 10 }}>
+            <div style={{ width: "100%", height: "50vh", overflow: "auto" }}>
+              {messages?.map((msg, index) => (
+                <ChatMessage
+                  animationDelay={index + 2}
+                  user={msg.owner === user.first_name}
+                  msg={msg.message}
+                />))}
+              <div ref={messagesEndRef} />
+            </div>
+          </Paper>
+        </Grid>
+
+        {/* Footer */}
+        <Grid item xs={12}>
+          <Paper style={{ width: "100%", paddingLeft: 10, paddingRight: 10 }}>
             <form
-              className={classes.form}
               noValidate
-              // onSubmit={(value) => this.setState({ isLoggedIn: true })}
+              onSubmit={handleSend}
+              style={{ width: "100%", display: "flex", alignItems: 'center', justifyContent: 'center' }}
             >
               <TextField
                 variant="outlined"
-                margin="normal"
-                required
+                value={msgText}
+                placeholder="Type here..."
                 fullWidth
-                id="email"
-                label="Chatroom Name"
-                name="Chatroom Name"
-                autoFocus
-                value={room}
-                onChange={(e) => {
-                  setRoom(e.target.value);
-                }}
+                size="small"
+                className="inputRounded"
+                onChange={e => handleChange(e)}
               />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="Username"
-                label="Username"
-                type="Username"
-                id="Username"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
+              <IconButton
                 color="primary"
-                className={classes.submit}
+                type="submit"
+                style={{ margin: 5 }}
               >
-                Start Chatting
-              </Button>
+                <SendIcon />
+              </IconButton>
             </form>
-          </div>
-        </div>
-      )}
-    </Container>
-  );
-};
+          </Paper>
+        </Grid>
+      </Grid>
+    </Grid>
+  )
+}
 
 const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
-});
+  roomList: state.chat.roomList,
+  chatUser: state.chat.chatUser,
+  chatHistory: state.chat.chatHistory,
+})
 
 const mapDispatchToProps = {
   getRoomList,
   postRoom,
-};
+  checkChatHistory,
+  resetChatHistory,
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Chat)

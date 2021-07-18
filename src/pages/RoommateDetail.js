@@ -1,34 +1,24 @@
-import React, { useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { connect } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  Avatar,
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  Fab,
-  IconButton,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { getPostDetail, getUserPosts } from "../redux/post/actions";
-import { getQuestions } from "../redux/form/actions";
-import { ROOMMATE_FORM } from "../globalConstants";
+import React, { useEffect } from "react"
+import { useHistory, useParams } from "react-router-dom"
+import { connect } from "react-redux"
+import { makeStyles } from "@material-ui/core/styles"
+import { Avatar, Card, CardContent, CardHeader, Chip, Fab, IconButton, Tooltip, Typography } from "@material-ui/core"
+import AddIcon from "@material-ui/icons/Add"
+import ChatIcon from "@material-ui/icons/Chat"
+import ArrowBackIcon from "@material-ui/icons/ArrowBack"
+import { getPostDetail, getUserPosts } from "../redux/post/actions"
+import { getQuestions } from "../redux/form/actions"
+import { setChatUser } from "../redux/chat/actions"
+import { ROOMMATE_FORM } from "../globalConstants"
 
 // RoommateDetail consists of profile pic, name, categories of tags and post button.
 const RoommateDetail = ({
   user,
-  userPost,
-  post,
-  roommateCategories,
-  getPostDetail,
-  getQuestions,
-  getUserPosts,
+  userPost, getUserPosts,
+  post, getPostDetail,
+  roommateCategories, getQuestions,
   prevPath,
+  setChatUser,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -59,27 +49,27 @@ const RoommateDetail = ({
       bottom: theme.spacing(2),
       right: theme.spacing(3),
     },
-  }));
+  }))
 
   // Hooks
-  const classes = useStyles();
-  const history = useHistory();
-  const { id } = useParams();
+  const classes = useStyles()
+  const history = useHistory()
+  const { id } = useParams()
 
   // Handlers
-  const handleBack = () => { history.push(prevPath); };
-  const handleClick = () => {
-    history.push("/roommate-form");
-  };
+  const handleBack = () => { history.push(prevPath) }
+  const handleClick = () => { history.push("/roommate-form") }
+  const handleChat = () => {
+    setChatUser(post.owner)
+    history.push("/chat")
+  }
 
   // componentDidMount
   useEffect(() => {
-    if (roommateCategories.length === 0) {
-      getQuestions(ROOMMATE_FORM);
-    }
-    getPostDetail(id);
-  }, []);
-  useEffect(() => (user ? getUserPosts(user.id) : null), [user]);
+    if (roommateCategories.length === 0) getQuestions(ROOMMATE_FORM)
+    getPostDetail(id)
+  }, [])
+  useEffect(() => (user ? getUserPosts(user.id) : null), [user])
 
   return (
     <div className={classes.card}>
@@ -103,9 +93,12 @@ const RoommateDetail = ({
               />
 
               {/* Name */}
-              <Typography variant="h5">
-                {post.owner.first_name} {post.owner.last_name}
-              </Typography>
+              <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Typography variant="h5" display="inline">
+                  {post.owner.first_name} {post.owner.last_name}
+                </Typography>
+                {user && <IconButton style={{ marginLeft: 5 }} onClick={handleChat}><ChatIcon /></IconButton>}
+              </span>
 
               {/* Text */}
               <Typography
@@ -168,8 +161,8 @@ const RoommateDetail = ({
         </>
       ) : null}
     </div>
-  );
-};
+  )
+}
 
 const mapPropsToState = (state) => ({
   user: state.auth.user,
@@ -177,12 +170,13 @@ const mapPropsToState = (state) => ({
   post: state.post.post,
   roommateCategories: state.form.roommateCategories,
   prevPath: state.auth.prevPath,
-});
+})
 
 const mapDispatchToProps = {
   getQuestions,
   getPostDetail,
   getUserPosts,
-};
+  setChatUser,
+}
 
-export default connect(mapPropsToState, mapDispatchToProps)(RoommateDetail);
+export default connect(mapPropsToState, mapDispatchToProps)(RoommateDetail)

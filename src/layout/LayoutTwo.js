@@ -5,6 +5,7 @@ import { CircularProgress } from '@material-ui/core'
 import Footer from '../components/Footer'
 import SideNav from '../components/SideNav'
 import NavBar from '../components/NavBar'
+import { useLocation } from 'react-router-dom'
 
 // LayoutTwo consists of NavBar on top of the component, SideNav at the side and Footer at the bottom.
 const LayoutTwo = ({ children, formLoading, postLoading, profileLoading }) => {
@@ -47,6 +48,7 @@ const LayoutTwo = ({ children, formLoading, postLoading, profileLoading }) => {
 
   // Hooks
   const classes = useStyles()
+  const location = useLocation()
 
   // States
   const [menuOpen, setMenuOpen] = useState(false)
@@ -92,9 +94,10 @@ const LayoutTwo = ({ children, formLoading, postLoading, profileLoading }) => {
             <div style={{ width: '100%' }}>{children}</div>
 
             {/* Footer */}
-            <div style={{ marginTop: 60 }}>
-              <Footer />
-            </div>
+            {location.pathname !== "/chat" &&
+              <div style={{ marginTop: 60 }}>
+                <Footer />
+              </div>}
           </div>
         </div>
       </main>

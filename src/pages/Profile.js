@@ -1,20 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  Paper,
-  TextField,
-  Typography,
-  MenuItem,
-  MenuList,
-} from "@material-ui/core";
+import { Avatar, Badge, Box, Button, Grid, IconButton, MenuItem, MenuList , Paper, TextField, Typography } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import ChatIcon from "@material-ui/icons/Chat";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
@@ -27,7 +15,7 @@ import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
-  user,
+  user, isAuthenticated,
   loadUser,
   changeProfilePic,
   editBio,
@@ -161,6 +149,8 @@ const Profile = ({
       setStarredHousings([...starredHousings, housingPost]);
     }
   }, [housingPost]);
+
+  if (!isAuthenticated) { return <Redirect to="/login" />; }
 
   return (
     <div className={classes.card}>
@@ -390,6 +380,7 @@ const Profile = ({
 };
 
 const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
   editBioSuccess: state.auth.editBioSuccess,
   userRoommatePosts: state.post.userRoommatePosts,
