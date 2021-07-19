@@ -26,14 +26,14 @@ const postRoomErrorMsg = "Unable to post room";
 
 
 // Async action creators
-export const getRoomList = (user1) =>
+export const getRoomList = (user) =>
   async (dispatch) => {
     // Draft request
     const config = { headers: { "Content-Type": "application/json" } };
 
     // Get request
     try {
-      const res = await axios.get(`/chat/room-list/?user1=${user1}`, config);
+      const res = await axios.get(`/chat/room-list/?current=${user}`, config);
       dispatch(getRoomListSuccess(res.data));
     } catch (err) {
       dispatch(getRoomListFail(getRoomListErrorMsg));

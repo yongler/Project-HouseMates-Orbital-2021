@@ -85,7 +85,7 @@ const Layout = ({
   }, [location]);
 
   return (
-    <div>
+    <div style={{ backgroundColor: "#fafafa" }}>
       {/* Error message */}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -122,8 +122,8 @@ const Layout = ({
           {authErrorMsg
             ? authErrorMsg
             : formErrorMsg
-            ? formErrorMsg
-            : postErrorMsg}
+              ? formErrorMsg
+              : postErrorMsg}
         </MuiAlert>
       </Snackbar>
 

@@ -7,7 +7,13 @@ import { loadUser } from '../redux/auth/actions'
 import { getUserPosts, getPostList, editPost, postLoading, resetEditPostSuccess } from '../redux/post/actions'
 import './components.css'
 
-const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPosts, getPostList, editPost, postLoading, loading, resetEditPostSuccess }) => {
+const Matchmaking = ({
+  user,
+  userRoommatePosts, getUserPosts,
+  posts, next, count, getPostList,
+  editPost, resetEditPostSuccess,
+  loading, postLoading,
+}) => {
 
   // Hooks
   const history = useHistory()
@@ -27,10 +33,6 @@ const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPos
       default: return 0
     }
   }
-  const equals = (arr1, arr2) => (
-    arr1.reduce((prev, curr) => prev && arr2.includes(curr), true) && arr2.reduce((prev, curr) => prev && arr1.includes(curr), true)
-  )
-
 
   // Handlers
   const handleMatchmaking = () => {
@@ -43,95 +45,94 @@ const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPos
     var numOfQuestions = 0
 
     // Get my post
-    userPosts
-      .filter(userPost => userPost.post_form_type === ROOMMATE_FORM)
-      .forEach((userPost) => {
-        // Get my post
-        const myPost = userPost
-        // Get my post score list
-        var myScoreList = myPost.score_list
-        if (Array.isArray(myScoreList)) {
-          myScoreList = myScoreList
-            .reduce((prev, curr) => ({ ...prev, [curr.post]: curr }), {})
-          myScoreList = Object.assign({}, myScoreList)
+    const myPost = userRoommatePosts[0]
+    // Get my post score list
+    var myScoreList = myPost.score_list
+    if (Array.isArray(myScoreList)) {
+      myScoreList = myScoreList
+        .reduce((prev, curr) => ({ ...prev, [curr.post]: curr }), {})
+      myScoreList = Object.assign({}, myScoreList)
+    }
+
+    allPosts.forEach((post) => {
+      // Get other post
+      const otherPost = post
+      // Get other post score list
+      var otherScoreList = otherPost.score_list
+      if (Array.isArray(otherScoreList)) {
+        otherScoreList = otherScoreList
+          .reduce((prev, curr) => ({ ...prev, [curr.post]: curr }), {})
+        otherScoreList = Object.assign({}, otherScoreList)
+      }
+
+      if (otherPost.owner.id !== myPost.owner.id) {
+        otherPost.selected_choices.forEach((category, i) => {
+          category.forEach((question, j) => {
+            // Update my post score
+            // Multiple choice
+            if (Array.isArray(otherPost.selected_choices[i][j].myChoice)) {
+              var same = 0
+              var total = myPost.selected_choices[i][j].otherChoice.length
+              for (let choice in otherPost.selected_choices[i][j].myChoice) {
+                if (choice in myPost.selected_choices[i][j].otherChoice) same++
+              }
+              myScore += (getScore(myPost.selected_choices[i][j].priority) * (same / total))
+              // Single choice
+            } else if (otherPost.selected_choices[i][j].myChoice === myPost.selected_choices[i][j].otherChoice) {
+              myScore += getScore(myPost.selected_choices[i][j].priority)
+            }
+
+            // Update my post total score
+            myTotalScore += getScore(myPost.selected_choices[i][j].priority)
+
+            // Update other post score
+            // Multiple choice
+            if (Array.isArray(myPost.selected_choices[i][j].otherChoice)) {
+              var same = 0
+              var total = otherPost.selected_choices[i][j].otherChoice.length
+              for (let choice in myPost.selected_choices[i][j].myChoice) {
+                if (choice in otherPost.selected_choices[i][j].otherChoice) same++
+              }
+              otherScore += (getScore(otherPost.selected_choices[i][j].priority) * (same / total))
+              // Single choice
+            } else if (myPost.selected_choices[i][j].myChoice === otherPost.selected_choices[i][j].otherChoice) {
+              otherScore += getScore(otherPost.selected_choices[i][j].priority)
+            }
+
+            // Update other post total score
+            otherTotalScore += getScore(otherPost.selected_choices[i][j].priority)
+
+            // Update number of questions
+            numOfQuestions++
+          })
+        })
+
+        // Calculate average score
+        const averageScore = (Math.pow((myScore / myTotalScore) * (otherScore / otherTotalScore), 1 / numOfQuestions) * 100).toFixed(0)
+
+        // Update my post score list
+        myScoreList = {
+          ...myScoreList,
+          [otherPost.id]: {
+            post: otherPost.id,
+            score: averageScore,
+          }
+        }
+        // Update other post score list
+        otherScoreList = {
+          ...otherScoreList,
+          [myPost.id]: {
+            post: myPost.id,
+            score: averageScore,
+          }
         }
 
-        allPosts.forEach((post) => {
-          // Get other post
-          const otherPost = post
-          // Get other post score list
-          var otherScoreList = otherPost.score_list
-          if (Array.isArray(otherScoreList)) {
-            otherScoreList = otherScoreList
-              .reduce((prev, curr) => ({ ...prev, [curr.post]: curr }), {})
-            otherScoreList = Object.assign({}, otherScoreList)
-          }
-
-          if (otherPost.owner.id !== myPost.owner.id) {
-            otherPost.selected_choices.forEach((category, i) => {
-              category.forEach((question, j) => {
-                // Update my post score
-                if (Array.isArray(otherPost.selected_choices[i][j].myChoice)) {
-                  var same = 0
-                  var total = myPost.selected_choices[i][j].otherChoice.length
-                  for (let choice in otherPost.selected_choices[i][j].myChoice) {
-                    if (choice in myPost.selected_choices[i][j].otherChoice) same++
-                  }
-                  myScore += (getScore(myPost.selected_choices[i][j].priority) * (same / total))
-                } else {
-                  myScore += getScore(myPost.selected_choices[i][j].priority)
-                }
-
-                // Update my post total score
-                myTotalScore += getScore(myPost.selected_choices[i][j].priority)
-
-                // Update other post score
-                if (Array.isArray(myPost.selected_choices[i][j].otherChoice)) {
-                  var same = 0
-                  var total = otherPost.selected_choices[i][j].otherChoice.length
-                  for (let choice in myPost.selected_choices[i][j].myChoice) {
-                    if (choice in otherPost.selected_choices[i][j].otherChoice) same++
-                  }
-                  otherScore += (getScore(otherPost.selected_choices[i][j].priority) * (same / total))
-                } else {
-                  otherScore += getScore(otherPost.selected_choices[i][j].priority)
-                }
-
-                // Update other post total score
-                otherTotalScore += getScore(otherPost.selected_choices[i][j].priority)
-
-                // Update number of questions
-                numOfQuestions++
-              })
-            })
-
-            // Calculate average score
-            const averageScore = (Math.pow((myScore / myTotalScore) * (otherScore / otherTotalScore), 1 / numOfQuestions) * 100).toFixed(0)
-
-            // Update my post score list
-            myScoreList = {
-              ...myScoreList,
-              [otherPost.id]: {
-                post: otherPost.id,
-                score: averageScore,
-              }
-            }
-            // Update other post score list
-            otherScoreList = {
-              ...otherScoreList,
-              [myPost.id]: {
-                post: myPost.id,
-                score: averageScore,
-              }
-            }
-
-            // Save other post score list and total score
-            editPost(otherPost.id, otherPost.post_form_type, undefined, undefined, otherScoreList, otherTotalScore, undefined)
-          }
-        })
-        // Save my post score list and total score
-        editPost(myPost.id, myPost.post_form_type, undefined, undefined, myScoreList, myTotalScore, undefined)
-      })
+        // Save other post score list and total score
+        editPost(otherPost.id, otherPost.post_form_type, undefined, undefined, otherScoreList, otherTotalScore, undefined)
+      }
+    })
+    // Save my post score list and total score
+    editPost(myPost.id, myPost.post_form_type, undefined, undefined, myScoreList, myTotalScore, undefined)
   }
   const handleClose = () => {
     resetEditPostSuccess()
@@ -146,8 +147,8 @@ const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPos
     }
   }, [next])
   useEffect(() => setAllPosts([...allPosts, ...posts]), [posts])
-  useEffect(() => user ? getUserPosts(user.id) : null, [user])
-  useEffect(() => userPosts.length > 0 && allPosts.length === count ? handleMatchmaking() : null, [userPosts, allPosts])
+  useEffect(() => user ? getUserPosts(user.id, ROOMMATE_FORM) : null, [user])
+  useEffect(() => userRoommatePosts.length > 0 && allPosts.length === count ? handleMatchmaking() : null, [userRoommatePosts, allPosts])
 
   return (
     <Paper style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 20 }}>
@@ -166,7 +167,7 @@ const Matchmaking = ({ user, userPosts, posts, next, count, loadUser, getUserPos
 
 const mapStateToProps = state => ({
   user: state.auth.user,
-  userPosts: state.post.userPosts,
+  userRoommatePosts: state.post.userRoommatePosts,
   posts: state.post.posts,
   loading: state.post.postLoading,
   next: state.post.next,

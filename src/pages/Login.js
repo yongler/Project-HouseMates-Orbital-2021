@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Redirect } from "react-router-dom";
+import { NavLink, Redirect, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -36,6 +36,7 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
 
   // Hooks
   const classes = useStyles();
+  const location = useLocation()
 
   // States
   const [email, setEmail] = useState("");
@@ -101,11 +102,15 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
       );
 
       window.location.replace(res.data.authorization_url);
-    } catch (err) {}
+    } catch (err) { }
   };
 
   if (isAuthenticated) {
-    return <Redirect to="/profile" />;
+    if (location?.state?.from) {
+      return <Redirect to={location.state.from} />
+    } else {
+      return <Redirect to="/profile" />
+    }
   }
 
   return (

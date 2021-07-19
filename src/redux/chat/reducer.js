@@ -63,7 +63,6 @@ const chatReducer = (state = initialState, action) => {
     case POST_ROOM_LIST_SUCCESS:
       return {
         ...state,
-        // roomList: [...state.roomList, payload],
       };
 
     case POST_ROOM_LIST_FAIL:
