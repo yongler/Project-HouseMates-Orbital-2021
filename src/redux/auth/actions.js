@@ -481,7 +481,6 @@ export const editBio = (first_name, last_name, id, bio) => async (dispatch) => {
     },
   };
   const body = JSON.stringify({ first_name, last_name, bio });
-  console.log(body);
 
   // Put request
   try {

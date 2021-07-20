@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home'
 import PeopleIcon from '@material-ui/icons/People'
+import ChatIcon from "@material-ui/icons/Chat"
 
 // SideNav consists of list of tabs.
 const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnter, handleMouseLeave }) => {
@@ -65,6 +66,11 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
       text: 'Roommates',
       icon: <PeopleIcon color="primary" />,
       path: '/roommates',
+    },
+    {
+      text: 'Chat',
+      icon: <ChatIcon color="primary" />,
+      path: '/chat',
     },
   ]
 

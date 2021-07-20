@@ -2,25 +2,23 @@ import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Chip, Fab, Grid, IconButton, Paper, Tooltip, Typography } from "@material-ui/core";
+import { Avatar, Button, Card, CardContent, CardHeader, Chip, Fab, Grid, IconButton, Paper, Tooltip, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import { getQuestions } from "../redux/form/actions";
+import { setChatUser } from "../redux/chat/actions";
 import { HOUSING_FORM } from "../globalConstants";
-import Pic from '../static/housing.jpg'
 import ImageGallery from "../components/ImageGallery";
 
 // HousingDetail consists of profile pic, name, categories of tags and post button.
 const HousingDetail = ({
   user,
-  userHousingPosts,
-  housingPost,
-  housingCategories,
-  getPostDetail,
-  getQuestions,
-  getUserPosts,
+  userHousingPosts, getUserPosts,
+  housingPost, getPostDetail,
+  housingCategories, getQuestions,
   prevPath,
+  setChatUser,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -56,8 +54,6 @@ const HousingDetail = ({
       width: 400,
       height: 300,
       margin: "auto",
-      // marginLeft: 30,
-      // marginRight: 30,
     },
   }));
 
@@ -69,6 +65,10 @@ const HousingDetail = ({
   // Handlers
   const handleBack = () => { history.push(prevPath); };
   const handleClick = () => { history.push("/housing-form"); };
+  const handleChat = () => {
+    setChatUser(housingPost.owner)
+    history.push("/chat")
+  }
 
   // componentDidMount
   useEffect(() => {
@@ -92,11 +92,6 @@ const HousingDetail = ({
             />
 
             <CardContent className={classes.content}>
-              {/* <CardMedia
-                className={classes.media}
-                image={Pic}
-                title={housingPost.selected_choices[0][0].choice}
-              /> */}
               <ImageGallery tutorialSteps={housingPost.images} />
 
               <br />
@@ -174,10 +169,16 @@ const HousingDetail = ({
                       </div>
                     </div>
 
-                    <br />
-
                     {/* Chat button */}
-                    <Button variant="contained" color="primary" fullWidth>Chat with me</Button>
+                    {user && user.id !== housingPost.owner.id &&
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={handleChat}
+                      >
+                        Chat with me
+                      </Button>}
                   </Paper>
                 </Grid>
                 <Grid item xs={0} md={1} />
@@ -211,6 +212,7 @@ const mapDispatchToProps = {
   getQuestions,
   getPostDetail,
   getUserPosts,
+  setChatUser,
 };
 
 export default connect(mapPropsToState, mapDispatchToProps)(HousingDetail);

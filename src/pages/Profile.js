@@ -1,42 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  Paper,
-  TextField,
-  Typography,
-  MenuItem,
-  MenuList,
-} from "@material-ui/core";
+import { Avatar, Badge, Box, Button, Grid, IconButton, MenuItem, MenuList , Paper, TextField, Typography } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import ChatIcon from "@material-ui/icons/Chat";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import HomeIcon from "@material-ui/icons/Home";
 import PeopleIcon from "@material-ui/icons/People";
-import {
-  loadUser,
-  changeProfilePic,
-  editBio,
-  resetEditBioSuccess,
-} from "../redux/auth/actions";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import { loadUser, changeProfilePic, editBio, resetEditBioSuccess } from "../redux/auth/actions";
 import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import ProfileComponent from "../components/ProfileComponent";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
-  user,
+  user, isAuthenticated,
   loadUser,
   changeProfilePic,
   editBio,
@@ -70,10 +49,9 @@ const Profile = ({
   // Hooks
   const classes = useStyles();
   const history = useHistory();
+  const fileInput = useRef()
 
   // States
-  const [open, setOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [editBioTextFieldOpen, setEditBioTextFieldOpen] = useState(false);
   const [bio, setBio] = useState("");
   const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([]);
@@ -81,34 +59,18 @@ const Profile = ({
   const [starredHousings, setStarredHousings] = useState([]);
 
   // Handlers
-  const handleChangePassword = () => {
-    history.push("/change-password");
-  };
-  const handleDeleteAccount = () => {
-    history.push("/delete-account");
-  };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleCapture = ({ target }) => {
-    setSelectedFile(target.files[0]);
-  };
-  const handleSubmit = () => {
-    changeProfilePic(user.first_name, user.last_name, user.id, selectedFile);
-    setOpen(false);
-  };
-  const handleClick = () => {
-    setEditBioTextFieldOpen(true);
-  };
-  const handleCancel = () => {
-    setEditBioTextFieldOpen(false);
-  };
-  const handleChange = (e) => {
-    setBio(e.target.value);
-  };
+  // Account settings
+  const handleChangePassword = () => { history.push("/change-password"); };
+  const handleDeleteAccount = () => { history.push("/delete-account"); };
+
+  // Change profile pic
+  const handleClickInput = () => { fileInput.current.click() }
+  const handleUpload = (e) => { changeProfilePic(e.target.files[0]) }
+
+  // Edit bio
+  const handleClick = () => { setEditBioTextFieldOpen(true); };
+  const handleCancel = () => { setEditBioTextFieldOpen(false); };
+  const handleChange = (e) => { setBio(e.target.value); };
   const handleEditBio = (e) => {
     e.preventDefault();
     editBio(user.first_name, user.last_name, user.id, bio);
@@ -188,6 +150,8 @@ const Profile = ({
     }
   }, [housingPost]);
 
+  if (!isAuthenticated) { return <Redirect to="/login" />; }
+
   return (
     <div className={classes.card}>
       {user && (
@@ -211,47 +175,22 @@ const Profile = ({
                       horizontal: "right",
                     }}
                     badgeContent={
-                      <IconButton onClick={handleClickOpen}>
+                      <IconButton onClick={handleClickInput}>
                         <CreateIcon />
                       </IconButton>
                     }
                   >
                     <Avatar className={classes.avatar} src={user.profile_pic} />
                   </Badge>
-                  <Dialog
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="form-dialog-title"
-                  >
-                    <DialogTitle id="form-dialog-title">
-                      Edit Profile Picture
-                    </DialogTitle>
-                    <DialogContent>
-                      <Button
-                        variant="contained"
-                        component="label"
-                        // startIcon={<CloudUploadIcon />}
-                      >
-                        {/* Upload File */}
-                        <input
-                          type="file"
-                          id="image"
-                          accept="image/png, image/jpeg"
-                          multiple
-                          onChange={handleCapture}
-                        />
-                      </Button>
-                    </DialogContent>
 
-                    <DialogActions>
-                      <Button onClick={handleClose} color="primary">
-                        Cancel
-                      </Button>
-                      <Button onClick={() => handleSubmit()} color="primary">
-                        Save
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
+                  <input
+                    type="file"
+                    id="image"
+                    accept="image/png, image/jpeg"
+                    onChange={e => handleUpload(e)}
+                    ref={fileInput}
+                    style={{ display: 'none' }}
+                  />
                 </Grid>
                 <Grid item xs={1} />
                 {/* Name and bio */}
@@ -441,6 +380,7 @@ const Profile = ({
 };
 
 const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
   editBioSuccess: state.auth.editBioSuccess,
   userRoommatePosts: state.post.userRoommatePosts,

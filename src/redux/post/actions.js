@@ -95,7 +95,7 @@ export const getPostDetail = (id) =>
     }
   };
 
-export const getUserPosts = (owner, type) =>
+export const getUserPosts = (owner, type, page) =>
   async (dispatch) => {
     // Draft request
     const config = { headers: { "Content-Type": "application/json" } };
@@ -103,8 +103,12 @@ export const getUserPosts = (owner, type) =>
     // Get request
     try {
       var res
-      if (type !== undefined) {
+      if (type !== undefined && page === undefined) {
         res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${type}`, config);
+      } else if (type === undefined && page !== undefined) {
+        res = await axios.get(`/form/post-list/?owner=${owner}&page=${page}`, config);
+      } else if (type !== undefined && page !== undefined) {
+        res = await axios.get(`/form/post-list/?owner=${owner}&form_type=${type}&page=${page}`, config);
       } else {
         res = await axios.get(`/form/post-list/?owner=${owner}`, config);
       }
@@ -182,81 +186,57 @@ export const createPost = (post_form_type, selected_choices, owner, picture) =>
     }
   };
 
-export const editPost =
-  (
-    id,
-    post_form_type,
-    selected_choices,
-    owner,
-    score_list,
-    total_score,
-    picture
-  ) =>
-    async (dispatch) => {
-      // Loading
-      dispatch(postLoading());
+export const editPost = (id, post_form_type, selected_choices, owner, score_list, total_score, picture) =>
+  async (dispatch) => {
+    // Loading
+    dispatch(postLoading());
 
-      // Get access token from local storage
-      const token = localStorage.getItem("access");
+    // Get access token from local storage
+    const token = localStorage.getItem("access");
 
-      // Draft request
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${token}`,
-        },
-      };
-
-      if (picture) {
-        const images = [];
-        const dummy = Array.from(Array(picture.length).keys());
-
-        dummy.forEach((i) => {
-          S3FileUpload.uploadFile(picture[i], s3config)
-            .then((data) => {
-              images.push(data.location);
-            })
-            .then(async () => {
-              if (images.length === picture.length) {
-                const body = JSON.stringify({
-                  post_form_type,
-                  selected_choices,
-                  owner,
-                  score_list,
-                  total_score,
-                  images,
-                });
-
-                // Put request
-                try {
-                  await axios.put(`/form/post-list/${id}/`, body, config);
-
-                  dispatch(editPostSuccess());
-                } catch (err) {
-                  dispatch(editPostFail(editPostErrorMsg));
-                }
-              }
-            });
-        });
-      } else {
-        const body = JSON.stringify({
-          post_form_type,
-          selected_choices,
-          owner,
-          score_list,
-          total_score,
-        });
-
-        // Put request
-        try {
-          await axios.put(`/form/post-list/${id}/`, body, config);
-
-          dispatch(editPostSuccess());
-        } catch (err) {
-          dispatch(editPostFail(editPostErrorMsg));
-        }
-      }
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `JWT ${token}`,
+      },
     };
+
+    if (picture) {
+      const images = [];
+      const dummy = Array.from(Array(picture.length).keys());
+
+      dummy.forEach((i) => {
+        S3FileUpload.uploadFile(picture[i], s3config)
+          .then((data) => {
+            images.push(data.location);
+          })
+          .then(async () => {
+            if (images.length === picture.length) {
+              const body = JSON.stringify({ post_form_type, selected_choices, owner, score_list, total_score, images });
+
+              // Put request
+              try {
+                await axios.put(`/form/post-list/${id}/`, body, config);
+                dispatch(editPostSuccess());
+              } catch (err) {
+                dispatch(editPostFail(editPostErrorMsg));
+              }
+            }
+          });
+      });
+    } else {
+      const body = JSON.stringify({ post_form_type, selected_choices, owner, score_list, total_score });
+
+      // Put request
+      try {
+        await axios.put(`/form/post-list/${id}/`, body, config);
+        dispatch(editPostSuccess());
+      } catch (err) {
+        dispatch(editPostFail(editPostErrorMsg));
+      }
+    }
+  };
 
 export const deletePost = (id) =>
   async (dispatch) => {
@@ -283,33 +263,35 @@ export const deletePost = (id) =>
     }
   };
 
-export const searchPost = (formType, searchItem) =>
+export const searchPost = (formType, searchItem, page) =>
   async (dispatch) => {
     dispatch(postLoading());
 
     // Request
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+    const config = { headers: { "Content-Type": "application/json" } };
 
     // Get request
     try {
-      const res = await axios.get(`/form/post-list/?form_type=${formType}&search=${searchItem}`, config);
-      dispatch(searchPostSuccess(res.data));
+      var res
+      if (page !== undefined) {
+        res = await axios.get(`/form/post-list/?form_type=${formType}&search=${searchItem}&page=${page}`, config);
+      } else {
+        res = await axios.get(`/form/post-list/?form_type=${formType}&search=${searchItem}`, config);
+      }
+      dispatch(searchPostSuccess(res.data, searchItem));
     } catch (err) {
       dispatch(searchPostFail(searchPostErrorMsg));
     }
   };
 
-export const cancelSearch = () => async (dispatch) => {
-  try {
-    dispatch(cancelSearchSuccess());
-  } catch (err) {
-    dispatch(cancelSearchFail(cancelSearchErrorMsg));
-  }
-};
+export const cancelSearch = () =>
+  async (dispatch) => {
+    try {
+      dispatch(cancelSearchSuccess());
+    } catch (err) {
+      dispatch(cancelSearchFail(cancelSearchErrorMsg));
+    }
+  };
 
 
 
@@ -372,9 +354,9 @@ export const resetDeletePostSuccess = () => ({
   type: RESET_DELETE_POST_SUCCESS,
 });
 
-export const searchPostSuccess = (searchedPost) => ({
+export const searchPostSuccess = (searchedPost, searchItem) => ({
   type: SEARCH_POST_SUCCESS,
-  payload: searchedPost,
+  payload: { searchedPost, searchItem },
 });
 export const searchPostFail = (searchPostErrorMsg) => ({
   type: SEARCH_POST_FAIL,

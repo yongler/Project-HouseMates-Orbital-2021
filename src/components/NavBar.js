@@ -1,21 +1,11 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useRef, Fragment } from "react";
 import { useHistory, Link, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles, fade } from "@material-ui/core/styles";
-import {
-  AppBar,
-  Avatar,
-  Button,
-  IconButton,
-  InputBase,
-  Menu,
-  MenuItem,
-  Paper,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
+import { AppBar, Avatar, Button, ClickAwayListener, IconButton, InputBase, Grow, Menu, MenuItem, MenuList, Paper, Popper, Toolbar, Typography } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import ClearIcon from '@material-ui/icons/Clear';
 import { logout } from "../redux/auth/actions";
 import Logo from "../static/housemates-logo-without-text-white.svg";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
@@ -80,6 +70,7 @@ const NavBar = ({
       marginRight: theme.spacing(2),
       marginLeft: 0,
       width: 400,
+      height: 40,
     },
     searchIcon: {
       padding: theme.spacing(0, 2),
@@ -107,6 +98,9 @@ const NavBar = ({
       marginLeft: 10,
       cursor: "pointer",
     },
+    white: {
+      color: "white",
+    }
   }));
 
   const [theme, setTheme] = useState(true);
@@ -117,38 +111,27 @@ const NavBar = ({
   const location = useLocation();
   const classes = useStyles();
   const history = useHistory();
+  const anchorRef = useRef(null);
 
   // States
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
   const [data, setData] = useState({ search: "" });
 
   // Handlers
-  const handleMenuOpen = (e) => {
-    setAnchorEl(e.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  const handleMenuOpen = () => { setOpen(true); };
+  const handleMenuClose = () => { setOpen(false); };
   const handleProfile = () => {
-    setAnchorEl(null);
+    setOpen(false);
     history.push("/profile");
   };
   const handleLogout = () => {
-    setAnchorEl(null);
+    setOpen(false);
     logout();
     history.push("/login");
   };
-  const handleClick = () => {
-    history.push("/profile");
-  };
-
-  const handleSearch = (searchItem) => {
-    searchPost(ROOMMATE_FORM, searchItem);
-  };
-
-  const handleCancelSearch = () => {
-    cancelSearch();
-  };
+  const handleClick = () => { history.push("/profile"); };
+  const handleSearch = (searchItem) => { searchPost(ROOMMATE_FORM, searchItem); };
+  const handleCancelSearch = () => { cancelSearch(); };
 
   return (
     <div>
@@ -197,6 +180,12 @@ const NavBar = ({
               onRequestSearch={() => handleSearch(data.search)}
               onCancelSearch={handleCancelSearch}
               cancelOnEscape
+              searchIcon={<ClearIcon style={{ color: 'white' }} />}
+              closeIcon={<ClearIcon style={{ color: 'white' }} />}
+              placeholder={"Search..."}
+              classes={{
+                input: classes.white
+              }}
             />
           )}
 
@@ -216,28 +205,38 @@ const NavBar = ({
                   className={classes.profilePic}
                   onClick={handleMenuOpen}
                   src={user.profile_pic}
+                  ref={anchorRef}
                 />
               </div>
 
-              <Menu
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
-                {/* <MenuItem>
-                  <IconButton
-                    edge="end"
-                    color="inherit"
-                    aria-label="mode"
-                    onClick={() => setTheme(!theme)}
+              {/* Menu */}
+              <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal placement={'bottom-end'}>
+                {({ TransitionProps, placement }) => (
+                  <Grow
+                    {...TransitionProps}
+                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
                   >
-                    {icon}
-                  </IconButton>
-                </MenuItem> */}
-                <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
+                    <Paper>
+                      <ClickAwayListener onClickAway={handleMenuClose}>
+                        <MenuList>
+                          <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                          {/* <MenuItem>
+                            <IconButton
+                              edge="end"
+                              color="inherit"
+                              aria-label="mode"
+                              onClick={() => setTheme(!theme)}
+                            >
+                              {icon}
+                            </IconButton>
+                          </MenuItem> */}
+                        </MenuList>
+                      </ClickAwayListener>
+                    </Paper>
+                  </Grow>
+                )}
+              </Popper>
             </Fragment>
           ) : (
             <Fragment>
