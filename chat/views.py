@@ -3,6 +3,7 @@ from rest_framework import permissions, viewsets, generics
 from .models import Room, Message
 from .serializers import RoomSerializer, MessageSerializer
 from accounts.models import CustomUser
+from django.db.models import Max
 
 class MessageView(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
@@ -21,7 +22,7 @@ class RoomView(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
 
     def get_queryset(self):
-        queryset = Room.objects.all()
+        queryset = Room.objects.all().annotate(lastest_message=Max('messages__timestamp')).order_by("-lastest_message")
         user1 = self.request.query_params.get('user1')
         user2 = self.request.query_params.get('user2')
         current = self.request.query_params.get('current')
