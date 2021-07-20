@@ -4,6 +4,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'room-list', views.RoomView, basename='RoomView')
+router.register(r'message-list', views.MessageView, basename='MessageView')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -140,7 +140,6 @@ EMAIL_HOST_USER = "housematesorbital@gmail.com"
 EMAIL_HOST_PASSWORD = "xjhtjgflbapooidy"
 EMAIL_USE_TLS = True
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -170,13 +169,13 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Singapore"
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -213,7 +212,8 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
     ),
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 5
+    'PAGE_SIZE': 5,
+    'DATETIME_FORMAT': "%m/%d/%Y %I:%M:%S %p"
     
 }
 
@@ -223,7 +223,8 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_TOKEN_CLASSES': (
         'rest_framework_simplejwt.tokens.AccessToken',
-    )
+    ),
+    "UPDATE_LAST_LOGIN": True
 }
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '677098566735-j2bkpa87srurhercjmsdl1fu5i2l98t6.apps.googleusercontent.com'

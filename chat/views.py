@@ -4,7 +4,18 @@ from .models import Room, Message
 from .serializers import RoomSerializer, MessageSerializer
 from accounts.models import CustomUser
 
+class MessageView(viewsets.ModelViewSet):
+    serializer_class = MessageSerializer
 
+    def get_queryset(self):
+        queryset = Message.objects.all()
+        room = self.request.query_params.get('room')
+        hasread = self.request.query_params.get('hasread')
+        if room is not None:
+            return queryset.filter(room=room) 
+        if hasread is not None:
+            return queryset.filter(hasRead=hasread) 
+        return queryset
 
 class RoomView(viewsets.ModelViewSet):
     serializer_class = RoomSerializer

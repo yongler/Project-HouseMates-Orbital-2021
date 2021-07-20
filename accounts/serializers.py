@@ -3,11 +3,10 @@ from .models import CustomUser
 from django.db import IntegrityError, transaction
 
 class userProfileSerializer(serializers.ModelSerializer):
-    # profile_pic = serializers.SerializerMethodField()
-
     class Meta:
         model=CustomUser
-        fields = ('id', 'first_name', 'last_name', 'profile_pic', 'bio', 'favourites')
+        # fields = '__all__'
+        fields = ('id', 'first_name', 'last_name', 'profile_pic', 'bio', 'favourites', "last_login")
 
     # def get_profile_pic(self, CustomUser):
     #     request = self.context.get('request')

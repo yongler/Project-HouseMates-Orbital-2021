@@ -19,6 +19,7 @@ class Message(models.Model):
     user_id = models.TextField(default='')
     message = models.TextField()
     timestamp = models.DateTimeField(default=timezone.now, db_index=True)
+    hasRead = models.BooleanField(default=False)
 
     def __str__(self):
         return self.message
