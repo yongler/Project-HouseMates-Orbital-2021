@@ -8,6 +8,8 @@ import {
   GET_ROOM_DETAIL_FAIL,
   POST_ROOM_LIST_SUCCESS,
   POST_ROOM_LIST_FAIL,
+  EDIT_MSG_SUCCESS,
+  EDIT_MSG_FAIL,
   SET_CHAT_USER,
   RESET_CHAT_HISTORY,
 } from "./types";
@@ -22,6 +24,7 @@ const getRoomListErrorMsg = "Unable to load rooms";
 const checkChatHistoryErrorMsg = "Unable to check chat history";
 const getRoomDetailErrorMsg = "Unable to load room";
 const postRoomErrorMsg = "Unable to post room";
+const editMsgErrorMsg = "Unable to edit message";
 
 
 
@@ -82,7 +85,7 @@ export const postRoom = (user1, user2, label) =>
     };
 
     const body = JSON.stringify({ user1, user2, label });
-    // Get request
+    // Post request
     try {
       const res = await axios.post(`/chat/room-list/`, body, config);
       dispatch(postRoomSuccess(res.data));
@@ -91,6 +94,28 @@ export const postRoom = (user1, user2, label) =>
     }
   };
 
+export const editMsg = (id, hasRead) =>
+  async dispatch => {
+    // Draft request
+    const token = localStorage.getItem("access");
+
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `JWT ${token}`,
+      },
+    };
+
+    const body = JSON.stringify({ hasRead });
+    // Patch request
+    try {
+      const res = await axios.patch(`/chat/message-list/${id}/`, body, config);
+      dispatch(editMsgSuccess(res.data));
+    } catch (err) {
+      dispatch(editMsgFail(editMsgErrorMsg));
+    }
+  }
 
 
 // Action creators
@@ -127,6 +152,14 @@ export const postRoomSuccess = (data) => ({
 });
 export const postRoomFail = (err) => ({
   type: POST_ROOM_LIST_FAIL,
+  payload: err,
+});
+
+export const editMsgSuccess = () => ({
+  type: EDIT_MSG_SUCCESS,
+});
+export const editMsgFail = (err) => ({
+  type: EDIT_MSG_FAIL,
   payload: err,
 });
 

@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from "@material-ui/styles";
 
-const ChatMessage = ({ user, msg }) => {
+const ChatMessage = ({ user, msg, time }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     msg: {
@@ -13,6 +13,11 @@ const ChatMessage = ({ user, msg }) => {
       marginRight: 5,
       borderRadius: 10,
       maxWidth: "50%",
+      textOverflow: "ellipsis", 
+      overflow: "hidden", 
+      whiteSpace: "nowrap", 
+      display: "flex", 
+      flexDirection: 'column', 
     },
     right: {
       justifyContent: 'flex-end',
@@ -20,6 +25,7 @@ const ChatMessage = ({ user, msg }) => {
     blue: {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
+      alignItems: "flex-end",
     }
   }))
 
@@ -31,12 +37,12 @@ const ChatMessage = ({ user, msg }) => {
       style={{ animationDelay: `0.8s`, display: 'flex', alignItems: 'center' }}
       className={clsx({ [classes.right]: user })}
     >
-      <div className={clsx(classes.msg, { [classes.blue]: user })} style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-        <Typography
-          variant="body1"
-          display="inline"
-        >
-          {msg}
+      <div className={clsx(classes.msg, { [classes.blue]: user })}>
+        <Typography variant="body1">{msg}</Typography>
+        <Typography variant="body2">
+          {time
+            ? time.split(" ")[1].split(":")[0] + ":" + time.split(" ")[1].split(":")[1] + " " + time.split(" ")[2]
+            : null}
         </Typography>
       </div>
     </div>

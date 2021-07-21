@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Badge, Box, Button, Grid, IconButton, MenuItem, MenuList , Paper, TextField, Typography } from "@material-ui/core";
+import { Avatar, Badge, Box, Button, Grid, IconButton, MenuItem, MenuList, Paper, TextField, Typography } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import ChatIcon from "@material-ui/icons/Chat";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
@@ -10,22 +10,19 @@ import HomeIcon from "@material-ui/icons/Home";
 import PeopleIcon from "@material-ui/icons/People";
 import { loadUser, changeProfilePic, editBio, resetEditBioSuccess } from "../redux/auth/actions";
 import { getPostDetail, getUserPosts } from "../redux/post/actions";
+import { getRoomList } from "../redux/chat/actions"
 import ProfileComponent from "../components/ProfileComponent";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
-  user, isAuthenticated,
-  loadUser,
+  isAuthenticated,
+  user, loadUser,
   changeProfilePic,
-  editBio,
-  editBioSuccess,
-  resetEditBioSuccess,
-  userRoommatePosts,
-  getUserPosts,
-  post,
-  housingPost,
-  getPostDetail,
+  editBio, editBioSuccess, resetEditBioSuccess,
+  userRoommatePosts, getUserPosts,
+  post, housingPost, getPostDetail,
+  roomList, getRoomList,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -91,6 +88,7 @@ const Profile = ({
   useEffect(() => {
     if (user) {
       getUserPosts(user.id, ROOMMATE_FORM);
+      getRoomList(user.id)
     }
   }, [user]);
   // Sort user roommate post score list and get top 3 roommates id
@@ -101,10 +99,10 @@ const Profile = ({
         a.score > b.score
           ? -1
           : a.score === b.score
-          ? a.post < b.post
-            ? -1
+            ? a.post < b.post
+              ? -1
+              : 1
             : 1
-          : 1
       );
       const topThreeRoommatesId = [];
       for (let i = 0; i < 3; i++) {
@@ -318,6 +316,7 @@ const Profile = ({
                       name={post.owner.first_name + " " + post.owner.last_name}
                       desc={post.owner.bio}
                       pic={post.owner.profile_pic}
+                      scoreList={userRoommatePosts[0]?.score_list}
                       type={ROOMMATE_FORM}
                       id={post.id}
                     />
@@ -355,21 +354,45 @@ const Profile = ({
                 )}
               </Paper>
             </Grid>
+            
             <Grid item xs={4}>
               <Paper style={{ padding: 10 }}>
                 <span style={{ display: "flex", justifyContent: "center" }}>
-                  <ChatIcon style={{ marginRight: 10 }} />
+                  <HomeIcon style={{ marginRight: 10 }} />
                   <Typography variant="h6" display="inline">
-                    3 new messages
+                    New messages
                   </Typography>
                 </span>
-                <Typography
-                  variant="body1"
-                  color="textSecondary"
-                  align="center"
-                >
-                  Start chatting!
-                </Typography>
+                {roomList.length === 0 ? (
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    No new messages.
+                  </Typography>
+                ) : (
+                  roomList.slice(0, 3)
+                    .filter((room) => room.messages.reduce((prev, curr) =>
+                      prev || (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? true : false), false))
+                    .map((room) => (
+                      <ProfileComponent
+                        key={room.id}
+                        chatUser={user.id === room.owner1.id
+                          ? room.owner2
+                          : room.owner1}
+                        name={user.id === room.owner1.id
+                          ? room.owner2.first_name + " " + room.owner2.last_name
+                          : room.owner1.first_name + " " + room.owner1.last_name}
+                        desc={room.messages[room.messages.length - 1].message}
+                        pic={user.id === room.owner1.id
+                          ? room.owner2.profile_pic
+                          : room.owner1.profile_pic}
+                        unreadMsgs={room.messages.reduce((prev, curr) =>
+                          prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)}
+                      />
+                    ))
+                )}
               </Paper>
             </Grid>
           </Grid>
@@ -386,6 +409,7 @@ const mapStateToProps = (state) => ({
   userRoommatePosts: state.post.userRoommatePosts,
   post: state.post.post,
   housingPost: state.post.housingPost,
+  roomList: state.chat.roomList,
 });
 
 const mapDispatchToProps = {
@@ -395,6 +419,7 @@ const mapDispatchToProps = {
   loadUser,
   getPostDetail,
   getUserPosts,
+  getRoomList,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

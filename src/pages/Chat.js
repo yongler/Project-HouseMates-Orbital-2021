@@ -11,7 +11,7 @@ import SearchBar from "material-ui-search-bar"
 import SendIcon from '@material-ui/icons/Send'
 import ChatListItem from "../components/ChatListItem"
 import ChatMessage from "../components/ChatMessage"
-import { checkChatHistory, getRoomList, postRoom, resetChatHistory } from "../redux/chat/actions"
+import { checkChatHistory, editMsg, getRoomList, postRoom, resetChatHistory } from "../redux/chat/actions"
 import "./pages.css"
 
 const Chat = ({
@@ -25,6 +25,7 @@ const Chat = ({
   checkChatHistory,
   resetChatHistory,
   chatLoading,
+  editMsg,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -52,13 +53,7 @@ const Chat = ({
   // Hooks
   const classes = useStyles();
   const location = useLocation();
-  const messagesEndRef = useRef();
   const textInput = useRef();
-
-  // Helper functions
-  const scrollToBottom = () => {
-    messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   // Constants
   const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
@@ -66,14 +61,6 @@ const Chat = ({
     window.location.host === "localhost:8000"
       ? "localhost:8000/"
       : "housematesorbital.herokuapp.com/";
-
-  useEffect(() => {
-    if (room) {
-      setClient(
-        new W3CWebSocket(ws_scheme + "://" + host + "ws/chat/" + room + "/")
-      );
-    }
-  }, [room]);
 
   // Handlers
   const handleChange = (e) => setMsgText(e.target.value);
@@ -87,6 +74,9 @@ const Chat = ({
       })
     );
     setMsgText("");
+    messages?.forEach(msg => { 
+      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) editMsg(msg.id, true) 
+    })
   };
 
   // useEffects
@@ -104,11 +94,19 @@ const Chat = ({
   }, [roomListByLabel])
   // Connect to active room
   useEffect(() => {
-    client.onopen = () => { console.log("WebSocket Client Connected: ", room) }
-    setActiveRoom(roomListByLabel[room])
-    setMessages(roomListByLabel[room]?.messages)
+    if (room) {
+      const temp = new W3CWebSocket(ws_scheme + "://" + host + "ws/chat/" + room + "/")
+      setClient(temp)
+    }
+  }, [room]);
+  useEffect(() => {
+    if (client) client.onopen = () => { console.log("WebSocket Client Connected: ", room) }
+    if (room) {
+      setActiveRoom(roomListByLabel[room])
+      setMessages(roomListByLabel[room]?.messages)
+    }
     if (user) getRoomList(user.id)
-  }, [room])
+  }, [client])
   // Update messages
   useEffect(() => {
     if (client) {
@@ -133,11 +131,17 @@ const Chat = ({
     }
   })
   // Scroll to bottom of messages
-  useEffect(() => scrollToBottom(), [messages])
+  useEffect(() => {
+    const chatBody = document.getElementById('chatBody')
+    if (chatBody) chatBody.scrollTo(0, chatBody.scrollHeight);
+  }, [messages])
   // Focus on text field
-  useEffect(() => { 
-    textInput?.current?.focus() 
+  useEffect(() => {
+    textInput?.current?.focus()
     setMsgText("")
+    messages?.forEach(msg => { 
+      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) editMsg(msg.id, true) 
+    })
   }, [activeRoom])
   // Get chat history
   useEffect(() => { if (chatUser) checkChatHistory(user.id, chatUser.id) }, [chatUser])
@@ -243,8 +247,20 @@ const Chat = ({
                           messages?.[messages?.length - 1]?.message) ||
                         room?.messages[room?.messages?.length - 1]?.message
                       }
+                      time={
+                        (activeRoom?.id === room.id &&
+                          messages?.[messages?.length - 1]?.timestamp) ||
+                        room?.messages[room?.messages?.length - 1]?.timestamp}
+                      unreadMsgs={
+                        (activeRoom?.id === room.id &&
+                          messages?.reduce((prev, curr) => prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)) ||
+                        room?.messages.reduce((prev, curr) =>
+                          prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)
+                      }
+                      user={user}
                       setRoom={setRoom}
-                      room={room.label}
+                      editMsg={editMsg}
+                      room={room}
                       active={room.id === activeRoom?.id}
                       animationDelay={index + 1}
                     />
@@ -267,17 +283,15 @@ const Chat = ({
                     alignItems: "center",
                   }}
                 >
-                  <Avatar />
+                  <Avatar src={user?.id === activeRoom?.owner1?.id
+                    ? activeRoom?.owner2?.profile_pic
+                    : activeRoom?.owner1?.profile_pic} />
                   <Typography variant="h6" style={{ marginLeft: 20 }}>
                     {user?.id === activeRoom?.owner1.id
-                      ? activeRoom?.owner2.first_name +
-                        " " +
-                        activeRoom?.owner2.last_name
+                      ? activeRoom?.owner2.first_name + " " + activeRoom?.owner2.last_name
                       : user?.id === activeRoom?.owner2.id
-                      ? activeRoom?.owner1.first_name +
-                        " " +
-                        activeRoom?.owner1.last_name
-                      : ""}
+                        ? activeRoom?.owner1.first_name + " " + activeRoom?.owner1.last_name
+                        : ""}
                   </Typography>
                 </Paper>
               </Grid>
@@ -287,15 +301,16 @@ const Chat = ({
                 <Paper style={{ width: "100%", padding: 10 }}>
                   <div
                     style={{ width: "100%", height: "50vh", overflow: "auto" }}
+                    id="chatBody"
                   >
                     {messages?.map((msg, index) => (
                       <ChatMessage
                         animationDelay={index + 2}
-                        user={msg.user_id === user.id}
+                        user={msg.user_id.toString() === user.id.toString()}
                         msg={msg.message}
+                        time={msg.timestamp}
                       />
                     ))}
-                    <div ref={messagesEndRef} />
                   </div>
                 </Paper>
               </Grid>
@@ -329,7 +344,7 @@ const Chat = ({
                       color="primary"
                       type="submit"
                       style={{ margin: 5 }}
-                      disabled={!msgText}
+                      disabled={!msgText || msgText.replace(/\s/g, '').length === 0}
                     >
                       <SendIcon />
                     </IconButton>
@@ -374,6 +389,7 @@ const mapDispatchToProps = {
   postRoom,
   checkChatHistory,
   resetChatHistory,
+  editMsg,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

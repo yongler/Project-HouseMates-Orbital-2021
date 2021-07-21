@@ -44,9 +44,6 @@ const App = () => {
         <BrowserRouter>
           <Layout>
             <Switch>
-              {/* Routes with no layout */}
-              <Route exact path="/" component={Home} />
-
               {/* Routes with LayoutOne */}
               <RouteWrapper path="/login" title={"Login"} component={Login} layout={LayoutOne} />
               <RouteWrapper path="/delete-account" title={"Delete Account"} component={DeleteAccount} layout={LayoutOne} />
@@ -74,7 +71,10 @@ const App = () => {
               <RouteWrapper path="/profile" component={Profile} layout={LayoutTwo} />
               <RouteWrapper path="/matchmaking" component={Matchmaking} layout={LayoutTwo} />
               <RouteWrapper exact path="/chat" component={Chat} layout={LayoutTwo} />
-              <RouteWrapper path="*" component={Home} layout={LayoutTwo} />
+
+              {/* Routes with no layout */}
+              <Route exact path="/" component={Home} />
+              <Route path="*" component={Home} />
             </Switch>
           </Layout>
         </BrowserRouter>
