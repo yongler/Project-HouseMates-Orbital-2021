@@ -112,7 +112,7 @@ const Roommates = ({
           </Popper>
         </div>}
 
-      {postsType === ROOMMATE_FORM && postToRender.length !== 0
+      {postToRender.length !== 0
         ?
         // List of posts 
         <Container>

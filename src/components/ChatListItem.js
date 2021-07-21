@@ -24,7 +24,7 @@ const ChatListItem = ({ name, pic, msg, animationDelay, active, setRoom, room })
   return (
     <Paper style={{ width: "100%", marginBottom: 5 }}>
       <ButtonBase
-        style={{ width: "100%", borderRadius: 10 }}
+        style={{ width: "100%", borderRadius: 5 }}
         className={clsx({ [classes.active]: (active || enter) })}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

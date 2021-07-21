@@ -14,7 +14,7 @@ import { HOUSING_FORM, PAGINATION } from '../globalConstants'
 const Housings = ({
   user,
   postLoading,
-  getPostList, posts, postsType, count,
+  getPostList, housingPosts, postsType, count,
   getUserPosts, userHousingPosts, userHousingPostsCount,
   searchPost, searchedPost, searchItem, searchedPostCount,
 }) => {
@@ -74,7 +74,7 @@ const Housings = ({
   useEffect(() => { getPostList(HOUSING_FORM) }, [])
   useEffect(() => user ? getUserPosts(user.id, HOUSING_FORM) : null, [user])
 
-  const postToRender = searchedPost ? searchedPost : myPosts ? userHousingPosts : posts
+  const postToRender = searchedPost ? searchedPost : myPosts ? userHousingPosts : housingPosts
   const countToRender = searchedPost ? searchedPostCount : myPosts ? userHousingPostsCount : count
 
   return (
@@ -110,7 +110,7 @@ const Housings = ({
           </Popper>
         </div>}
 
-      {postsType === HOUSING_FORM && postToRender.length !== 0
+      {postToRender.length !== 0
         ?
         // List of posts
         <Container>
@@ -152,7 +152,7 @@ const Housings = ({
 const mapStateToProps = state => ({
   user: state.auth.user,
   userHousingPosts: state.post.userHousingPosts,
-  posts: state.post.posts,
+  housingPosts: state.post.housingPosts,
   postsType: state.post.postsType,
   postLoading: state.post.postLoading,
   searchedPost: state.post.searchedPost,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Switch, useLocation } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, useLocation } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { indigo } from '@material-ui/core/colors'
@@ -44,6 +44,9 @@ const App = () => {
         <BrowserRouter>
           <Layout>
             <Switch>
+              {/* Routes with no layout */}
+              <Route exact path="/" component={Home} />
+
               {/* Routes with LayoutOne */}
               <RouteWrapper path="/login" title={"Login"} component={Login} layout={LayoutOne} />
               <RouteWrapper path="/delete-account" title={"Delete Account"} component={DeleteAccount} layout={LayoutOne} />
@@ -59,7 +62,6 @@ const App = () => {
               <RouteWrapper path="/resend-activation-email" title={"Resend Activation Email"} component={ResendActivationEmail} layout={LayoutOne} />
 
               {/* Routes with LayoutTwo */}
-              <RouteWrapper exact path="/" component={Home} layout={LayoutTwo} />
               <RouteWrapper exact path="/dashboard" component={Dashboard} layout={LayoutTwo} />
               <RouteWrapper exact path="/housings" component={Housings} layout={LayoutTwo} />
               <RouteWrapper path="/housings/:id" component={HousingDetail} layout={LayoutTwo} />

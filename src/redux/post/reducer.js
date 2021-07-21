@@ -27,6 +27,7 @@ import {
 const initialState = {
   postLoading: false,
   posts: [],
+  housingPosts: [],
   postsType: [],
   post: null,
   housingPost: null,
@@ -54,15 +55,28 @@ const postReducer = (state = initialState, action) => {
 
   switch (type) {
     case GET_POST_LIST_SUCCESS:
-      return {
-        ...state,
-        postLoading: false,
-        posts: payload.resdata.results,
-        count: payload.resdata.count,
-        next: payload.resdata.next,
-        previous: payload.resdata.previous,
-        postsType: payload.type,
-      };
+      if (payload.type === ROOMMATE_FORM) {
+        return {
+          ...state,
+          postLoading: false,
+          posts: payload.resdata.results,
+          count: payload.resdata.count,
+          next: payload.resdata.next,
+          previous: payload.resdata.previous,
+          // postsType: payload.type,
+        };
+      } else {
+        return {
+          ...state,
+          postLoading: false,
+          housingPosts: payload.resdata.results,
+          count: payload.resdata.count,
+          next: payload.resdata.next,
+          previous: payload.resdata.previous,
+          // postsType: payload.type,
+        };
+      }
+      
 
     case GET_POST_LIST_FAIL:
       return {

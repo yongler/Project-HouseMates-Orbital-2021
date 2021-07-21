@@ -65,7 +65,7 @@ const Profile = ({
 
   // Change profile pic
   const handleClickInput = () => { fileInput.current.click() }
-  const handleUpload = (e) => { changeProfilePic(e.target.files[0]) }
+  const handleUpload = (e) => { changeProfilePic(user.first_name, user.last_name, user.id, e.target.files[0]) }
 
   // Edit bio
   const handleClick = () => { setEditBioTextFieldOpen(true); };

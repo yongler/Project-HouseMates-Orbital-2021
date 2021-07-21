@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useLocation, Redirect } from "react-router-dom"
 import { connect } from 'react-redux'
-import { makeStyles } from "@material-ui/core/styles"
 import { uniqueNamesGenerator, adjectives, colors, animals } from "unique-names-generator"
+import { makeStyles } from "@material-ui/core/styles"
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 import { Avatar, ButtonBase, Divider, Grid, IconButton, List, Paper, TextField, Typography } from "@material-ui/core"
 import AddIcon from '@material-ui/icons/Add'
@@ -70,22 +70,27 @@ const Chat = ({
     setMsgText("")
   }
 
+  // useEffects
+  // Get user room list
   useEffect(() => { if (user) getRoomList(user.id) }, [user])
+  // Process user room list
   useEffect(() => {
     const temp = roomList.reduce((prev, curr) => ({ ...prev, [curr.label]: curr }), {})
     setRoomListByLabel(temp)
   }, [roomList])
+  // Set active room and messages
   useEffect(() => {
     setActiveRoom(roomListByLabel[room])
     setMessages(roomListByLabel[room]?.messages)
   }, [roomListByLabel])
+  // Connect to active room
   useEffect(() => {
     client.onopen = () => { console.log("WebSocket Client Connected: ", room) }
     setActiveRoom(roomListByLabel[room])
     setMessages(roomListByLabel[room]?.messages)
     if (user) getRoomList(user.id)
   }, [room])
-
+  // Update messages
   useEffect(() => {
     client.onmessage = (message) => {
       const dataFromServer = JSON.parse(message.data)
@@ -101,10 +106,16 @@ const Chat = ({
       }
     }
   })
+  // Scroll to bottom of messages
   useEffect(() => scrollToBottom(), [messages])
-  useEffect(() => { textInput?.current?.focus() }, [activeRoom])
-
+  // Focus on text field
+  useEffect(() => { 
+    textInput?.current?.focus() 
+    setMsgText("")
+  }, [activeRoom])
+  // Get chat history
   useEffect(() => { if (chatUser) checkChatHistory(user.id, chatUser.id) }, [chatUser])
+  // Check whether to create new room
   useEffect(() => {
     if (chatHistory) {
       if (chatHistory.length === 0) {
@@ -188,7 +199,6 @@ const Chat = ({
                       active={room.id === activeRoom?.id}
                       animationDelay={index + 1}
                     />
-
                   </>
                 ))}
               </List>
