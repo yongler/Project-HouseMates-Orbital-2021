@@ -10,6 +10,7 @@ class Room(models.Model):
     owner1 = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='owner1')
     owner2 = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True,blank=True, related_name='owner2')
     label = models.SlugField(unique=True)
+    # date_modified = models.DateTimeField(auto_now=True)
  
     def __unicode__(self):
         return self.label
@@ -19,6 +20,7 @@ class Message(models.Model):
     user_id = models.TextField(default='')
     message = models.TextField()
     timestamp = models.DateTimeField(default=timezone.now, db_index=True)
+    hasRead = models.BooleanField(default=False)
 
     def __str__(self):
         return self.message

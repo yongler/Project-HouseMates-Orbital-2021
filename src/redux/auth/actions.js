@@ -457,7 +457,7 @@ export const changeProfilePic =
           body = JSON.stringify({ first_name, last_name, profile_pic });
         })
         .then(async () => {
-          await axios.put(`/accounts/profiles/${id}/`, body, config);
+          await axios.patch(`/accounts/profiles/${id}/`, body, config);
           dispatch(changeProfilePicSuccess(profile_pic));
         });
     } catch (err) {
@@ -484,7 +484,7 @@ export const editBio = (first_name, last_name, id, bio) => async (dispatch) => {
 
   // Put request
   try {
-    await axios.put(`/accounts/profiles/${id}/`, body, config);
+    await axios.patch(`/accounts/profiles/${id}/`, body, config);
     dispatch(editBioSuccess());
   } catch (err) {
     if (err.response.data.bio) {
@@ -512,7 +512,7 @@ export const editFavourites =
 
     // Put request
     try {
-      await axios.put(`/accounts/profiles/${id}/`, body, config);
+      await axios.patch(`/accounts/profiles/${id}/`, body, config);
       dispatch(editFavouritesSuccess());
     } catch (err) {
       dispatch(editFavouritesFail(editFavouritesFailErrorMsg));

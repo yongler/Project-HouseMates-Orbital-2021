@@ -8,7 +8,8 @@ from accounts.serializers import userProfileSerializer
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['user_id', 'message']
+        fields = ['id', 'user_id', 'message', 'timestamp', 'hasRead']
+        # fields = '__all__'
 
 
         

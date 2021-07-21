@@ -37,19 +37,6 @@ class PostView(viewsets.ModelViewSet):
 	search_fields = ['owner__first_name', 'owner__last_name', 'owner__bio', 'selected_choices']
 	pagination_class = PageNumberPagination
   
-	# def post(self, request, *args, **kwargs):
-	# 	data = request.POST
-	# 	images = request.FILES.getlist('images')
-
-	# 	for image in images:
-	# 		post = Post.objects.create(
-	# 			post_form_type=data['post_form_type'],
-	# 			selected_choices=data['selected_choices'],
-	# 			score_list=data['score_list'],
-	# 			total_score=data['total_score'],
-	# 			image=image,
-	# 		) 
-
 	def get_queryset(self):
 		queryset = Post.objects.all().order_by('-id')
 		form_type = self.request.query_params.get('form_type')
