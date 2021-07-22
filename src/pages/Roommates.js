@@ -98,7 +98,7 @@ const Roommates = ({
             {({ TransitionProps, placement }) => (
               <Grow
                 {...TransitionProps}
-                style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                style={{ transformOrigin: placement === 'bottom' ? 'center bottom' : 'center top' }}
               >
                 <Paper>
                   <ClickAwayListener onClickAway={handleClose}>

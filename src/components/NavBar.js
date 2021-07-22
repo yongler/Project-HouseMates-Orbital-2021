@@ -212,27 +212,26 @@ const NavBar = ({
               </div>
 
               <div>
+                {/* Profile pic */}
                 <Avatar
                   className={classes.profilePic}
                   onClick={handleMenuOpen}
                   src={user.profile_pic}
                   ref={anchorRef}
                 />
-              </div>
-
-              {/* Menu */}
-              <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal placement={'bottom-end'}>
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                  >
-                    <Paper>
-                      <ClickAwayListener onClickAway={handleMenuClose}>
-                        <MenuList>
-                          <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                          {/* <MenuItem>
+                {/* Menu */}
+                <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal placement={'bottom-end'}>
+                  {({ TransitionProps, placement }) => (
+                    <Grow
+                      {...TransitionProps}
+                      style={{ transformOrigin: placement === 'bottom' ? 'center bottom' : 'center top' }}
+                    >
+                      <Paper>
+                        <ClickAwayListener onClickAway={handleMenuClose}>
+                          <MenuList>
+                            <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                            {/* <MenuItem>
                             <IconButton
                               edge="end"
                               color="inherit"
@@ -242,11 +241,12 @@ const NavBar = ({
                               {icon}
                             </IconButton>
                           </MenuItem> */}
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>)}
-              </Popper>
+                          </MenuList>
+                        </ClickAwayListener>
+                      </Paper>
+                    </Grow>)}
+                </Popper>
+              </div>
             </Fragment>
             :
             <>
