@@ -19,8 +19,8 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, animationDelay, 
   // Handlers
   const handleClick = () => {
     setRoom(room.label)
-    room.messages.forEach(msg => { 
-      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) editMsg(msg.id, true) 
+    room.messages.forEach(msg => {
+      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) editMsg(msg.id, true)
     })
   }
   const handleMouseEnter = () => { setEnter(true) }
@@ -43,17 +43,23 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, animationDelay, 
           </ListItemAvatar>
           <div style={{ display: 'flex', flexDirection: "column", width: "100%", overflow: "hidden" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
+              {/* Name */}
               <Typography variant="body1" style={{ overflow: "hidden" }}>{name}</Typography>
-              <Typography variant="body2" color="textSecondary" style={{ overflow: "hidden" }}>
-                {time.split(" ")[1].split(":")[0] + ":" + time.split(" ")[1].split(":")[1] + " " + time.split(" ")[2]}
-              </Typography>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="body2" color="textSecondary">{msg}</Typography>
+
+              {/* Unread messages */}
               {unreadMsgs !== 0 &&
                 <div style={{ width: 20, height: 20, backgroundColor: "red", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%" }}>
                   <div style={{ color: "white", textAlign: "center" }}>{unreadMsgs}</div>
                 </div>}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              {/* Latest message */}
+              <Typography variant="body2" color="textSecondary">{msg}</Typography>
+
+              {/* Time */}
+              <Typography variant="body2" color="textSecondary" style={{ overflow: "hidden" }}>
+                {time.split(" ")[1].split(":")[0] + ":" + time.split(" ")[1].split(":")[1] + " " + time.split(" ")[2]}
+              </Typography>
             </div>
           </div>
         </ListItem>

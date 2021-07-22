@@ -22,6 +22,7 @@ import {
   SEARCH_POST_FAIL,
   CANCEL_SEARCH_SUCCESS,
   CANCEL_SEARCH_FAIL,
+  SET_PAGE,
 } from "./types";
 
 const initialState = {
@@ -48,6 +49,7 @@ const initialState = {
   deletePostSuccess: false,
   searchPostSuccess: false,
   cancelSearchSuccess: false,
+  page: 1,
 };
 
 const postReducer = (state = initialState, action) => {
@@ -228,6 +230,7 @@ const postReducer = (state = initialState, action) => {
         ...state,
         postLoading: false,
         searchPostSuccess: true,
+        cancelSearchSuccess: false,
         searchedPost: payload.searchedPost.results,
         searchItem: payload.searchItem,
         searchedPostCount: payload.searchedPost.count,
@@ -244,6 +247,7 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         postLoading: false,
+        searchPostSuccess: false,
         cancelSearchSuccess: true,
         searchedPost: null,
         searchedItem: null,
@@ -255,6 +259,12 @@ const postReducer = (state = initialState, action) => {
         postLoading: false,
         postErrorMsg: payload,
       };
+
+    case SET_PAGE:
+      return {
+        ...state,
+        page: payload,
+      }
 
     default:
       return state;

@@ -74,10 +74,16 @@ const Chat = ({
       })
     );
     setMsgText("");
-    messages?.forEach(msg => { 
-      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) editMsg(msg.id, true) 
-    })
   };
+  useEffect(() => {
+    if (!msgText) {
+      messages?.forEach(msg => {
+        if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) {
+          editMsg(msg.id, true)
+        }
+      })
+    }
+  }, [msgText])
 
   // useEffects
   // Get user room list
@@ -89,7 +95,7 @@ const Chat = ({
   }, [roomList])
   // Set active room and messages
   useEffect(() => {
-    setActiveRoom(roomListByLabel[room])
+    if (roomListByLabel[room]?.id !== activeRoom?.id) setActiveRoom(roomListByLabel[room])
     setMessages(roomListByLabel[room]?.messages)
   }, [roomListByLabel])
   // Connect to active room
@@ -102,7 +108,7 @@ const Chat = ({
   useEffect(() => {
     if (client) client.onopen = () => { console.log("WebSocket Client Connected: ", room) }
     if (room) {
-      setActiveRoom(roomListByLabel[room])
+      if (roomListByLabel[room]?.id !== activeRoom?.id) setActiveRoom(roomListByLabel[room])
       setMessages(roomListByLabel[room]?.messages)
     }
     if (user) getRoomList(user.id)
@@ -139,8 +145,10 @@ const Chat = ({
   useEffect(() => {
     textInput?.current?.focus()
     setMsgText("")
-    messages?.forEach(msg => { 
-      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) editMsg(msg.id, true) 
+    messages?.forEach(msg => {
+      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) {
+        editMsg(msg.id, true)
+      }
     })
   }, [activeRoom])
   // Get chat history

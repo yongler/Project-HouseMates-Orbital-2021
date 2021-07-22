@@ -7,19 +7,18 @@ import Pagination from '@material-ui/lab/Pagination'
 import AddIcon from "@material-ui/icons/Add"
 import FilterListIcon from '@material-ui/icons/FilterList'
 import RoommateCard from '../components/RoommateCard'
-import { getPostList, getUserPosts, searchPost } from "../redux/post/actions"
+import { getPostList, getUserPosts, searchPost, setPage } from "../redux/post/actions"
 import { PAGINATION, ROOMMATE_FORM } from '../globalConstants'
 
 // Posts consists of list of Roommate and post button.
 const Roommates = ({
   user,
   postLoading,
-  getUserPosts, userRoommatePosts, userRoommatePostsCount,
-  getPostList, posts, postsType, count,
-  searchPost, searchedPost, searchItem, searchedPostCount,
-
+  userRoommatePosts, userRoommatePostsCount, getUserPosts,
+  posts, count, getPostList,
+  searchedPost, searchedPostCount, searchItem, searchPost,
+  page, setPage,
 }) => {
-
   // Styling
   const useStyles = makeStyles((theme) => ({
     tooltip: {
@@ -39,7 +38,6 @@ const Roommates = ({
   const anchorRef = useRef(null);
 
   // States
-  const [page, setPage] = useState(1)
   const [open, setOpen] = useState(false);
   const [myPosts, setMyPosts] = useState(false)
   const [text, setText] = useState("Filter")
@@ -62,18 +60,21 @@ const Roommates = ({
   const handleClose = () => { setOpen(false); };
   const handleMyPosts = () => {
     setMyPosts(true)
+    setPage(1)
     setOpen(false)
     setText("My Post(s)")
+    getUserPosts(user.id, ROOMMATE_FORM)
   }
   const handleAllPosts = () => {
     setMyPosts(false)
     setPage(1)
     setOpen(false)
     setText("Filter")
+    getPostList(ROOMMATE_FORM)
   }
 
   // componentDidMount
-  useEffect(() => { getPostList(ROOMMATE_FORM) }, [])
+  useEffect(() => { getPostList(ROOMMATE_FORM, page) }, [])
   useEffect(() => (user ? getUserPosts(user.id, ROOMMATE_FORM) : null), [user])
 
   const postToRender = searchedPost ? searchedPost : myPosts ? userRoommatePosts : posts
@@ -163,19 +164,20 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
   userRoommatePosts: state.post.userRoommatePosts,
   posts: state.post.posts,
-  postsType: state.post.postsType,
   postLoading: state.post.postLoading,
   searchedPost: state.post.searchedPost,
   count: state.post.count,
   userRoommatePostsCount: state.post.userRoommatePostsCount,
   searchedPostCount: state.post.searchedPostCount,
   searchItem: state.post.searchItem,
+  page: state.post.page,
 })
 
 const mapDispatchToProps = {
   getPostList,
   getUserPosts,
   searchPost,
+  setPage,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Roommates)
