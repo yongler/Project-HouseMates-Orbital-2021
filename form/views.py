@@ -58,8 +58,13 @@ class ScoreView(viewsets.ModelViewSet):
 		queryset = Score.objects.all().order_by('-score')
 		this_post = self.request.query_params.get('this_post')
 		other_post = self.request.query_params.get('other_post')
-		if this_post is not None or other_post is not None:
-			queryset = queryset.filter(this_post=this_post).filter(other_post=other_post)
+		owner = self.request.query_params.get('owner')
+		if this_post is not None:
+			queryset = queryset.filter(this_post=this_post)
+		if other_post is not None:
+			queryset = queryset.filter(other_post=other_post)
+		if owner is not None:
+			queryset = queryset.filter(owner=owner)
 		return queryset
 
 # class ChoiceView(viewsets.ModelViewSet):
