@@ -2,10 +2,25 @@ import React, { useState, useRef, Fragment } from "react";
 import { useHistory, Link, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles, fade } from "@material-ui/core/styles";
-import { AppBar, Avatar, Button, ClickAwayListener, IconButton, InputBase, Grow, Menu, MenuItem, MenuList, Paper, Popper, Toolbar, Typography } from "@material-ui/core";
+import {
+  AppBar,
+  Avatar,
+  Button,
+  ClickAwayListener,
+  IconButton,
+  InputBase,
+  Grow,
+  Menu,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import ClearIcon from '@material-ui/icons/Clear';
+import ClearIcon from "@material-ui/icons/Clear";
 import { logout } from "../redux/auth/actions";
 import Logo from "../static/housemates-logo-without-text-white.svg";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
@@ -15,19 +30,6 @@ import SearchBar from "material-ui-search-bar";
 import { searchPost, cancelSearch } from "../redux/post/actions";
 import { ROOMMATE_FORM } from "../globalConstants";
 
-export const light = {
-  palette: {
-    // primary: indigo,
-    type: "light",
-  },
-};
-
-export const dark = {
-  palette: {
-    type: "dark",
-  },
-};
-
 // NavBar consists of menu button, logo, title, search bar, and welcome text and profile pic, or login and register buttons, dependent of user authentication, from left to right.
 const NavBar = ({
   handleMenuButton,
@@ -36,6 +38,8 @@ const NavBar = ({
   user,
   searchPost,
   cancelSearch,
+  setTheme,
+  theme,
 }) => {
   // Styling (from left to right)
   const useStyles = makeStyles((theme) => ({
@@ -100,12 +104,10 @@ const NavBar = ({
     },
     white: {
       color: "white",
-    }
+    },
   }));
 
-  const [theme, setTheme] = useState(true);
   const icon = !theme ? <Brightness7Icon /> : <Brightness3Icon />; // Icons imported from `@material-ui/icons`
-  const appliedTheme = createMuiTheme(theme ? light : dark);
 
   // Hooks
   const location = useLocation();
@@ -118,8 +120,12 @@ const NavBar = ({
   const [data, setData] = useState({ search: "" });
 
   // Handlers
-  const handleMenuOpen = () => { setOpen(true); };
-  const handleMenuClose = () => { setOpen(false); };
+  const handleMenuOpen = () => {
+    setOpen(true);
+  };
+  const handleMenuClose = () => {
+    setOpen(false);
+  };
   const handleProfile = () => {
     setOpen(false);
     history.push("/profile");
@@ -129,9 +135,16 @@ const NavBar = ({
     logout();
     history.push("/login");
   };
-  const handleClick = () => { history.push("/profile"); };
-  const handleSearch = (searchItem) => { searchPost(ROOMMATE_FORM, searchItem); };
-  const handleCancelSearch = () => { cancelSearch(); };
+  const handleClick = () => {
+    history.push("/profile");
+  };
+  const handleSearch = (searchItem) => {
+    searchPost(ROOMMATE_FORM, searchItem);
+  };
+  const handleCancelSearch = () => {
+    cancelSearch();
+  };
+
 
   return (
     <div>
@@ -180,11 +193,11 @@ const NavBar = ({
               onRequestSearch={() => handleSearch(data.search)}
               onCancelSearch={handleCancelSearch}
               cancelOnEscape
-              searchIcon={<ClearIcon style={{ color: 'white' }} />}
-              closeIcon={<ClearIcon style={{ color: 'white' }} />}
+              searchIcon={<ClearIcon style={{ color: "white" }} />}
+              closeIcon={<ClearIcon style={{ color: "white" }} />}
               placeholder={"Search..."}
               classes={{
-                input: classes.white
+                input: classes.white,
               }}
             />
           )}
@@ -210,18 +223,26 @@ const NavBar = ({
               </div>
 
               {/* Menu */}
-              <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal placement={'bottom-end'}>
+              <Popper
+                open={open}
+                anchorEl={anchorRef.current}
+                role={undefined}
+                transition
+                disablePortal
+                placement={"bottom-end"}
+              >
                 {({ TransitionProps, placement }) => (
                   <Grow
                     {...TransitionProps}
-                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                    style={{
+                      transformOrigin:
+                        placement === "bottom" ? "center top" : "center bottom",
+                    }}
                   >
                     <Paper>
                       <ClickAwayListener onClickAway={handleMenuClose}>
                         <MenuList>
-                          <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                          {/* <MenuItem>
+                          <MenuItem>
                             <IconButton
                               edge="end"
                               color="inherit"
@@ -230,7 +251,9 @@ const NavBar = ({
                             >
                               {icon}
                             </IconButton>
-                          </MenuItem> */}
+                          </MenuItem>
+                          <MenuItem onClick={handleProfile}>Dashboard</MenuItem>
+                          <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>
                       </ClickAwayListener>
                     </Paper>

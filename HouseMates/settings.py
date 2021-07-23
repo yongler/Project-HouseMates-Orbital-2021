@@ -193,15 +193,6 @@ MEDIA_URL = '/images/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "src", "static")
 
-#S3 BUCKETS CONFIG
-# AWS_ACCESS_KEY_ID = 'AKIA2VQMUMOWCECPYUOU '
-# AWS_SECRET_ACCESS_KEY = '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'
-# AWS_STORAGE_BUCKET_NAME = 'housematesorbital'
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_DEFAULT_ACL = None
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
@@ -211,9 +202,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
     ),
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,
-    'DATETIME_FORMAT': "%m/%d/%Y %I:%M:%S %p"
+    'DATETIME_FORMAT': "%m/%d/%Y %I:%M%p"
     
 }
 
@@ -269,31 +259,3 @@ options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
 
 ASGI_APPLICATION = "HouseMates.routing.application"
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': True,
-#     'formatters': {
-#         'verbose': {
-#             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'level': 'NOTSET',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose'
-#         }
-#     },
-#     'loggers': {
-#         '': {
-#             'handlers': ['console'],
-#             'level': 'NOTSET',
-#         },
-#         'django.request': {
-#             'handlers': ['console'],
-#             'propagate': False,
-#             'level': 'ERROR'
-#         }
-#     }
-# }

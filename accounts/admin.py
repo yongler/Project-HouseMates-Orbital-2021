@@ -17,6 +17,7 @@ class CustomUserAdmin(admin.ModelAdmin):
                  (None, {'fields': ['profile_pic']}),
                  (None, {'fields': ['bio']}),
                  (None, {'fields': ['favourites']}),
+                 (None, {'fields': ['just_registered']}),
                  ]
 
     # fieldsets = '__all__'

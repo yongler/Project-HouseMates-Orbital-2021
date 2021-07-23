@@ -38,6 +38,8 @@ import {
   SET_PREV_PATH,
   GOOGLE_AUTH_SUCCESS,
   GOOGLE_AUTH_FAIL,
+  SET_JUST_REGISTERED_SUCCESS,
+  SET_JUST_REGISTERED_FAIL,
 } from "./types";
 
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -519,6 +521,30 @@ export const editFavourites =
     }
   };
 
+// Edit favourites
+export const editJustRegistered =
+  (first_name, last_name, id, just_registered) => async (dispatch) => {
+    // Get access token from local storage
+    const token = localStorage.getItem("access");
+
+    // Draft request
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${token}`,
+      },
+    };
+    const body = JSON.stringify({ first_name, last_name, just_registered });
+
+    // Put request
+    try {
+      await axios.patch(`/accounts/profiles/${id}/`, body, config);
+      dispatch(editJustRegisteredSuccess(just_registered));
+    } catch (err) {
+      dispatch(editJustRegisteredFail(err));
+    }
+  };
+
 // Action Creators
 export const registerSuccess = () => ({ type: REGISTER_SUCCESS });
 export const registerFail = (authErrorMsg) => ({
@@ -629,4 +655,13 @@ export const editFavouritesFail = (authErrorMsg) => ({
 export const setPrevPath = (path) => ({
   type: SET_PREV_PATH,
   payload: path,
+});
+
+export const editJustRegisteredSuccess = (just_registered) => ({
+  type: SET_JUST_REGISTERED_SUCCESS,
+  payload: just_registered,
+});
+export const editJustRegisteredFail = (err) => ({
+  type: SET_JUST_REGISTERED_FAIL,
+  payload: err,
 });

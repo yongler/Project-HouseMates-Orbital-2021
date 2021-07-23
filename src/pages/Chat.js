@@ -283,6 +283,7 @@ const Chat = ({
                     display: "flex",
                     padding: 10,
                     alignItems: "center",
+                    elevation: 0,
                   }}
                 >
                   <Avatar />
@@ -302,7 +303,10 @@ const Chat = ({
 
               {/* Body */}
               <Grid item xs={12} style={{ width: "100%" }}>
-                <Paper style={{ width: "100%", padding: 10 }}>
+                <Paper
+                  style={{ width: "100%", padding: 10, elevation: 0 }}
+                  elevation={0}
+                >
                   <div
                     style={{ width: "100%", height: "50vh", overflow: "auto" }}
                   >
@@ -321,7 +325,13 @@ const Chat = ({
               {/* Footer */}
               <Grid item xs={12}>
                 <Paper
-                  style={{ width: "100%", paddingLeft: 10, paddingRight: 10 }}
+                  style={{
+                    width: "100%",
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    elevation: 0,
+                  }}
+                  elevation={0}
                 >
                   <form
                     noValidate

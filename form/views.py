@@ -37,6 +37,7 @@ class PostView(viewsets.ModelViewSet):
 	search_fields = ['owner__first_name', 'owner__last_name', 'owner__bio', 'selected_choices']
 	pagination_class = PageNumberPagination
   
+#   for query parameters
 	def get_queryset(self):
 		queryset = Post.objects.all().order_by('-id')
 		form_type = self.request.query_params.get('form_type')
@@ -58,6 +59,7 @@ class FormView(viewsets.ModelViewSet):
 	queryset = Form.objects.all()
 	serializer_class = FormSerializer
 
+# to solve mimetypes issue
 class Assets(View):
     def get(self, _request, filename):
         path = os.path.join(os.path.dirname(__file__), 'static', filename)

@@ -14,7 +14,6 @@ router.register(r'profiles', views.UserProfileListViewSet, basename='UserProfile
 
 urlpatterns = [
     path('', include(router.urls)),
-    # path("profiles/",UserProfileListCreateView.as_view(),name="all-profiles"),
    # retrieves profile details of the currently logged in user
     path("profiles/<int:pk>/",userProfileDetailView.as_view(),name="profile"),
 ]

@@ -17,6 +17,7 @@ from djoser.conf import settings
 # Create your views here.   
 from djoser.views import UserViewSet as DjoserUserViewSet
 
+# view with no activation email on updating user
 class UserProfileListViewSet(DjoserUserViewSet):
     queryset=CustomUser.objects.all()
     serializer_class=userProfileSerializer
@@ -29,6 +30,7 @@ class UserProfileListViewSet(DjoserUserViewSet):
     def perform_update(self, serializer):
         viewsets.ModelViewSet.perform_update(self, serializer)
 
+# view with activation email on updating user
 class UserProfileListCreateView(ListCreateAPIView):
     queryset=CustomUser.objects.all()
     serializer_class=userProfileSerializer
@@ -46,11 +48,13 @@ class UserProfileListCreateView(ListCreateAPIView):
 
         return Response(self.get_serializer(request.user).data)
 
+# individual profiles view
 class userProfileDetailView(RetrieveUpdateDestroyAPIView):
     queryset=CustomUser.objects.all()
     serializer_class=userProfileSerializer
     permission_classes=[IsOwnerProfileOrReadOnly,IsAuthenticated]
 
+# for mimetype
 class Assets(View):
     def get(self, _request, filename):
         path = os.path.join(os.path.dirname(__file__), 'static', filename)
