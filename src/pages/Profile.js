@@ -248,7 +248,8 @@ const Profile = ({
                     </Typography>
                     {/* Bio */}
                     <Box mb={3}>
-                      {editBioTextFieldOpen ? (
+                      {editBioTextFieldOpen
+                        ?
                         <form onSubmit={handleEditBio}>
                           <Grid container>
                             <Grid item xs={12}>
@@ -271,8 +272,7 @@ const Profile = ({
                                 marginTop: 8,
                               }}
                             >
-                              <Button
-                                size="small"
+                              <Button size="small"
                                 onClick={handleCancel}
                                 style={{ marginRight: 8 }}
                               >
@@ -284,52 +284,33 @@ const Profile = ({
                                 color="primary"
                                 size="small"
                               >
-                                <Button
-                                  size="small"
-                                  onClick={handleCancel}
-                                  style={{ marginRight: 8 }}
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  type="submit"
-                                  variant="contained"
-                                  color="primary"
-                                  size="small"
-                                >
-                                  Save
-                                </Button>
-                            </Grid>
+                                Save
+                              </Button>
                             </Grid>
                           </Grid>
                         </form>
-                      ) : user.bio ? (
-                        // Bio
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Typography variant="body1" color="textSecondary">
-                            {user.bio}
-                          </Typography>
-                          <Link variant="body2" onClick={handleEdit}>
-                            Edit
-                          </Link>
-                        </div>
-                      ) : (
-                        // Add bio link
-                        <Link variant="body2" onClick={handleClick}>
-                          Add bio...
-                        </Link>
-                      ) : (
-                      // Add bio link
-                      <Link variant="body2" onClick={handleClick}>
-                        Add bio...
-                      </Link>
-                    )}
+                        : user.bio
+                          ?
+                          // Bio
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography variant="body1" color="textSecondary">
+                              {user.bio}
+                            </Typography>
+                            <Link variant="body2" onClick={handleEdit}>
+                              Edit
+                            </Link>
+                          </div>
+                          :
+                          // Add bio link
+                          <Link variant="body2" onClick={handleClick}>
+                            Add bio...
+                          </Link>}
                     </Box>
                   </Grid>
                   <Grid item xs={0} md={1} />
@@ -469,7 +450,7 @@ const Profile = ({
                 </Paper>
               </Grid>
             </Grid>
-      </div>
+          </Grid>
         )}
       </div>
     </>
