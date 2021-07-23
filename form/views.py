@@ -6,7 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
-from .serializers import QuestionSerializer, PostSerializer, SelectedChoiceSerializer, ChoiceSerializer, FormSerializer
+from .serializers import QuestionSerializer, PostSerializer, ChoiceSerializer, FormSerializer, ScoreSerializer
 from rest_framework import filters
 from .permissions import IsOwnerProfileOrReadOnly
 
@@ -14,7 +14,7 @@ from .permissions import IsOwnerProfileOrReadOnly
 from rest_framework.pagination import PageNumberPagination
 
 # import models 
-from .models import Question, Choice, Post, Selected_choice, Form
+from .models import Question, Choice, Post, Form, Score
 
 # heroku setup
 from django.views import View
@@ -37,7 +37,7 @@ class PostView(viewsets.ModelViewSet):
 	search_fields = ['owner__first_name', 'owner__last_name', 'owner__bio', 'selected_choices']
 	pagination_class = PageNumberPagination
   
-#   for query parameters
+	#   for query parameters
 	def get_queryset(self):
 		queryset = Post.objects.all().order_by('-id')
 		form_type = self.request.query_params.get('form_type')
@@ -51,13 +51,24 @@ class PostView(viewsets.ModelViewSet):
 	def perform_create(self, serializer):
 		serializer.save(owner=self.request.user)
 
-class ChoiceView(viewsets.ModelViewSet):
-	queryset = Choice.objects.all()
-	serializer_class = ChoiceSerializer
+class ScoreView(viewsets.ModelViewSet):
+	serializer_class = ScoreSerializer
 
-class FormView(viewsets.ModelViewSet):
-	queryset = Form.objects.all()
-	serializer_class = FormSerializer
+	def get_queryset(self):
+		queryset = Score.objects.all().order_by('-score')
+		this_post = self.request.query_params.get('this_post')
+		other_post = self.request.query_params.get('other_post')
+		if this_post is not None or other_post is not None:
+			queryset = queryset.filter(this_post=this_post).filter(other_post=other_post)
+		return queryset
+
+# class ChoiceView(viewsets.ModelViewSet):
+# 	queryset = Choice.objects.all()
+# 	serializer_class = ChoiceSerializer
+
+# class FormView(viewsets.ModelViewSet):
+# 	queryset = Form.objects.all()
+# 	serializer_class = FormSerializer
 
 # to solve mimetypes issue
 class Assets(View):

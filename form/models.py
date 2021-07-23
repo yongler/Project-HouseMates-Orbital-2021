@@ -39,12 +39,18 @@ class Post(models.Model):
     def __str__(self):
         return str(self.id)
 
-class Selected_choice(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    question_category = models.CharField(max_length=200, default='')
-    question_id = models.IntegerField()
-    choice_text = models.CharField(max_length=200, default='')
+class Score(models.Model):
+    this_post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True, related_name='this_post')
+    other_post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
+    score = models.FloatField()
 
-    def __str__(self):
-        return str(self.question_id) + ',' + str(self.choice_id)
+
+# class Selected_choice(models.Model):
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+#     question_category = models.CharField(max_length=200, default='')
+#     question_id = models.IntegerField()
+#     choice_text = models.CharField(max_length=200, default='')
+
+#     def __str__(self):
+#         return str(self.question_id) + ',' + str(self.choice_id)
 

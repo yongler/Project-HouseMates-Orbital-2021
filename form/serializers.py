@@ -1,7 +1,7 @@
 from django.db.models.base import Model
 from django.db.models.enums import Choices
 from rest_framework import serializers
-from .models import Question, Choice, Post, Selected_choice, Form
+from .models import Question, Choice, Post, Score,  Form, Score
 from accounts.serializers import userProfileSerializer
 
 
@@ -25,7 +25,13 @@ class FormSerializer(serializers.ModelSerializer):
         fields = ['form_type']
 
 # User filled forms model serializers
+class ScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Score
+        fields = '__all__'
+
 class PostSerializer(serializers.ModelSerializer):
+    score_set = ScoreSerializer(many=True, read_only=True)
     owner = serializers.SerializerMethodField()
 
     def get_owner(self, instance):
@@ -43,8 +49,9 @@ class PostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SelectedChoiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Selected_choice
-        fields = '__all__'
+
+# class SelectedChoiceSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Selected_choice
+#         fields = '__all__'
 
