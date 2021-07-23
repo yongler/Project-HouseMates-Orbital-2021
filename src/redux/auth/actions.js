@@ -461,7 +461,8 @@ export const changeProfilePic =
         .then(async () => {
           await axios.patch(`/accounts/profiles/${id}/`, body, config);
           dispatch(changeProfilePicSuccess(profile_pic));
-        });
+        })
+        .catch(err => console.log(err));
     } catch (err) {
       dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg));
     }

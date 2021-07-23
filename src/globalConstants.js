@@ -18,4 +18,4 @@ export const SOMEWHAT_IMPORTANT = 'Somewhat important'
 export const VERY_IMPORTANT = 'Very important'
 export const MANDATORY = 'Mandatory'
 
-export const PAGINATION = 5
+export const PAGINATION = 2

@@ -1,14 +1,16 @@
 import React from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 import clsx from 'clsx'
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home'
 import PeopleIcon from '@material-ui/icons/People'
 import ChatIcon from "@material-ui/icons/Chat"
+import { setPage } from "../redux/post/actions"
 
 // SideNav consists of list of tabs.
-const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnter, handleMouseLeave }) => {
+const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnter, handleMouseLeave, setPage }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     active: {
@@ -54,7 +56,7 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
       minHeight: theme.mixins.toolbar.minHeight + 8,
     },
   }))
-  
+
   // Content
   const categories = [
     {
@@ -107,6 +109,7 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
             button
             onClick={() => {
               history.push(category.path)
+              setPage(1)
             }}
             className={location.pathname === category.path ? classes.active : null}
           >
@@ -119,4 +122,8 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
   )
 }
 
-export default SideNav
+const mapDispatchToProps = {
+  setPage,
+}
+
+export default connect(null, mapDispatchToProps)(SideNav)

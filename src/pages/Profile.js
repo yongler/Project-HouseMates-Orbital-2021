@@ -30,9 +30,8 @@ import {
 import { getPostDetail, getUserPosts } from "../redux/post/actions";
 import { getRoomList } from "../redux/chat/actions";
 import ProfileComponent from "../components/ProfileComponent";
+import UserGuide from "../pages/UserGuide";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
-
-import { UserGuide } from "./UserGuide";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
@@ -201,8 +200,7 @@ const Profile = ({
 
   return (
     <>
-      <UserGuide user={user} editJustRegistered={editJustRegistered}/>
-
+      <UserGuide user={user} editJustRegistered={editJustRegistered} />
       <div className={classes.card}>
         {user && (
           <Grid container spacing={3}>

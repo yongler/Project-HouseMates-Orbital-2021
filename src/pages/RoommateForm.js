@@ -530,7 +530,6 @@ const mapStateToProps = (state) => ({
   roommateCategories: state.form.roommateCategories,
   createPostSuccess: state.post.createPostSuccess,
   editPostSuccess: state.post.editPostSuccess,
-  posts: state.post.posts,
 })
 
 const mapDispatchToProps = {

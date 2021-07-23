@@ -22,11 +22,13 @@ import {
   SEARCH_POST_FAIL,
   CANCEL_SEARCH_SUCCESS,
   CANCEL_SEARCH_FAIL,
+  SET_PAGE,
 } from "./types";
 
 const initialState = {
   postLoading: false,
   posts: [],
+  housingPosts: [],
   postsType: [],
   post: null,
   housingPost: null,
@@ -47,6 +49,7 @@ const initialState = {
   deletePostSuccess: false,
   searchPostSuccess: false,
   cancelSearchSuccess: false,
+  page: 1,
 };
 
 const postReducer = (state = initialState, action) => {
@@ -54,15 +57,28 @@ const postReducer = (state = initialState, action) => {
 
   switch (type) {
     case GET_POST_LIST_SUCCESS:
-      return {
-        ...state,
-        postLoading: false,
-        posts: payload.resdata.results,
-        count: payload.resdata.count,
-        next: payload.resdata.next,
-        previous: payload.resdata.previous,
-        postsType: payload.type,
-      };
+      if (payload.type === ROOMMATE_FORM) {
+        return {
+          ...state,
+          postLoading: false,
+          posts: payload.resdata.results,
+          count: payload.resdata.count,
+          next: payload.resdata.next,
+          previous: payload.resdata.previous,
+          // postsType: payload.type,
+        };
+      } else {
+        return {
+          ...state,
+          postLoading: false,
+          housingPosts: payload.resdata.results,
+          count: payload.resdata.count,
+          next: payload.resdata.next,
+          previous: payload.resdata.previous,
+          // postsType: payload.type,
+        };
+      }
+      
 
     case GET_POST_LIST_FAIL:
       return {
@@ -214,6 +230,7 @@ const postReducer = (state = initialState, action) => {
         ...state,
         postLoading: false,
         searchPostSuccess: true,
+        cancelSearchSuccess: false,
         searchedPost: payload.searchedPost.results,
         searchItem: payload.searchItem,
         searchedPostCount: payload.searchedPost.count,
@@ -230,6 +247,7 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         postLoading: false,
+        searchPostSuccess: false,
         cancelSearchSuccess: true,
         searchedPost: null,
         searchedItem: null,
@@ -241,6 +259,12 @@ const postReducer = (state = initialState, action) => {
         postLoading: false,
         postErrorMsg: payload,
       };
+
+    case SET_PAGE:
+      return {
+        ...state,
+        page: payload,
+      }
 
     default:
       return state;

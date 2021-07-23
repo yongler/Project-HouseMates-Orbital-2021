@@ -7,16 +7,17 @@ import Pagination from '@material-ui/lab/Pagination'
 import AddIcon from '@material-ui/icons/Add'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import HousingCard from '../components/HousingCard'
-import { getPostList, getUserPosts, searchPost } from '../redux/post/actions'
+import { getPostList, getUserPosts, searchPost, setPage } from '../redux/post/actions'
 import { HOUSING_FORM, PAGINATION } from '../globalConstants'
 
 // Posts consists of list of Roommate and post button.
 const Housings = ({
   user,
   postLoading,
-  getPostList, posts, postsType, count,
-  getUserPosts, userHousingPosts, userHousingPostsCount,
-  searchPost, searchedPost, searchItem, searchedPostCount,
+  housingPosts, count, getPostList,
+  userHousingPosts, userHousingPostsCount, getUserPosts,
+  searchedPost, searchedPostCount, searchItem, searchPost,
+  page, setPage,
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
@@ -37,7 +38,6 @@ const Housings = ({
   const anchorRef = useRef(null);
 
   // States
-  const [page, setPage] = useState(1)
   const [open, setOpen] = useState(false);
   const [myPosts, setMyPosts] = useState(false)
   const [text, setText] = useState('Filter')
@@ -60,14 +60,17 @@ const Housings = ({
   const handleClose = () => { setOpen(false); };
   const handleMyPosts = () => {
     setMyPosts(true)
+    setPage(1)
     setOpen(false)
     setText("My Post(s)")
+    getUserPosts(user.id, HOUSING_FORM)
   }
   const handleAllPosts = () => {
     setMyPosts(false)
     setPage(1)
     setOpen(false)
     setText("Filter")
+    getPostList(HOUSING_FORM)
   }
   const handleFilter = () => {
     setMyPosts(false)
@@ -78,10 +81,10 @@ const Housings = ({
   }
 
   // componentDidMount
-  useEffect(() => { getPostList(HOUSING_FORM) }, [])
+  useEffect(() => { getPostList(HOUSING_FORM, page) }, [])
   useEffect(() => user ? getUserPosts(user.id, HOUSING_FORM) : null, [user])
 
-  const postToRender = searchedPost ? searchedPost : myPosts ? userHousingPosts : posts
+  const postToRender = searchedPost ? searchedPost : myPosts ? userHousingPosts : housingPosts
   const countToRender = searchedPost ? searchedPostCount : myPosts ? userHousingPostsCount : count
 
   return (
@@ -102,7 +105,7 @@ const Housings = ({
             {({ TransitionProps, placement }) => (
               <Grow
                 {...TransitionProps}
-                style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                style={{ transformOrigin: placement === 'bottom' ? 'center bottom' : 'center top' }}
               >
                 <Paper>
                   <ClickAwayListener onClickAway={handleClose}>
@@ -118,7 +121,7 @@ const Housings = ({
           </Popper>
         </div>}
 
-      {postsType === HOUSING_FORM && postToRender.length !== 0
+      {postToRender.length !== 0
         ?
         // List of posts
         <Container>
@@ -160,20 +163,21 @@ const Housings = ({
 const mapStateToProps = state => ({
   user: state.auth.user,
   userHousingPosts: state.post.userHousingPosts,
-  posts: state.post.posts,
-  postsType: state.post.postsType,
+  housingPosts: state.post.housingPosts,
   postLoading: state.post.postLoading,
   searchedPost: state.post.searchedPost,
   count: state.post.count,
   userHousingPostsCount: state.post.userHousingPostsCount,
   searchedPostCount: state.post.searchedPostCount,
   searchItem: state.post.searchItem,
+  page: state.post.page,
 })
 
 const mapDispatchToProps = {
   getPostList,
   getUserPosts,
   searchPost,
+  setPage,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Housings)

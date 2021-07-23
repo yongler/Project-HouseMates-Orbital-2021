@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { BrowserRouter, Switch, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { indigo, green, yellow, blue } from "@material-ui/core/colors";
@@ -31,6 +30,7 @@ import EditRoommateForm from "./pages/EditRoommateForm";
 import Chat from "./pages/Chat";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { BrowserRouter, Switch, Route, useLocation } from "react-router-dom";
 
 const App = () => {
   // Styling
@@ -232,6 +232,10 @@ const App = () => {
                 setTheme={setTheme}
                 theme={theme}
               />
+
+              {/* Routes with no layout */}
+              <Route exact path="/" component={Home} />
+              <Route path="*" component={Home} />
             </Switch>
           </Layout>
         </BrowserRouter>

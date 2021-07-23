@@ -27,17 +27,24 @@ import Brightness3Icon from "@material-ui/icons/Brightness3";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import SearchBar from "material-ui-search-bar";
-import { searchPost, cancelSearch } from "../redux/post/actions";
+import {
+  searchPost,
+  cancelSearch,
+  getPostList,
+  setPage,
+} from "../redux/post/actions";
 import { ROOMMATE_FORM } from "../globalConstants";
 
 // NavBar consists of menu button, logo, title, search bar, and welcome text and profile pic, or login and register buttons, dependent of user authentication, from left to right.
 const NavBar = ({
   handleMenuButton,
+  user,
   isAuthenticated,
   logout,
-  user,
+  getPostList,
   searchPost,
   cancelSearch,
+  setPage,
   setTheme,
   theme,
 }) => {
@@ -139,12 +146,17 @@ const NavBar = ({
     history.push("/profile");
   };
   const handleSearch = (searchItem) => {
-    searchPost(ROOMMATE_FORM, searchItem);
+    if (data.search || data.search.replace(/\s/g, "").length !== 0) {
+      setPage(1);
+      searchPost(ROOMMATE_FORM, searchItem);
+    }
   };
   const handleCancelSearch = () => {
     cancelSearch();
+    setData({ search: "" });
+    getPostList(ROOMMATE_FORM);
+    setPage(1);
   };
-
 
   return (
     <div>
@@ -214,55 +226,57 @@ const NavBar = ({
               </div>
 
               <div>
+                {/* Profile pic */}
                 <Avatar
                   className={classes.profilePic}
                   onClick={handleMenuOpen}
                   src={user.profile_pic}
                   ref={anchorRef}
                 />
+                {/* Menu */}
+                <Popper
+                  open={open}
+                  anchorEl={anchorRef.current}
+                  role={undefined}
+                  transition
+                  disablePortal
+                  placement={"bottom-end"}
+                >
+                  {({ TransitionProps, placement }) => (
+                    <Grow
+                      {...TransitionProps}
+                      style={{
+                        transformOrigin:
+                          placement === "bottom"
+                            ? "center bottom"
+                            : "center top",
+                      }}
+                    >
+                      <Paper>
+                        <ClickAwayListener onClickAway={handleMenuClose}>
+                          <MenuList>
+                            <MenuItem>
+                              <IconButton
+                                edge="end"
+                                color="inherit"
+                                aria-label="mode"
+                                onClick={() => setTheme(!theme)}
+                              >
+                                {icon}
+                              </IconButton>
+                            </MenuItem>
+                            <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                          </MenuList>
+                        </ClickAwayListener>
+                      </Paper>
+                    </Grow>
+                  )}
+                </Popper>
               </div>
-
-              {/* Menu */}
-              <Popper
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                transition
-                disablePortal
-                placement={"bottom-end"}
-              >
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{
-                      transformOrigin:
-                        placement === "bottom" ? "center top" : "center bottom",
-                    }}
-                  >
-                    <Paper>
-                      <ClickAwayListener onClickAway={handleMenuClose}>
-                        <MenuList>
-                          <MenuItem>
-                            <IconButton
-                              edge="end"
-                              color="inherit"
-                              aria-label="mode"
-                              onClick={() => setTheme(!theme)}
-                            >
-                              {icon}
-                            </IconButton>
-                          </MenuItem>
-                          <MenuItem onClick={handleProfile}>Dashboard</MenuItem>
-                          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
-              </Popper>
             </Fragment>
           ) : (
-            <Fragment>
+            <>
               <Button>
                 <Link to="/login" className={classes.buttons}>
                   Login
@@ -273,7 +287,7 @@ const NavBar = ({
                   Register
                 </Link>
               </Button>
-            </Fragment>
+            </>
           )}
         </Toolbar>
       </AppBar>
@@ -290,6 +304,8 @@ const mapDispatchToProps = {
   logout: () => (dispatch) => dispatch(logout()),
   searchPost,
   cancelSearch,
+  getPostList,
+  setPage,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

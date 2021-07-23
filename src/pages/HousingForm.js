@@ -493,7 +493,6 @@ const mapStateToProps = (state) => ({
   createPostSuccess: state.post.createPostSuccess,
   editPostSuccess: state.post.editPostSuccess,
   userPost: state.post.userPost,
-  posts: state.post.posts,
 });
 
 const mapDispatchToProps = {

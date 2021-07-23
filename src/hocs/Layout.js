@@ -85,7 +85,7 @@ const Layout = ({
   }, [location]);
 
   return (
-    <div style={{ backgroundColor: "#fafafa" }}>
+    <div>
       {/* Error message */}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}

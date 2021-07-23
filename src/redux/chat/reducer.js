@@ -7,6 +7,8 @@ import {
   GET_ROOM_DETAIL_FAIL,
   POST_ROOM_LIST_SUCCESS,
   POST_ROOM_LIST_FAIL,
+  EDIT_MSG_SUCCESS,
+  EDIT_MSG_FAIL,
   SET_CHAT_USER,
   RESET_CHAT_HISTORY,
 } from "./types";
@@ -66,6 +68,17 @@ const chatReducer = (state = initialState, action) => {
       };
 
     case POST_ROOM_LIST_FAIL:
+      return {
+        ...state,
+        chatErrorMsg: payload,
+      };
+
+    case EDIT_MSG_SUCCESS:
+      return {
+        ...state,
+      };
+
+    case EDIT_MSG_FAIL:
       return {
         ...state,
         chatErrorMsg: payload,
