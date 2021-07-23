@@ -22,3 +22,4 @@ export const PAGINATION = 2
 
 export const MY_POSTS = 'My post(s)'
 export const ALL_POSTS = 'Filter'
+export const FILTERING = 'Filtering'

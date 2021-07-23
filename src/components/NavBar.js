@@ -1,6 +1,7 @@
 import React, { useState, useRef, Fragment } from "react";
 import { useHistory, Link, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
+import clsx from 'clsx'
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
   AppBar,
@@ -64,11 +65,9 @@ const NavBar = ({
     },
     logo: {
       marginRight: 10,
-      cursor: "pointer",
     },
     title: {
       marginRight: 30,
-      cursor: "pointer",
     },
     grow: {
       flexGrow: 1,
@@ -114,6 +113,9 @@ const NavBar = ({
     white: {
       color: "white",
     },
+    pointer: {
+      cursor: "pointer",
+    },
   }));
 
   const icon = !theme ? <Brightness7Icon /> : <Brightness3Icon />; // Icons imported from `@material-ui/icons`
@@ -145,7 +147,7 @@ const NavBar = ({
     history.push("/login");
   };
   const handleClick = () => {
-    history.push("/profile");
+    if (user) history.push("/profile");
   };
   const handleSearch = (searchItem) => {
     setPage(1)
@@ -179,14 +181,14 @@ const NavBar = ({
             src={Logo}
             width="45"
             height="45"
-            className={classes.logo}
+            className={clsx(classes.logo, { [classes.pointer]: user })}
             onClick={handleClick}
           />
 
           {/* Title */}
           <Typography
             variant="h6"
-            className={classes.title}
+            className={clsx(classes.title, { [classes.pointer]: user })}
             onClick={handleClick}
           >
             HouseMates

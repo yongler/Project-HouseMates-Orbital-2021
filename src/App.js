@@ -131,14 +131,6 @@ const App = () => {
               {/* Routes with LayoutTwo */}
               <RouteWrapper
                 exact
-                path="/"
-                component={Home}
-                layout={LayoutTwo}
-                setTheme={setTheme}
-                theme={theme}
-              />
-              <RouteWrapper
-                exact
                 path="/dashboard"
                 component={Dashboard}
                 layout={LayoutTwo}
@@ -225,17 +217,10 @@ const App = () => {
                 setTheme={setTheme}
                 theme={theme}
               />
-              <RouteWrapper
-                path="*"
-                component={Home}
-                layout={LayoutTwo}
-                setTheme={setTheme}
-                theme={theme}
-              />
 
               {/* Routes with no layout */}
-              <Route exact path="/" component={Home} />
-              <Route path="*" component={Home} />
+              <Route exact path="/" component={Home} setTheme={setTheme} theme={theme}/>
+              <Route path="*" component={Home} setTheme={setTheme} theme={theme} />
             </Switch>
           </Layout>
         </BrowserRouter>

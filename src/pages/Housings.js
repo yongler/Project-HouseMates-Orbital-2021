@@ -8,7 +8,7 @@ import AddIcon from '@material-ui/icons/Add'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import HousingCard from '../components/HousingCard'
 import { getPostList, getUserPosts, searchPost, setPage, setFilter } from '../redux/post/actions'
-import { ALL_POSTS, HOUSING_FORM, MY_POSTS, PAGINATION } from '../globalConstants'
+import { HOUSING_FORM, ALL_POSTS, MY_POSTS, FILTERING, PAGINATION } from '../globalConstants'
 
 // Posts consists of list of Roommate and post button.
 const Housings = ({
@@ -70,11 +70,9 @@ const Housings = ({
     getPostList(HOUSING_FORM)
   }
   const handleFilter = () => {
-    setMyPosts(false)
     setPage(1)
     setOpen(false)
-    setText("Filtering")
-    
+    setFilter(FILTERING)
   }
 
   // componentDidMount
