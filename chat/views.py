@@ -36,12 +36,10 @@ class RoomView(viewsets.ModelViewSet):
         return queryset
     
     # def perform_create(self, serializer):
-    #     temp1 = serializer.data['user1']
-    #     temp2 = serializer.data['user2']
-    #     owner1 = CustomUser.objects.all().filter(id=temp1).first()
-    #     owner2 = CustomUser.objects.all().filter(id=temp2).first()
-    #     serializer.save(owner1=owner1, owner2=owner2)
-  
+    #     serializer.save(owner1 = CustomUser.objects.all().filter(id=self.request.data['user1']).first())
+    #     serializer.save(owner2 = CustomUser.objects.all().filter(id=self.request.data['user2']).first())
+
+    
 
 def room(request, room_name):
     return render(request, 'index.html', {

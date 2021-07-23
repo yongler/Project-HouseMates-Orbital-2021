@@ -69,6 +69,13 @@ const Housings = ({
     setOpen(false)
     getPostList(HOUSING_FORM)
   }
+  const handleFilter = () => {
+    setMyPosts(false)
+    setPage(1)
+    setOpen(false)
+    setText("Filtering")
+    
+  }
 
   // componentDidMount
   useEffect(() => getPostList(HOUSING_FORM, page), [])
@@ -102,6 +109,7 @@ const Housings = ({
                     <MenuList>
                       <MenuItem onClick={handleMyPosts}>My post(s)</MenuItem>
                       <MenuItem onClick={handleAllPosts}>All posts</MenuItem>
+                      <MenuItem onClick={handleFilter}>Filter</MenuItem>
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>

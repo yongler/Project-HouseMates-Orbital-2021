@@ -6,8 +6,6 @@ from .models import Room, Message
 from accounts.models import CustomUser
 
 
-
-
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -35,6 +33,7 @@ class ChatConsumer(WebsocketConsumer):
         user_id = text_data_json['owner']
 
         self.room_name = self.scope['url_route']['kwargs']['room_name']
+        # creating room instance and message instance
         room = Room.objects.get(label=self.room_name)
         room.messages.create(room=room, user_id=user_id, message=message)
 

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Room, Message
 from accounts.models import CustomUser
 from accounts.serializers import userProfileSerializer
+from datetime import datetime
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -27,7 +28,9 @@ class RoomSerializer(serializers.ModelSerializer):
         "last_name":temp.last_name, 
         "profile_pic":str(temp.profile_pic),
         "bio":temp.bio ,
-        "favourites": temp.favourites}
+        "favourites": temp.favourites,
+        "last_login": temp.last_login.strftime('%b %d,%Y %I:%m%p')
+        }
         else:
             return None
 
@@ -40,13 +43,14 @@ class RoomSerializer(serializers.ModelSerializer):
         "last_name":temp.last_name, 
         "profile_pic":str(temp.profile_pic),
         "bio":temp.bio ,
-        "favourites": temp.favourites}
+        "favourites": temp.favourites,
+        "last_login": temp.last_login.strftime('%b %d,%Y %I:%m%p')
+        }
         else:
             return None
 
     class Meta:
         model = Room
-        # fields = ['label', 'owner1', 'owner2', 'messages']
         fields = '__all__'
 
 

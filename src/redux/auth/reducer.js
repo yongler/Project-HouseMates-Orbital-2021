@@ -36,6 +36,8 @@ import {
   SET_PREV_PATH,
   GOOGLE_AUTH_SUCCESS,
   GOOGLE_AUTH_FAIL,
+  SET_JUST_REGISTERED_SUCCESS,
+  SET_JUST_REGISTERED_FAIL,
 } from "./types";
 
 // Initial states
@@ -127,7 +129,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isAuthenticated: true,
-      };  
+      };
 
     case CHECK_AUTHENTICATION_FAIL:
       return {
@@ -328,6 +330,16 @@ const authReducer = (state = initialState, action) => {
         prevPath: payload,
       };
 
+    case SET_JUST_REGISTERED_SUCCESS:
+      const updatedUser2 = { ...state.user };
+      updatedUser2.just_registered = payload;
+
+      return {
+        ...state,
+        user: updatedUser2,
+      };
+
+    case SET_JUST_REGISTERED_FAIL:
     default:
       return state;
   }

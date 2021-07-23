@@ -19,8 +19,6 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)  # change password to hash
         user.is_admin = False
         user.is_staff = False
-        # user.is_tenant = True
-        # user.is_host = False
         user.save(using=self._db)
         return user
 
@@ -81,10 +79,8 @@ class CustomUser(AbstractBaseUser):
     profile_pic = models.URLField(default="", null=True, blank=True)
     bio = models.CharField(default='', max_length=500, null=True, blank=True)
     favourites = models.JSONField(default=list, null=True, blank=True)
-    # is_tenant = models.BooleanField(default=True)
-    # is_host = models.BooleanField(default=False)
-
-    
+    just_registered = models.BooleanField(default=True)
+  
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
