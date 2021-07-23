@@ -53,9 +53,11 @@ const NavBar = ({
     },
     logo: {
       marginRight: 10,
+      cursor: "pointer",
     },
     title: {
       marginRight: 30,
+      cursor: "pointer",
     },
     grow: {
       flexGrow: 1,
@@ -131,10 +133,8 @@ const NavBar = ({
   };
   const handleClick = () => { history.push("/profile"); };
   const handleSearch = (searchItem) => {
-    if (data.search || data.search.replace(/\s/g, '').length !== 0) {
-      setPage(1)
-      searchPost(ROOMMATE_FORM, searchItem);
-    }
+    setPage(1)
+    searchPost(ROOMMATE_FORM, searchItem);
   };
   const handleCancelSearch = () => {
     cancelSearch();
@@ -166,7 +166,6 @@ const NavBar = ({
             height="45"
             className={classes.logo}
             onClick={handleClick}
-            style={{ cursor: "pointer" }}
           />
 
           {/* Title */}
@@ -174,7 +173,6 @@ const NavBar = ({
             variant="h6"
             className={classes.title}
             onClick={handleClick}
-            style={{ cursor: "pointer" }}
           >
             HouseMates
           </Typography>

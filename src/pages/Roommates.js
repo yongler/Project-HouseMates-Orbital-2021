@@ -7,8 +7,8 @@ import Pagination from '@material-ui/lab/Pagination'
 import AddIcon from "@material-ui/icons/Add"
 import FilterListIcon from '@material-ui/icons/FilterList'
 import RoommateCard from '../components/RoommateCard'
-import { getPostList, getUserPosts, searchPost, setPage } from "../redux/post/actions"
-import { PAGINATION, ROOMMATE_FORM } from '../globalConstants'
+import { getPostList, getUserPosts, searchPost, setPage, setFilter } from "../redux/post/actions"
+import { ALL_POSTS, MY_POSTS, PAGINATION, ROOMMATE_FORM } from '../globalConstants'
 
 // Posts consists of list of Roommate and post button.
 const Roommates = ({
@@ -18,6 +18,7 @@ const Roommates = ({
   posts, count, getPostList,
   searchedPost, searchedPostCount, searchItem, searchPost,
   page, setPage,
+  filter, setFilter,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -39,8 +40,6 @@ const Roommates = ({
 
   // States
   const [open, setOpen] = useState(false);
-  const [myPosts, setMyPosts] = useState(false)
-  const [text, setText] = useState("Filter")
 
   // Handlers
   const handlePost = () => { history.push('/roommate-form') }
@@ -48,7 +47,7 @@ const Roommates = ({
     setPage(value)
     if (searchedPost) {
       searchPost(ROOMMATE_FORM, searchItem, value)
-    } else if (myPosts) {
+    } else if (filter === MY_POSTS) {
       getUserPosts(user.id, ROOMMATE_FORM, value)
     } else {
       getPostList(ROOMMATE_FORM, value)
@@ -59,26 +58,24 @@ const Roommates = ({
   const handleOpen = () => { setOpen(true); };
   const handleClose = () => { setOpen(false); };
   const handleMyPosts = () => {
-    setMyPosts(true)
+    setFilter(MY_POSTS)
     setPage(1)
     setOpen(false)
-    setText("My Post(s)")
     getUserPosts(user.id, ROOMMATE_FORM)
   }
   const handleAllPosts = () => {
-    setMyPosts(false)
+    setFilter(ALL_POSTS)
     setPage(1)
     setOpen(false)
-    setText("Filter")
     getPostList(ROOMMATE_FORM)
   }
 
   // componentDidMount
   useEffect(() => { getPostList(ROOMMATE_FORM, page) }, [])
-  useEffect(() => (user ? getUserPosts(user.id, ROOMMATE_FORM) : null), [user])
+  useEffect(() => { if (filter === MY_POSTS && user) getUserPosts(user.id, ROOMMATE_FORM, page) }, [user])
 
-  const postToRender = searchedPost ? searchedPost : myPosts ? userRoommatePosts : posts
-  const countToRender = searchedPost ? searchedPostCount : myPosts ? userRoommatePostsCount : count
+  const postToRender = searchedPost ? searchedPost : filter === MY_POSTS ? userRoommatePosts : posts
+  const countToRender = searchedPost ? searchedPostCount : filter === MY_POSTS ? userRoommatePostsCount : count
 
   return (
     <div>
@@ -92,7 +89,7 @@ const Roommates = ({
             startIcon={<FilterListIcon />}
             style={{ textDecoration: "none" }}
           >
-            {text}
+            {filter}
           </Button>
           <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal placement={'bottom-end'}>
             {({ TransitionProps, placement }) => (
@@ -171,6 +168,7 @@ const mapStateToProps = (state) => ({
   searchedPostCount: state.post.searchedPostCount,
   searchItem: state.post.searchItem,
   page: state.post.page,
+  filter: state.post.filter,
 })
 
 const mapDispatchToProps = {
@@ -178,6 +176,7 @@ const mapDispatchToProps = {
   getUserPosts,
   searchPost,
   setPage,
+  setFilter,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Roommates)

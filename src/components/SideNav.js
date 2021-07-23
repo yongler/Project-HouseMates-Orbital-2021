@@ -10,7 +10,13 @@ import ChatIcon from "@material-ui/icons/Chat"
 import { setPage } from "../redux/post/actions"
 
 // SideNav consists of list of tabs.
-const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnter, handleMouseLeave, setPage }) => {
+const SideNav = ({ 
+  user,
+  drawerWidth, 
+  menuOpen, hoverOpen, drawerOpen, 
+  handleMouseEnter, handleMouseLeave, 
+  setPage,
+}) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     active: {
@@ -55,6 +61,9 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
       padding: theme.spacing(0, 1),
       minHeight: theme.mixins.toolbar.minHeight + 8,
     },
+    hidden: {
+      display: "none",
+    },
   }))
 
   // Content
@@ -63,16 +72,19 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
       text: 'Housings',
       icon: <HomeIcon color="primary" />,
       path: '/housings',
+      private: false,
     },
     {
       text: 'Roommates',
       icon: <PeopleIcon color="primary" />,
       path: '/roommates',
+      private: false,
     },
     {
       text: 'Chat',
       icon: <ChatIcon color="primary" />,
       path: '/chat',
+      private: true,
     },
   ]
 
@@ -111,7 +123,10 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
               history.push(category.path)
               setPage(1)
             }}
-            className={location.pathname === category.path ? classes.active : null}
+            className={clsx({
+              [classes.active]: location.pathname === category.path,
+              [classes.hidden]: category.private && !user
+            })}
           >
             <ListItemIcon>{category.icon}</ListItemIcon>
             <ListItemText primary={category.text} />
@@ -122,8 +137,12 @@ const SideNav = ({ drawerWidth, menuOpen, hoverOpen, drawerOpen, handleMouseEnte
   )
 }
 
+const mapStateToProps = state => ({
+  user: state.auth.user,
+})
+
 const mapDispatchToProps = {
   setPage,
 }
 
-export default connect(null, mapDispatchToProps)(SideNav)
+export default connect(mapStateToProps, mapDispatchToProps)(SideNav)

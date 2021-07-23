@@ -38,8 +38,6 @@ const Profile = ({
     },
     card: {
       width: "100%",
-      marginLeft: 23,
-      marginRight: 23,
     },
   }));
 
@@ -54,6 +52,7 @@ const Profile = ({
   const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([]);
   const [topThreeRoommates, setTopThreeRoommates] = useState([]);
   const [starredHousings, setStarredHousings] = useState([]);
+  const [newMsgs, setNewMsgs] = useState([])
 
   // Handlers
   // Account settings
@@ -148,6 +147,14 @@ const Profile = ({
     }
   }, [housingPost]);
 
+  // New messages
+  useEffect(() => {
+    const temp = roomList.slice(0, 3)
+      .filter((room) => room.messages.reduce((prev, curr) =>
+        prev || (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? true : false), false))
+    setNewMsgs(temp)
+  }, [roomList])
+
   if (!isAuthenticated) { return <Redirect to="/login" />; }
 
   return (
@@ -155,17 +162,19 @@ const Profile = ({
       {user && (
         <Grid container spacing={3}>
           <Grid container item xs={12} spacing={3}>
-            <Grid container item xs={8}>
+            {/* Profile */}
+            <Grid container item xs={12} md={8}>
               <Paper
                 style={{
                   width: "100%",
                   display: "flex",
                   flexDirection: "row",
                   padding: 10,
+                  minWidth: 320,
                 }}
               >
                 {/* Profile pic */}
-                <Grid item xs={5} align="right">
+                <Grid item xs={12} md={5} align="right">
                   <Badge
                     overlap="circle"
                     anchorOrigin={{
@@ -190,9 +199,9 @@ const Profile = ({
                     style={{ display: 'none' }}
                   />
                 </Grid>
-                <Grid item xs={1} />
+                <Grid item xs={0} md={1} />
                 {/* Name and bio */}
-                <Grid item xs={5} align="center">
+                <Grid item xs={12} md={5} align="center">
                   {/* Name */}
                   <Typography variant="h5" style={{ marginTop: 50 }}>
                     {user.first_name} {user.last_name}
@@ -264,28 +273,31 @@ const Profile = ({
                     )}
                   </Box>
                 </Grid>
-                <Grid item xs={1} />
+                <Grid item xs={0} md={1} />
               </Paper>
             </Grid>
+
             {/* Account settings */}
-            <Grid item xs={4}>
-              <Paper style={{ padding: 20, height: 200 }}>
+            <Grid item xs={12} md={4}>
+              <Paper style={{ padding: 20, height: 200, minWidth: 300 }}>
                 <MenuList>
-                  <AccountBoxIcon style={{ marginRight: 10 }} />
-                  <Typography variant="h6" display="inline">
-                    Account Settings
-                  </Typography>
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    <AccountBoxIcon style={{ marginRight: 10 }} />
+                    <Typography variant="h6" display="inline" noWrap>
+                      Account Settings
+                    </Typography>
+                  </span>
                   <MenuItem
                     style={{ marginLeft: -10 }}
                     onClick={handleChangePassword}
                   >
-                    <Typography>Change password</Typography>
+                    <Typography noWrap>Change password</Typography>
                   </MenuItem>
                   <MenuItem
                     style={{ marginLeft: -10 }}
                     onClick={handleDeleteAccount}
                   >
-                    <Typography>Delete account</Typography>
+                    <Typography noWrap>Delete account</Typography>
                   </MenuItem>
                 </MenuList>
               </Paper>
@@ -293,11 +305,12 @@ const Profile = ({
           </Grid>
 
           <Grid container item xs={12} spacing={3}>
-            <Grid item xs={4}>
-              <Paper style={{ padding: 10 }}>
-                <span style={{ display: "flex", justifyContent: "center" }}>
+            {/* Top 3 roommates */}
+            <Grid item xs={12} md={4}>
+              <Paper style={{ padding: 10, minWidth: 320 }}>
+                <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                   <PeopleIcon style={{ marginRight: 10 }} />
-                  <Typography variant="h6" display="inline">
+                  <Typography variant="h6" display="inline" noWrap>
                     Top 3 Roommates
                   </Typography>
                 </span>
@@ -324,11 +337,13 @@ const Profile = ({
                 )}
               </Paper>
             </Grid>
-            <Grid item xs={4}>
-              <Paper style={{ padding: 10 }}>
-                <span style={{ display: "flex", justifyContent: "center" }}>
+
+            {/* Starred housings */}
+            <Grid item xs={12} md={4}>
+              <Paper style={{ padding: 10, minWidth: 320 }}>
+                <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                   <HomeIcon style={{ marginRight: 10 }} />
-                  <Typography variant="h6" display="inline">
+                  <Typography variant="h6" display="inline" noWrap>
                     Starred Housings
                   </Typography>
                 </span>
@@ -354,16 +369,18 @@ const Profile = ({
                 )}
               </Paper>
             </Grid>
-            
-            <Grid item xs={4}>
-              <Paper style={{ padding: 10 }}>
-                <span style={{ display: "flex", justifyContent: "center" }}>
-                  <HomeIcon style={{ marginRight: 10 }} />
-                  <Typography variant="h6" display="inline">
+
+            {/* New messages */}
+            <Grid item xs={12} md={4}>
+              <Paper style={{ padding: 10, minWidth: 320 }}>
+                <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <ChatIcon style={{ marginRight: 10 }} />
+                  <Typography variant="h6" display="inline" noWrap>
                     New messages
                   </Typography>
                 </span>
-                {roomList.length === 0 ? (
+                {newMsgs.length === 0
+                  ?
                   <Typography
                     variant="body1"
                     color="textSecondary"
@@ -371,11 +388,9 @@ const Profile = ({
                   >
                     No new messages.
                   </Typography>
-                ) : (
-                  roomList.slice(0, 3)
-                    .filter((room) => room.messages.reduce((prev, curr) =>
-                      prev || (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? true : false), false))
-                    .map((room) => (
+                  :
+                  <>
+                    {newMsgs.map((room) => (
                       <ProfileComponent
                         key={room.id}
                         chatUser={user.id === room.owner1.id
@@ -390,9 +405,8 @@ const Profile = ({
                           : room.owner1.profile_pic}
                         unreadMsgs={room.messages.reduce((prev, curr) =>
                           prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)}
-                      />
-                    ))
-                )}
+                      />))}
+                  </>}
               </Paper>
             </Grid>
           </Grid>

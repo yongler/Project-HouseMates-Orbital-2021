@@ -7,8 +7,8 @@ import Pagination from '@material-ui/lab/Pagination'
 import AddIcon from '@material-ui/icons/Add'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import HousingCard from '../components/HousingCard'
-import { getPostList, getUserPosts, searchPost, setPage } from '../redux/post/actions'
-import { HOUSING_FORM, PAGINATION } from '../globalConstants'
+import { getPostList, getUserPosts, searchPost, setPage, setFilter } from '../redux/post/actions'
+import { ALL_POSTS, HOUSING_FORM, MY_POSTS, PAGINATION } from '../globalConstants'
 
 // Posts consists of list of Roommate and post button.
 const Housings = ({
@@ -18,6 +18,7 @@ const Housings = ({
   userHousingPosts, userHousingPostsCount, getUserPosts,
   searchedPost, searchedPostCount, searchItem, searchPost,
   page, setPage,
+  filter, setFilter,
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
@@ -39,8 +40,6 @@ const Housings = ({
 
   // States
   const [open, setOpen] = useState(false);
-  const [myPosts, setMyPosts] = useState(false)
-  const [text, setText] = useState('Filter')
 
   // Handlers
   const handlePost = () => { history.push('/housing-form') }
@@ -48,7 +47,7 @@ const Housings = ({
     setPage(value)
     if (searchedPost) {
       searchPost(HOUSING_FORM, searchItem, value)
-    } else if (myPosts) {
+    } else if (filter === MY_POSTS) {
       getUserPosts(user.id, HOUSING_FORM, value)
     } else {
       getPostList(HOUSING_FORM, value)
@@ -59,26 +58,24 @@ const Housings = ({
   const handleOpen = () => { setOpen(true); };
   const handleClose = () => { setOpen(false); };
   const handleMyPosts = () => {
-    setMyPosts(true)
+    setFilter(MY_POSTS)
     setPage(1)
     setOpen(false)
-    setText("My Post(s)")
     getUserPosts(user.id, HOUSING_FORM)
   }
   const handleAllPosts = () => {
-    setMyPosts(false)
+    setFilter(ALL_POSTS)
     setPage(1)
     setOpen(false)
-    setText("Filter")
     getPostList(HOUSING_FORM)
   }
 
   // componentDidMount
-  useEffect(() => { getPostList(HOUSING_FORM, page) }, [])
-  useEffect(() => user ? getUserPosts(user.id, HOUSING_FORM) : null, [user])
+  useEffect(() => getPostList(HOUSING_FORM, page), [])
+  useEffect(() => { if (filter === MY_POSTS && user) getUserPosts(user.id, HOUSING_FORM, page) }, [user])
 
-  const postToRender = searchedPost ? searchedPost : myPosts ? userHousingPosts : housingPosts
-  const countToRender = searchedPost ? searchedPostCount : myPosts ? userHousingPostsCount : count
+  const postToRender = searchedPost ? searchedPost : filter === MY_POSTS ? userHousingPosts : housingPosts
+  const countToRender = searchedPost ? searchedPostCount : filter === MY_POSTS ? userHousingPostsCount : count
 
   return (
     <div>
@@ -92,7 +89,7 @@ const Housings = ({
             startIcon={<FilterListIcon />}
             style={{ textDecoration: "none" }}
           >
-            {text}
+            {filter}
           </Button>
           <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal placement={'bottom-end'} style={{ zIndex: 1 }}>
             {({ TransitionProps, placement }) => (
@@ -144,7 +141,7 @@ const Housings = ({
         null}
 
       {/* Post button */}
-      {user && userHousingPosts?.length <= 10 &&
+      {user &&
         <Tooltip title="" onClick={handlePost}>
           <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
         </Tooltip>}
@@ -163,6 +160,7 @@ const mapStateToProps = state => ({
   searchedPostCount: state.post.searchedPostCount,
   searchItem: state.post.searchItem,
   page: state.post.page,
+  filter: state.post.filter,
 })
 
 const mapDispatchToProps = {
@@ -170,6 +168,7 @@ const mapDispatchToProps = {
   getUserPosts,
   searchPost,
   setPage,
+  setFilter,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Housings)

@@ -102,86 +102,93 @@ const HousingDetail = ({
               <br /><br />
 
               <Grid container>
-                <Grid item xs={0} md={1} />
-                <Grid item xs={12} md={6}>
-                  {housingPost.selected_choices.map((category, index) => (
-                    index !== 0
-                      ?
-                      <div key={category} className={classes.category}>
-                        <Typography
-                          variant="body1"
-                          color="textPrimary"
-                          gutterBottom
+                <Grid container item xs={12} md={6}>
+                  <Grid item xs={1} />
+                  <Grid item xs={11}>
+                    {housingPost.selected_choices.map((category, index) => (
+                      index !== 0
+                        ?
+                        <div key={category} className={classes.category}>
+                          <Typography
+                            variant="body1"
+                            color="textPrimary"
+                            gutterBottom
+                          >
+                            {housingCategories[index]}
+                          </Typography>
+
+                          {category.map((question) => (Array.isArray(question.choice)
+                            ?
+                            <>
+                              {question.choice.map((choice) => (
+                                <Chip
+                                  key={choice}
+                                  className={classes.tag}
+                                  label={choice}
+                                  color="primary"
+                                />
+                              ))}
+                            </>
+                            :
+                            <Chip
+                              key={question}
+                              className={classes.tag}
+                              label={question.choice}
+                              color="primary"
+                            />
+                          ))}
+                        </div>
+                        :
+                        null
+                    ))}
+                  </Grid>
+                </Grid>
+                <Grid container item xs={12} md={6}>
+                  <Grid item xs={1} />
+                  <Grid item xs={10}>
+                    <Paper style={{ padding: 20 }}>
+                      {/* Price */}
+                      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+                        <Typography variant="h6">SGD {housingPost.selected_choices[0][3].choice}</Typography>
+                        <Typography variant="body2" color="textSecondary">&nbsp;/ night</Typography>
+                      </div>
+
+                      {/* Location */}
+                      <Typography variant="body2" color="textSecondary">Located at {housingPost.selected_choices[0][2].choice}</Typography>
+
+                      <br />
+
+                      <div style={{ display: "flex", flexDirection: "row" }}>
+                        {/* Profile pic */}
+                        <Avatar
+                          className={classes.avatar}
+                          src={housingPost.owner.profile_pic}
+                        />
+
+                        <div>
+                          {/* Name */}
+                          <Typography>{housingPost.owner.first_name} {housingPost.owner.last_name}</Typography>
+                          {/* Bio */}
+                          <Typography variant="body1" color="textSecondary">
+                            {housingPost.owner.bio.length > 25 ? housingPost.owner.bio.substring(0, 25) + "..." : housingPost.owner.bio}
+                          </Typography>
+                        </div>
+                      </div>
+
+                      {/* Chat button */}
+                      {user && user.id !== housingPost.owner.id &&
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          color="primary"
+                          onClick={handleChat}
                         >
-                          {housingCategories[index]}
-                        </Typography>
-
-                        {category.map((question) => (Array.isArray(question.choice)
-                          ?
-                          <>
-                            {question.choice.map((choice) => (
-                              <Chip
-                                key={choice}
-                                className={classes.tag}
-                                label={choice}
-                                color="primary"
-                              />
-                            ))}
-                          </>
-                          :
-                          <Chip
-                            key={question}
-                            className={classes.tag}
-                            label={question.choice}
-                            color="primary"
-                          />
-                        ))}
-                      </div>
-                      :
-                      null
-                  ))}
+                          Chat with me
+                        </Button>}
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={1} />
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <Paper style={{ padding: 20 }}>
-                    {/* Price */}
-                    <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-                      <Typography variant="h6">SGD {housingPost.selected_choices[0][3].choice}</Typography>
-                      <Typography variant="body2" color="textSecondary">&nbsp;/ night</Typography>
-                    </div>
-
-                    {/* Location */}
-                    <Typography variant="body2" color="textSecondary">Located at {housingPost.selected_choices[0][2].choice}</Typography>
-
-                    <br />
-
-                    <div style={{ display: "flex", flexDirection: "row" }}>
-                      {/* Profile pic */}
-                      <Avatar
-                        className={classes.avatar}
-                        src={housingPost.owner.profile_pic}
-                      />
-
-                      <div>
-                        {/* Name */}
-                        <Typography>{housingPost.owner.first_name} {housingPost.owner.last_name}</Typography>
-                        {/* Bio */}
-                        <Typography variant="body1" color="textSecondary">{housingPost.owner.bio}</Typography>
-                      </div>
-                    </div>
-
-                    {/* Chat button */}
-                    {user && user.id !== housingPost.owner.id &&
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        onClick={handleChat}
-                      >
-                        Chat with me
-                      </Button>}
-                  </Paper>
-                </Grid>
-                <Grid item xs={0} md={1} />
               </Grid>
             </CardContent>
           </Card>

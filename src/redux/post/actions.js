@@ -25,6 +25,7 @@ import {
   CANCEL_SEARCH_SUCCESS,
   CANCEL_SEARCH_FAIL,
   SET_PAGE,
+  SET_FILTER,
 } from "./types";
 
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -373,4 +374,9 @@ export const cancelSearchFail = (cancelSearchErrorMsg) => ({
 export const setPage = (page) => ({
   type: SET_PAGE,
   payload: page,
+})
+
+export const setFilter = (filter) => ({
+  type: SET_FILTER,
+  payload: filter,
 })

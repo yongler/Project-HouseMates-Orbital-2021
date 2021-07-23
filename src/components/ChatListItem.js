@@ -27,7 +27,7 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, animationDelay, 
   const handleMouseLeave = () => { setEnter(false) }
 
   return (
-    <Paper style={{ width: "100%", marginBottom: 5 }}>
+    <Paper style={{ width: "100%", marginBottom: 5, minWidth: 250 }}>
       <ButtonBase
         style={{ width: "100%", borderRadius: 5 }}
         className={clsx({ [classes.active]: (active || enter) })}
@@ -42,9 +42,9 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, animationDelay, 
             <Avatar src={pic} />
           </ListItemAvatar>
           <div style={{ display: 'flex', flexDirection: "column", width: "100%", overflow: "hidden" }}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               {/* Name */}
-              <Typography variant="body1" style={{ overflow: "hidden" }}>{name}</Typography>
+              <Typography variant="body1">{name}</Typography>
 
               {/* Unread messages */}
               {unreadMsgs !== 0 &&
@@ -54,7 +54,9 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, animationDelay, 
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               {/* Latest message */}
-              <Typography variant="body2" color="textSecondary">{msg}</Typography>
+              <Typography variant="body2" color="textSecondary">
+                {msg.length > 15 ? msg.substring(0, 15) + "..." : msg}
+              </Typography>
 
               {/* Time */}
               <Typography variant="body2" color="textSecondary" style={{ overflow: "hidden" }}>

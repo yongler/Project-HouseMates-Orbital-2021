@@ -30,10 +30,10 @@ const ProfileComponent = ({ name, desc, pic, scoreList, unreadMsgs, type, id, ch
         />
         <CardActionArea>
           <CardContent>
-            <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
               <Typography>{name}</Typography>
               {type === ROOMMATE_FORM
-                ? <Chip label={scoreList[id]?.score + "%"} color="secondary" />
+                ? <Chip label={scoreList[id]?.score + "%"} color="secondary" size="small" />
                 : !type
                   ?
                   <>
@@ -44,7 +44,9 @@ const ProfileComponent = ({ name, desc, pic, scoreList, unreadMsgs, type, id, ch
                   </>
                   : null}
             </div>
-            <Typography variant="body1" color="textSecondary">{desc}</Typography>
+            <Typography variant="body1" color="textSecondary">
+              {desc.length > 25 ? desc.substring(0, 25) + "..." : desc}
+            </Typography>
           </CardContent>
         </CardActionArea>
       </Card>

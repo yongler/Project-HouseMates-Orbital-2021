@@ -1,4 +1,4 @@
-import { HOUSING_FORM, ROOMMATE_FORM } from "../../globalConstants";
+import { ALL_POSTS, HOUSING_FORM, ROOMMATE_FORM } from "../../globalConstants";
 import {
   GET_POST_LIST_SUCCESS,
   GET_POST_LIST_FAIL,
@@ -23,6 +23,7 @@ import {
   CANCEL_SEARCH_SUCCESS,
   CANCEL_SEARCH_FAIL,
   SET_PAGE,
+  SET_FILTER,
 } from "./types";
 
 const initialState = {
@@ -50,6 +51,7 @@ const initialState = {
   searchPostSuccess: false,
   cancelSearchSuccess: false,
   page: 1,
+  filter: ALL_POSTS,
 };
 
 const postReducer = (state = initialState, action) => {
@@ -264,6 +266,12 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         page: payload,
+      }
+
+    case SET_FILTER:
+      return {
+        ...state,
+        filter: payload,
       }
 
     default:

@@ -19,3 +19,6 @@ export const VERY_IMPORTANT = 'Very important'
 export const MANDATORY = 'Mandatory'
 
 export const PAGINATION = 2
+
+export const MY_POSTS = 'My post(s)'
+export const ALL_POSTS = 'Filter'

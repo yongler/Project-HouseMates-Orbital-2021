@@ -15,16 +15,10 @@ import { checkChatHistory, editMsg, getRoomList, postRoom, resetChatHistory } fr
 import "./pages.css"
 
 const Chat = ({
-  user,
-  isAuthenticated,
-  roomList,
-  getRoomList,
+  user, isAuthenticated,
+  roomList, getRoomList,
   postRoom,
-  chatUser,
-  chatHistory,
-  checkChatHistory,
-  resetChatHistory,
-  chatLoading,
+  chatUser, chatHistory, checkChatHistory, resetChatHistory,
   editMsg,
 }) => {
   // Styling
@@ -49,6 +43,7 @@ const Chat = ({
   const [msgText, setMsgText] = useState("");
   const [room, setRoom] = useState("");
   const [roomListByLabel, setRoomListByLabel] = useState([]);
+  const [unreadMsgs, setUnreadMsgs] = useState(null)
 
   // Hooks
   const classes = useStyles();
@@ -57,10 +52,7 @@ const Chat = ({
 
   // Constants
   const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-  const host =
-    window.location.host === "localhost:8000"
-      ? "localhost:8000/"
-      : "housematesorbital.herokuapp.com/";
+  const host = window.location.host === "localhost:8000" ? "localhost:8000/" : "housematesorbital.herokuapp.com/";
 
   // Handlers
   const handleChange = (e) => setMsgText(e.target.value);
@@ -75,6 +67,7 @@ const Chat = ({
     );
     setMsgText("");
   };
+  // Mark as read
   useEffect(() => {
     if (!msgText) {
       messages?.forEach(msg => {
@@ -92,6 +85,12 @@ const Chat = ({
   useEffect(() => {
     const temp = roomList.reduce((prev, curr) => ({ ...prev, [curr.label]: curr }), {})
     setRoomListByLabel(temp)
+    // const temp2 = roomList.reduce((prevRoom, currRoom) => ({
+    //   ...prevRoom,
+    //   [currRoom.label]: currRoom.messages.reduce((prevMsg, currMsg) =>
+    //     prevMsg + (!currMsg.hasRead && currMsg.user_id.toString() !== user.id.toString() ? 1 : 0), 0)
+    // }), {})
+    // setUnreadMsgs(temp2)
   }, [roomList])
   // Set active room and messages
   useEffect(() => {
@@ -180,21 +179,20 @@ const Chat = ({
 
   return (
     <>
-      {roomList?.length === 0 ? (
+      {roomList?.length === 0
+        ?
         <>
           {/* No post */}
-          {!chatLoading && (
-            <div>
-              <Typography variant="h6" style={{ marginLeft: 5 }}>
-                Chat
-              </Typography>
-              <div style={{ textAlign: "center" }}>
-                <Typography variant="subtitle1">No chats.</Typography>
-              </div>
+          <div>
+            <Typography variant="h6" style={{ marginLeft: 5 }}>
+              Chat
+            </Typography>
+            <div style={{ textAlign: "center" }}>
+              <Typography variant="subtitle1">No chats.</Typography>
             </div>
-          )}
+          </div>
         </>
-      ) : (
+        :
         <Grid container spacing={3}>
           {/* Chat list */}
           <Grid container item xs={3}>
@@ -234,7 +232,7 @@ const Chat = ({
               <List
                 dense={true}
                 className={classes.list}
-                style={{ padding: 0 }}
+                style={{ padding: 0, overflow: "hidden" }}
               >
                 {roomList.map((room, index) => (
                   <>
@@ -259,6 +257,7 @@ const Chat = ({
                         (activeRoom?.id === room.id &&
                           messages?.[messages?.length - 1]?.timestamp) ||
                         room?.messages[room?.messages?.length - 1]?.timestamp}
+                      // unreadMsgs={unreadMsgs?.[room.label]}
                       unreadMsgs={
                         (activeRoom?.id === room.id &&
                           messages?.reduce((prev, curr) => prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)) ||
@@ -312,12 +311,17 @@ const Chat = ({
                     id="chatBody"
                   >
                     {messages?.map((msg, index) => (
-                      <ChatMessage
-                        animationDelay={index + 2}
-                        user={msg.user_id.toString() === user.id.toString()}
-                        msg={msg.message}
-                        time={msg.timestamp}
-                      />
+                      <>
+                        <ChatMessage
+                          animationDelay={index + 2}
+                          user={msg.user_id.toString() === user.id.toString()}
+                          msg={msg.message}
+                          time={msg.timestamp}
+                        />
+                        {/* <Typography variant="body2" color="textSecondary" align="center" gutterBottom>
+                          1/3/2021
+                        </Typography> */}
+                      </>
                     ))}
                   </div>
                 </Paper>
@@ -371,14 +375,12 @@ const Chat = ({
                   alignItems: "center",
                 }}
               >
-                <Typography variant="body1">
+                <Typography variant="body1" style={{ marginLeft: 20, marginRight: 20 }}>
                   Select a user to start chatting!
                 </Typography>
               </Paper>
-            </Grid>
-          )}
-        </Grid>
-      )}
+            </Grid>)}
+        </Grid>}
     </>
   );
 };
@@ -389,7 +391,6 @@ const mapStateToProps = (state) => ({
   roomList: state.chat.roomList,
   chatUser: state.chat.chatUser,
   chatHistory: state.chat.chatHistory,
-  chatLoading: state.chat.chatLoading,
 });
 
 const mapDispatchToProps = {

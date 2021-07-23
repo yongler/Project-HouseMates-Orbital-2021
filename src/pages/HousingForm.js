@@ -354,12 +354,16 @@ const HousingForm = ({
                   .map((question) => (
                     <Grid container item xs={12}>
                       <Grid item xs={1} />
+
                       {/* Question */}
-                      <Grid item xs={6}>
+                      <Grid item xs={5}>
                         <Typography variant="body1" gutterBottom>
                           {question.question_text}
                         </Typography>
                       </Grid>
+
+                      <Grid item xs={1} />
+                      
                       {/* Choices */}
                       <Grid item xs={5}>
                         {question.question_type === MULTIPLE_CHOICE ||
