@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.forms import CheckboxSelectMultiple
 
 # Register your models here.
-from .models import Question, Choice, Post, Selected_choice, Form
+from .models import Question, Choice, Post,  Form, Score
 
 # wesbite setup
 admin.site.site_header = "HouseMates Admin"
@@ -41,10 +41,14 @@ class QuestionAdmin(admin.ModelAdmin):
 class PostAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Post._meta.fields]
 
+class ScoreAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Score._meta.fields]
+
 
 
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Form, FormAdmin)
 admin.site.register(Post, PostAdmin)
+admin.site.register(Score, ScoreAdmin)
 

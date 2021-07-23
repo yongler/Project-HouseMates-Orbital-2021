@@ -12,10 +12,13 @@ class MessageView(viewsets.ModelViewSet):
         queryset = Message.objects.all()
         room = self.request.query_params.get('room')
         hasread = self.request.query_params.get('hasread')
+        time = self.request.query_params.get('time')
         if room is not None:
             return queryset.filter(room=room) 
         if hasread is not None:
             return queryset.filter(hasRead=hasread) 
+        if time is not None:
+            return queryset.filter(timestamp=time) 
         return queryset
 
 class RoomView(viewsets.ModelViewSet):
