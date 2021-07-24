@@ -104,7 +104,6 @@ msgpack-python = "==0.5.6"
 pyhaikunator = "==0.0.4"
 redis = "==2.10.6"
 txaio = "==21.2.1"
-asgi_redis = "==1.4.3"
 
 [dev-packages]
 
