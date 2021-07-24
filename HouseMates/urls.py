@@ -17,7 +17,7 @@ urlpatterns = [
     path("auth/", include("djoser.urls.jwt")),
     path('auth/', include('djoser.social.urls')),
     
-    path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")))
+    # path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
