@@ -25,13 +25,8 @@ class FormSerializer(serializers.ModelSerializer):
         fields = ['form_type']
 
 # User filled forms model serializers
-class ScoreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Score
-        fields = '__all__'
 
 class PostSerializer(serializers.ModelSerializer):
-    score_set = ScoreSerializer(many=True, read_only=True)
     owner = serializers.SerializerMethodField()
 
     def get_owner(self, instance):
@@ -48,6 +43,19 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = '__all__'
 
+class ScoreSerializer(serializers.ModelSerializer):
+#     post1 = serializers.SerializerMethodField()
+
+#     def get_post1(self, instance):
+#         temp = instance.post1
+#         return {
+#         "id":temp.id, 
+#         "owner":temp.owner.id
+# }   
+
+    class Meta:
+        model = Score
+        fields = '__all__'
 
 
 # class SelectedChoiceSerializer(serializers.ModelSerializer):

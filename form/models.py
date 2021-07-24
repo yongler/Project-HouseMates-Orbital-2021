@@ -40,9 +40,10 @@ class Post(models.Model):
         return str(self.id)
 
 class Score(models.Model):
-    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
-    this_post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True, related_name='this_post')
-    other_post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
+    owner1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='scoreowner1')
+    owner2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='scoreowner2')
+    post1 = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True, related_name='post1')
+    post2 = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True, related_name='post2')
     score = models.FloatField()
 
 

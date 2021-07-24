@@ -41,9 +41,9 @@ class PostView(viewsets.ModelViewSet):
 	def get_queryset(self):
 		queryset = Post.objects.all().order_by('-id')
 		form_type = self.request.query_params.get('form_type')
+		owner = self.request.query_params.get('owner')
 		if form_type is not None:
 			queryset = queryset.filter(post_form_type=form_type)
-		owner = self.request.query_params.get('owner')
 		if owner is not None:
 			queryset = queryset.filter(owner=owner)
 		return queryset
@@ -56,15 +56,12 @@ class ScoreView(viewsets.ModelViewSet):
 
 	def get_queryset(self):
 		queryset = Score.objects.all().order_by('-score')
-		this_post = self.request.query_params.get('this_post')
-		other_post = self.request.query_params.get('other_post')
+		post = self.request.query_params.get('post')
 		owner = self.request.query_params.get('owner')
-		if this_post is not None:
-			queryset = queryset.filter(this_post=this_post)
-		if other_post is not None:
-			queryset = queryset.filter(other_post=other_post)
+		if post is not None:
+			queryset = queryset.filter(post1=post) | queryset.filter(post2=post)
 		if owner is not None:
-			queryset = queryset.filter(owner=owner)
+			queryset = queryset.filter(owner1=owner) | queryset.filter(owner2=owner)
 		return queryset
 
 # class ChoiceView(viewsets.ModelViewSet):
