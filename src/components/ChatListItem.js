@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import clsx from 'clsx'
-import { Avatar, ButtonBase, ListItem, ListItemAvatar, ListItemText, Paper, makeStyles, Typography } from '@material-ui/core'
+import { Avatar, ButtonBase, ListItem, ListItemAvatar, Paper, makeStyles, Typography } from '@material-ui/core'
 
-const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, animationDelay, active, setRoom, room, editMsg }) => {
+const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom, room, editMsg }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
     active: {
@@ -35,7 +35,7 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, animationDelay, 
         onMouseLeave={handleMouseLeave}
       >
         <ListItem
-          style={{ animationDelay: `0.${animationDelay}s`, marginBottom: 10, display: "flex" }}
+          style={{ marginBottom: 10, display: "flex" }}
           onClick={handleClick}
         >
           <ListItemAvatar>
@@ -60,7 +60,7 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, animationDelay, 
 
               {/* Time */}
               <Typography variant="body2" color="textSecondary" style={{ overflow: "hidden" }}>
-                {time.split(" ")[1].split(":")[0] + ":" + time.split(" ")[1].split(":")[1] + " " + time.split(" ")[2]}
+                {time?.split(" ")[1]}
               </Typography>
             </div>
           </div>

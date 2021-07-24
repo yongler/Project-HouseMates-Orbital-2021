@@ -5,6 +5,7 @@ import { Button, Paper, Typography } from '@material-ui/core'
 import { ROOMMATE_FORM, IRRELEVANT, A_LITTLE_IMPORTANT, SOMEWHAT_IMPORTANT, VERY_IMPORTANT, MANDATORY } from '../globalConstants'
 import { loadUser } from '../redux/auth/actions'
 import { getUserPosts, getPostList, editPost, postLoading, resetEditPostSuccess } from '../redux/post/actions'
+import { createScore, editScore } from '../redux/score/actions'
 import './components.css'
 
 const Matchmaking = ({
@@ -13,6 +14,7 @@ const Matchmaking = ({
   posts, next, count, getPostList,
   editPost, resetEditPostSuccess,
   loading, postLoading,
+  createScore, editScore,
 }) => {
 
   // Hooks
@@ -46,24 +48,23 @@ const Matchmaking = ({
 
     // Get my post
     const myPost = userRoommatePosts[0]
-    // Get my post score list
-    var myScoreList = myPost.score_list
-    if (Array.isArray(myScoreList)) {
-      myScoreList = myScoreList
-        .reduce((prev, curr) => ({ ...prev, [curr.post]: curr }), {})
-      myScoreList = Object.assign({}, myScoreList)
+    // Get my post score set
+    var myScoreSet = myPost.score_set
+    if (Array.isArray(myScoreSet)) {
+      myScoreSet = myScoreSet
+        .reduce((prev, curr) => ({ ...prev, [myPost.id === curr.this_post ? curr.other_post : curr.this_post]: curr }), {})
+      myScoreSet = Object.assign({}, myScoreSet)
     }
 
     allPosts.forEach((post) => {
       // Get other post
       const otherPost = post
-      // Get other post score list
-      var otherScoreList = otherPost.score_list
-      if (Array.isArray(otherScoreList)) {
-        otherScoreList = otherScoreList
-          .reduce((prev, curr) => ({ ...prev, [curr.post]: curr }), {})
-        otherScoreList = Object.assign({}, otherScoreList)
-      }
+      // Get other post score set
+      // var otherScoreSet = otherPost.score_set
+      // if (Array.isArray(otherScoreSet)) {
+      //   otherScoreSet = otherScoreSet.reduce((prev, curr) => ({ ...prev, [curr.post]: curr }), {})
+      //   otherScoreSet = Object.assign({}, otherScoreSet)
+      // }
 
       if (otherPost.owner.id !== myPost.owner.id) {
         otherPost.selected_choices.forEach((category, i) => {
@@ -110,29 +111,37 @@ const Matchmaking = ({
         // Calculate average score
         const averageScore = (Math.pow((myScore / myTotalScore) * (otherScore / otherTotalScore), 1 / numOfQuestions) * 100).toFixed(0)
 
-        // Update my post score list
-        myScoreList = {
-          ...myScoreList,
-          [otherPost.id]: {
-            post: otherPost.id,
-            score: averageScore,
-          }
-        }
-        // Update other post score list
-        otherScoreList = {
-          ...otherScoreList,
-          [myPost.id]: {
-            post: myPost.id,
-            score: averageScore,
-          }
+        // Update my post score set
+        // myScoreSet = {
+        //   ...myScoreSet,
+        //   [otherPost.id]: {
+        //     post: otherPost.id,
+        //     score: averageScore,
+        //   }
+        // }
+        // Update other post score set
+        // otherScoreSet = {
+        //   ...otherScoreSet,
+        //   [myPost.id]: {
+        //     post: myPost.id,
+        //     score: averageScore,
+        //   }
+        // }
+
+        if (myScoreSet[otherPost.id]) {
+          editScore(myScoreSet[otherPost].id, averageScore)
+        } else {
+          const temp1 = myPost.id < otherPost.id ? myPost.id : otherPost.id
+          const temp2 = myPost.id > otherPost.id ? myPost.id : otherPost.id
+          createScore(user.id, temp1, temp2, averageScore)
         }
 
-        // Save other post score list and total score
-        editPost(otherPost.id, otherPost.post_form_type, undefined, undefined, otherScoreList, otherTotalScore, undefined)
+        // Save other post score set and total score
+        // editPost(otherPost.id, otherPost.post_form_type, undefined, undefined, otherScoreSet, otherTotalScore, undefined)
       }
     })
-    // Save my post score list and total score
-    editPost(myPost.id, myPost.post_form_type, undefined, undefined, myScoreList, myTotalScore, undefined)
+    // Save my post score set and total score
+    // editPost(myPost.id, myPost.post_form_type, undefined, undefined, myScoreSet, myTotalScore, undefined)
   }
   const handleClose = () => {
     resetEditPostSuccess()
@@ -181,6 +190,8 @@ const mapDispatchToProps = {
   editPost,
   postLoading: () => (dispatch) => dispatch(postLoading()),
   resetEditPostSuccess,
+  createScore,
+  editScore,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Matchmaking)

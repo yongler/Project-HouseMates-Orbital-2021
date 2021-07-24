@@ -44,6 +44,7 @@ const Chat = ({
   const [room, setRoom] = useState("");
   const [roomListByLabel, setRoomListByLabel] = useState([]);
   const [unreadMsgs, setUnreadMsgs] = useState(null)
+  const [lastDate, setLastDate] = useState("")
 
   // Hooks
   const classes = useStyles();
@@ -269,7 +270,6 @@ const Chat = ({
                       editMsg={editMsg}
                       room={room}
                       active={room.id === activeRoom?.id}
-                      animationDelay={index + 1}
                     />
                   </>
                 ))}
@@ -314,19 +314,20 @@ const Chat = ({
                     style={{ width: "100%", height: "50vh", overflow: "auto" }}
                     id="chatBody"
                   >
-                    {messages?.map((msg, index) => (
+                    {messages?.map((msg, index) => {
+                      if (msg.timestamp.split(" ")[0] !== lastDate) setLastDate(msg.timestamp.split(" ")[0])
+                      return (
                       <>
+                        {msg.timestamp.split(" ")[0] !== lastDate &&
+                          <Typography variant="body2" color="textSecondary" align="center" gutterBottom>
+                            {msg.timestamp.split(" ")[0]}
+                          </Typography>}
                         <ChatMessage
-                          animationDelay={index + 2}
                           user={msg.user_id.toString() === user.id.toString()}
                           msg={msg.message}
                           time={msg.timestamp}
                         />
-                        {/* <Typography variant="body2" color="textSecondary" align="center" gutterBottom>
-                          1/3/2021
-                        </Typography> */}
-                      </>
-                    ))}
+                      </>)})}
                   </div>
                 </Paper>
               </Grid>
