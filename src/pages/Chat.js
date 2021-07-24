@@ -1,24 +1,50 @@
-import React, { useState, useEffect, useRef } from "react"
-import { useLocation, Redirect } from "react-router-dom"
-import { connect } from 'react-redux'
-import { uniqueNamesGenerator, adjectives, colors, animals } from "unique-names-generator"
-import { makeStyles } from "@material-ui/core/styles"
-import { w3cwebsocket as W3CWebSocket } from "websocket"
-import { Avatar, ButtonBase, Divider, Grid, IconButton, List, Paper, TextField, Typography } from "@material-ui/core"
-import AddIcon from '@material-ui/icons/Add'
-import ClearIcon from '@material-ui/icons/Clear'
-import SearchBar from "material-ui-search-bar"
-import SendIcon from '@material-ui/icons/Send'
-import ChatListItem from "../components/ChatListItem"
-import ChatMessage from "../components/ChatMessage"
-import { checkChatHistory, editMsg, getRoomList, postRoom, resetChatHistory } from "../redux/chat/actions"
-import "./pages.css"
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from "unique-names-generator";
+import { makeStyles } from "@material-ui/core/styles";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+import {
+  Avatar,
+  ButtonBase,
+  Divider,
+  Grid,
+  IconButton,
+  List,
+  Paper,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import ClearIcon from "@material-ui/icons/Clear";
+import SearchBar from "material-ui-search-bar";
+import SendIcon from "@material-ui/icons/Send";
+import ChatListItem from "../components/ChatListItem";
+import ChatMessage from "../components/ChatMessage";
+import {
+  checkChatHistory,
+  editMsg,
+  getRoomList,
+  postRoom,
+  resetChatHistory,
+} from "../redux/chat/actions";
+import "./pages.css";
 
 const Chat = ({
-  user, isAuthenticated,
-  roomList, getRoomList,
+  user,
+  isAuthenticated,
+  roomList,
+  getRoomList,
   postRoom,
-  chatUser, chatHistory, checkChatHistory, resetChatHistory,
+  chatUser,
+  chatHistory,
+  checkChatHistory,
+  resetChatHistory,
   editMsg,
 }) => {
   // Styling
@@ -43,7 +69,7 @@ const Chat = ({
   const [msgText, setMsgText] = useState("");
   const [room, setRoom] = useState("");
   const [roomListByLabel, setRoomListByLabel] = useState([]);
-  const [unreadMsgs, setUnreadMsgs] = useState(null)
+  const [unreadMsgs, setUnreadMsgs] = useState(null);
 
   // Hooks
   const classes = useStyles();
@@ -51,8 +77,12 @@ const Chat = ({
   const textInput = useRef();
 
   // Constants
-  const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-  const host = window.location.host === "localhost:8000" ? "localhost:8000/" : "housematesorbital.herokuapp.com/";
+  // const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+  const ws_scheme = "ws";
+  const host =
+    window.location.host === "localhost:8000"
+      ? "localhost:8000/"
+      : "housematesorbital.herokuapp.com/";
 
   // Handlers
   const handleChange = (e) => setMsgText(e.target.value);
@@ -70,48 +100,60 @@ const Chat = ({
   // Mark as read
   useEffect(() => {
     if (!msgText) {
-      messages?.forEach(msg => {
+      messages?.forEach((msg) => {
         if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) {
-          editMsg(msg.id, true)
+          editMsg(msg.id, true);
         }
-      })
+      });
     }
-  }, [msgText])
+  }, [msgText]);
 
   // useEffects
   // Get user room list
-  useEffect(() => { if (user) getRoomList(user.id) }, [user])
+  useEffect(() => {
+    if (user) getRoomList(user.id);
+  }, [user]);
   // Process user room list
   useEffect(() => {
-    const temp = roomList.reduce((prev, curr) => ({ ...prev, [curr.label]: curr }), {})
-    setRoomListByLabel(temp)
+    const temp = roomList.reduce(
+      (prev, curr) => ({ ...prev, [curr.label]: curr }),
+      {}
+    );
+    setRoomListByLabel(temp);
     // const temp2 = roomList.reduce((prevRoom, currRoom) => ({
     //   ...prevRoom,
     //   [currRoom.label]: currRoom.messages.reduce((prevMsg, currMsg) =>
     //     prevMsg + (!currMsg.hasRead && currMsg.user_id.toString() !== user.id.toString() ? 1 : 0), 0)
     // }), {})
     // setUnreadMsgs(temp2)
-  }, [roomList])
+  }, [roomList]);
   // Set active room and messages
   useEffect(() => {
-    if (roomListByLabel[room]?.id !== activeRoom?.id) setActiveRoom(roomListByLabel[room])
-    setMessages(roomListByLabel[room]?.messages)
-  }, [roomListByLabel])
+    if (roomListByLabel[room]?.id !== activeRoom?.id)
+      setActiveRoom(roomListByLabel[room]);
+    setMessages(roomListByLabel[room]?.messages);
+  }, [roomListByLabel]);
   // Connect to active room
   useEffect(() => {
     if (room) {
-      const temp = new W3CWebSocket(ws_scheme + "://" + host + "ws/chat/" + room + "/")
-      setClient(temp)
+      const temp = new W3CWebSocket(
+        ws_scheme + "://" + host + "ws/chat/" + room + "/"
+      );
+      setClient(temp);
     }
   }, [room]);
   useEffect(() => {
-    if (client) client.onopen = () => { console.log("WebSocket Client Connected: ", room) }
+    if (client)
+      client.onopen = () => {
+        console.log("WebSocket Client Connected: ", room);
+      };
     if (room) {
-      if (roomListByLabel[room]?.id !== activeRoom?.id) setActiveRoom(roomListByLabel[room])
-      setMessages(roomListByLabel[room]?.messages)
+      if (roomListByLabel[room]?.id !== activeRoom?.id)
+        setActiveRoom(roomListByLabel[room]);
+      setMessages(roomListByLabel[room]?.messages);
     }
-    if (user) getRoomList(user.id)
-  }, [client])
+    if (user) getRoomList(user.id);
+  }, [client]);
   // Update messages
   useEffect(() => {
     if (client) {
@@ -134,24 +176,26 @@ const Chat = ({
         getRoomList(user.id);
       };
     }
-  })
+  });
   // Scroll to bottom of messages
   useEffect(() => {
-    const chatBody = document.getElementById('chatBody')
+    const chatBody = document.getElementById("chatBody");
     if (chatBody) chatBody.scrollTo(0, chatBody.scrollHeight);
-  }, [messages])
+  }, [messages]);
   // Focus on text field
   useEffect(() => {
-    textInput?.current?.focus()
-    setMsgText("")
-    messages?.forEach(msg => {
+    textInput?.current?.focus();
+    setMsgText("");
+    messages?.forEach((msg) => {
       if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) {
-        editMsg(msg.id, true)
+        editMsg(msg.id, true);
       }
-    })
-  }, [activeRoom])
+    });
+  }, [activeRoom]);
   // Get chat history
-  useEffect(() => { if (chatUser) checkChatHistory(user.id, chatUser.id) }, [chatUser])
+  useEffect(() => {
+    if (chatUser) checkChatHistory(user.id, chatUser.id);
+  }, [chatUser]);
   // Check whether to create new room
   useEffect(() => {
     if (chatHistory) {
@@ -179,8 +223,7 @@ const Chat = ({
 
   return (
     <>
-      {roomList?.length === 0
-        ?
+      {roomList?.length === 0 ? (
         <>
           {/* No post */}
           <div>
@@ -192,7 +235,7 @@ const Chat = ({
             </div>
           </div>
         </>
-        :
+      ) : (
         <Grid container spacing={3}>
           {/* Chat list */}
           <Grid container item xs={3}>
@@ -256,13 +299,29 @@ const Chat = ({
                       time={
                         (activeRoom?.id === room.id &&
                           messages?.[messages?.length - 1]?.timestamp) ||
-                        room?.messages[room?.messages?.length - 1]?.timestamp}
+                        room?.messages[room?.messages?.length - 1]?.timestamp
+                      }
                       // unreadMsgs={unreadMsgs?.[room.label]}
                       unreadMsgs={
                         (activeRoom?.id === room.id &&
-                          messages?.reduce((prev, curr) => prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)) ||
-                        room?.messages.reduce((prev, curr) =>
-                          prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)
+                          messages?.reduce(
+                            (prev, curr) =>
+                              prev +
+                              (!curr.hasRead &&
+                              curr.user_id.toString() !== user.id.toString()
+                                ? 1
+                                : 0),
+                            0
+                          )) ||
+                        room?.messages.reduce(
+                          (prev, curr) =>
+                            prev +
+                            (!curr.hasRead &&
+                            curr.user_id.toString() !== user.id.toString()
+                              ? 1
+                              : 0),
+                          0
+                        )
                       }
                       user={user}
                       setRoom={setRoom}
@@ -291,15 +350,23 @@ const Chat = ({
                     elevation: 0,
                   }}
                 >
-                  <Avatar src={user?.id === activeRoom?.owner1?.id
-                    ? activeRoom?.owner2?.profile_pic
-                    : activeRoom?.owner1?.profile_pic} />
+                  <Avatar
+                    src={
+                      user?.id === activeRoom?.owner1?.id
+                        ? activeRoom?.owner2?.profile_pic
+                        : activeRoom?.owner1?.profile_pic
+                    }
+                  />
                   <Typography variant="h6" style={{ marginLeft: 20 }}>
                     {user?.id === activeRoom?.owner1.id
-                      ? activeRoom?.owner2.first_name + " " + activeRoom?.owner2.last_name
+                      ? activeRoom?.owner2.first_name +
+                        " " +
+                        activeRoom?.owner2.last_name
                       : user?.id === activeRoom?.owner2.id
-                        ? activeRoom?.owner1.first_name + " " + activeRoom?.owner1.last_name
-                        : ""}
+                      ? activeRoom?.owner1.first_name +
+                        " " +
+                        activeRoom?.owner1.last_name
+                      : ""}
                   </Typography>
                 </Paper>
               </Grid>
@@ -366,7 +433,9 @@ const Chat = ({
                       color="primary"
                       type="submit"
                       style={{ margin: 5 }}
-                      disabled={!msgText || msgText.replace(/\s/g, '').length === 0}
+                      disabled={
+                        !msgText || msgText.replace(/\s/g, "").length === 0
+                      }
                     >
                       <SendIcon />
                     </IconButton>
@@ -385,12 +454,17 @@ const Chat = ({
                   alignItems: "center",
                 }}
               >
-                <Typography variant="body1" style={{ marginLeft: 20, marginRight: 20 }}>
+                <Typography
+                  variant="body1"
+                  style={{ marginLeft: 20, marginRight: 20 }}
+                >
                   Select a user to start chatting!
                 </Typography>
               </Paper>
-            </Grid>)}
-        </Grid>}
+            </Grid>
+          )}
+        </Grid>
+      )}
     </>
   );
 };
