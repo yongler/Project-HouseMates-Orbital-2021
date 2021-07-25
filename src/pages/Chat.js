@@ -83,6 +83,7 @@ const Chat = ({
     window.location.host === "localhost:8000"
       ? "localhost:8000/"
       : "housematesorbital.herokuapp.com/";
+  // const host = "localhost:5000/";
 
   // Handlers
   const handleChange = (e) => setMsgText(e.target.value);
