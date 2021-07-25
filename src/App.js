@@ -38,7 +38,7 @@ const App = () => {
     palette: {
       primary: indigo,
       background: {
-        default: "#ffffff",
+        default: "#fafafa",
       },
     },
   });
@@ -219,8 +219,19 @@ const App = () => {
               />
 
               {/* Routes with no layout */}
-              <Route exact path="/" component={Home} setTheme={setTheme} theme={theme}/>
-              <Route path="*" component={Home} setTheme={setTheme} theme={theme} />
+              <Route
+                exact
+                path="/"
+                component={Home}
+                setTheme={setTheme}
+                theme={theme}
+              />
+              <Route
+                path="*"
+                component={Home}
+                setTheme={setTheme}
+                theme={theme}
+              />
             </Switch>
           </Layout>
         </BrowserRouter>
