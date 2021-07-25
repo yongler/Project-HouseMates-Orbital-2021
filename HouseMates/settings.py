@@ -91,17 +91,22 @@ ASGI_APPLICATION = "HouseMates.routing.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        # "BACKEND": "channels.layers.InMemoryChannelLayer"
-        # "BACKEND": "channels_redis.core.RedisChannelLayer",
-        # "CONFIG": {
-        #     "hosts":[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        # }
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": ["redis://:p57229162f7164187a209a78725b4b3ca0be7c7a8c9ebb537ea628b344970ff73@ec2-34-224-129-112.compute-1.amazonaws.com:12729"],
-        },
+            "hosts":[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        }
     },
 }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     },
+# }
+        # "BACKEND": "channels_redis.core.RedisChannelLayer",
+        # "CONFIG": {
+        #     "hosts": ["redis://:p57229162f7164187a209a78725b4b3ca0be7c7a8c9ebb537ea628b344970ff73@ec2-34-224-129-112.compute-1.amazonaws.com:12729"],
+        # },
 
  
 TEMPLATES = [

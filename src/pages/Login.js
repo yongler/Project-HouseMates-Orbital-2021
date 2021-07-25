@@ -178,7 +178,7 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
           >
             Login
           </Button>
-          <div className={classes.paper}>
+          {/* <div className={classes.paper}>
             <GoogleButton
               fullWidth
               className="btn btn-danger mt-3"
@@ -186,7 +186,7 @@ const Login = ({ isAuthenticated, authLoading, login }) => {
             >
               Continue With Google
             </GoogleButton>
-          </div>
+          </div> */}
           <br />
           {/* Forgot password and register links */}
           <Grid container>

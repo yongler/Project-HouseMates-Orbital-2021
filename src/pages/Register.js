@@ -324,7 +324,7 @@ const Register = ({
               </Grid>
             </Grid>
             <br />
-            <div className={classes.paper}>
+            {/* <div className={classes.paper}>
               <GoogleButton
                 fullWidth
                 className="btn btn-danger mt-3"
@@ -332,7 +332,7 @@ const Register = ({
               >
                 Continue With Google
               </GoogleButton>
-            </div>
+            </div> */}
           </form>
         )}
       </div>

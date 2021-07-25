@@ -38,7 +38,7 @@ const App = () => {
     palette: {
       primary: indigo,
       background: {
-        default: "#fafafa",
+        default: "#ffffff",
       },
     },
   });
