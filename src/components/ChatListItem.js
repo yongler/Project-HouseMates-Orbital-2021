@@ -38,11 +38,9 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom,
         className={clsx({ [classes.active]: active || enter })}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       >
-        <ListItem
-          style={{ marginBottom: 10, display: "flex" }}
-          onClick={handleClick}
-        >
+        <ListItem style={{ marginBottom: 10, display: "flex" }}>
           <ListItemAvatar>
             <Avatar src={pic} />
           </ListItemAvatar>

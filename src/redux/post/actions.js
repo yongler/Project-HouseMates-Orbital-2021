@@ -20,6 +20,7 @@ import {
   RESET_CREATE_POST_SUCCESS,
   RESET_EDIT_POST_SUCCESS,
   RESET_DELETE_POST_SUCCESS,
+  RESET_POST_LIST,
   SEARCH_POST_SUCCESS,
   SEARCH_POST_FAIL,
   CANCEL_SEARCH_SUCCESS,
@@ -207,69 +208,69 @@ export const editPost =
     total_score,
     picture
   ) =>
-  async (dispatch) => {
-    // Loading
-    dispatch(postLoading());
+    async (dispatch) => {
+      // Loading
+      dispatch(postLoading());
 
-    // Get access token from local storage
-    const token = localStorage.getItem("access");
+      // Get access token from local storage
+      const token = localStorage.getItem("access");
 
-    // Draft request
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${token}`,
-      },
-    };
+      // Draft request
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${token}`,
+        },
+      };
 
-    if (picture) {
-      const images = [];
-      const dummy = Array.from(Array(picture.length).keys());
+      if (picture) {
+        const images = [];
+        const dummy = Array.from(Array(picture.length).keys());
 
-      dummy.forEach((i) => {
-        S3FileUpload.uploadFile(picture[i], s3config)
-          .then((data) => {
-            images.push(data.location);
-          })
-          .then(async () => {
-            if (images.length === picture.length) {
-              const body = JSON.stringify({
-                post_form_type,
-                selected_choices,
-                owner,
-                score_list,
-                total_score,
-                images,
-              });
+        dummy.forEach((i) => {
+          S3FileUpload.uploadFile(picture[i], s3config)
+            .then((data) => {
+              images.push(data.location);
+            })
+            .then(async () => {
+              if (images.length === picture.length) {
+                const body = JSON.stringify({
+                  post_form_type,
+                  selected_choices,
+                  owner,
+                  score_list,
+                  total_score,
+                  images,
+                });
 
-              // Put request
-              try {
-                await axios.put(`/form/post-list/${id}/`, body, config);
-                dispatch(editPostSuccess());
-              } catch (err) {
-                dispatch(editPostFail(editPostErrorMsg));
+                // Put request
+                try {
+                  await axios.put(`/form/post-list/${id}/`, body, config);
+                  dispatch(editPostSuccess());
+                } catch (err) {
+                  dispatch(editPostFail(editPostErrorMsg));
+                }
               }
-            }
-          });
-      });
-    } else {
-      const body = JSON.stringify({
-        post_form_type,
-        selected_choices,
-        owner,
-        score_list,
-        total_score,
-      });
+            });
+        });
+      } else {
+        const body = JSON.stringify({
+          post_form_type,
+          selected_choices,
+          owner,
+          score_list,
+          total_score,
+        });
 
-      // Put request
-      try {
-        await axios.put(`/form/post-list/${id}/`, body, config);
-        dispatch(editPostSuccess());
-      } catch (err) {
-        dispatch(editPostFail(editPostErrorMsg));
+        // Put request
+        try {
+          await axios.put(`/form/post-list/${id}/`, body, config);
+          dispatch(editPostSuccess());
+        } catch (err) {
+          dispatch(editPostFail(editPostErrorMsg));
+        }
       }
-    }
-  };
+    };
 
 export const deletePost = (id) => async (dispatch) => {
   // Loading
@@ -387,13 +388,10 @@ export const resetPostLoading = () => ({ type: RESET_POST_LOADING });
 
 export const resetPostErrorMsg = () => ({ type: RESET_POST_ERROR_MSG });
 
-export const resetCreatePostSuccess = () => ({
-  type: RESET_CREATE_POST_SUCCESS,
-});
+export const resetCreatePostSuccess = () => ({ type: RESET_CREATE_POST_SUCCESS });
 export const resetEditPostSuccess = () => ({ type: RESET_EDIT_POST_SUCCESS });
-export const resetDeletePostSuccess = () => ({
-  type: RESET_DELETE_POST_SUCCESS,
-});
+export const resetDeletePostSuccess = () => ({ type: RESET_DELETE_POST_SUCCESS });
+export const resetPostList = () => ({ type: RESET_POST_LIST });
 
 export const searchPostSuccess = (searchedPost, searchItem) => ({
   type: SEARCH_POST_SUCCESS,

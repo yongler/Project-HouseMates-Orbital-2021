@@ -11,7 +11,7 @@ import './components.css'
 const Matchmaking = ({
   user,
   userRoommatePosts, getUserPosts,
-  posts, previous, next, count, getPostList,
+  posts, next, count, getPostList,
   editPost, resetEditPostSuccess,
   loading, postLoading,
   createScore, editScore, scoreLoading,
@@ -23,7 +23,7 @@ const Matchmaking = ({
 
   // States
   const [allPosts, setAllPosts] = useState([])
-  const [page, setPage] = useState(2)
+  const [page, setPage] = useState(1)
   const [matchmaking, setMatchmaking] = useState(true)
 
   // Helper functions
@@ -56,7 +56,7 @@ const Matchmaking = ({
       // Get my post score set
       const myScoreSet = scoreList.reduce((prev, curr) => ({ ...prev, [myPost.id === curr.post1 ? curr.post2 : curr.post1]: curr }), {})
 
-      allPosts.forEach((post) => {
+      allPosts.forEach(async (post) => {
         // Get other post
         const otherPost = post
 
@@ -126,13 +126,21 @@ const Matchmaking = ({
 
   // useEffect
   // Get all roommate posts
+  // Get first page roommate posts
+  useEffect(() => {
+    getPostList(ROOMMATE_FORM, page)
+    setPage(prevPage => prevPage + 1)
+  }, [])
+  // Get next page roommate posts if applicable
   useEffect(() => {
     if (next !== null) {
       getPostList(ROOMMATE_FORM, page)
-      setPage(page + 1)
+      setPage(prevPage => prevPage + 1)
     }
   }, [next])
-  useEffect(() => setAllPosts([...allPosts, ...posts]), [posts])
+  // Update all roommate posts array
+  useEffect(() => { setAllPosts([...allPosts, ...posts]) }, [posts])
+
   // Get user roommate post
   useEffect(() => { if (user) getUserPosts(user.id, ROOMMATE_FORM) }, [user])
   // Get user roommate post score list
@@ -162,7 +170,6 @@ const mapStateToProps = state => ({
   userRoommatePosts: state.post.userRoommatePosts,
   posts: state.post.posts,
   loading: state.post.postLoading,
-  previous: state.post.previous,
   next: state.post.next,
   count: state.post.count,
   scoreList: state.score.scoreList,
