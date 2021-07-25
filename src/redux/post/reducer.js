@@ -140,9 +140,9 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         postLoading: false,
-        userPosts: null,
-        userRoommatePosts: null,
-        userHousingPosts: null,
+        userPosts: [],
+        userRoommatePosts: [],
+        userHousingPosts: [],
         postErrorMsg: payload,
       };
 

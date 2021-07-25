@@ -5,7 +5,7 @@ import { useHistory, Link } from 'react-router-dom'
 import { ROOMMATE_FORM } from '../globalConstants'
 import { setChatUser } from '../redux/chat/actions'
 
-const ProfileComponent = ({ name, desc, pic, scoreList, unreadMsgs, type, id, chatUser, setChatUser }) => {
+const ProfileComponent = ({ name, desc, pic, scoreListObj, unreadMsgs, type, id, chatUser, setChatUser }) => {
   // Hooks
   const history = useHistory()
 
@@ -33,7 +33,7 @@ const ProfileComponent = ({ name, desc, pic, scoreList, unreadMsgs, type, id, ch
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
               <Typography>{name}</Typography>
               {type === ROOMMATE_FORM
-                ? <Chip label={scoreList[id]?.score + "%"} color="secondary" size="small" />
+                ? <Chip label={scoreListObj[id]?.score + "%"} color="secondary" size="small" />
                 : !type
                   ?
                   <>

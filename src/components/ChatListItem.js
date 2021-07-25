@@ -55,7 +55,7 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom,
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               {/* Latest message */}
               <Typography variant="body2" color="textSecondary">
-                {msg.length > 15 ? msg.substring(0, 15) + "..." : msg}
+                {msg?.length > 15 ? msg.substring(0, 15) + "..." : msg}
               </Typography>
 
               {/* Time */}

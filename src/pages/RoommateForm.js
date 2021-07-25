@@ -12,7 +12,7 @@ import { ROOMMATE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, PRIORITY, SELF, OTHER } 
 const RoommateForm = ({
   user,
   getQuestions, roommateQuestions,
-  getPostList, roommateCategories,
+  getPostList, posts, roommateCategories,
   createPost, createPostSuccess, resetCreatePostSuccess,
   editPost, editPostSuccess, resetEditPostSuccess,
   initialFormFields, id,
@@ -197,10 +197,14 @@ const RoommateForm = ({
     resetCreatePostSuccess()
     resetEditPostSuccess()
     setOpen(false)
-    history.push('/matchmaking')
+    if (posts.length > 0) {
+      history.push('/matchmaking')
+    } else {
+      history.push('/roommates')
+    }
   }
 
-  // componentDidMount
+  // useEffect
   // Get roommate form questions
   useEffect(() => { if (roommateQuestions.length === 0) getQuestions(ROOMMATE_FORM) }, [])
   // Get roommate form categories
@@ -527,6 +531,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
   roommateQuestions: state.form.roommateQuestions,
+  posts: state.post.posts,
   roommateCategories: state.form.roommateCategories,
   createPostSuccess: state.post.createPostSuccess,
   editPostSuccess: state.post.editPostSuccess,

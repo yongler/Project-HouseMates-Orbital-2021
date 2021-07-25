@@ -314,6 +314,7 @@ const Chat = ({
                     style={{ width: "100%", height: "50vh", overflow: "auto" }}
                     id="chatBody"
                   >
+                    {console.log(messages)}
                     {messages?.map((msg, index) => {
                       if (msg.timestamp.split(" ")[0] !== lastDate) setLastDate(msg.timestamp.split(" ")[0])
                       return (

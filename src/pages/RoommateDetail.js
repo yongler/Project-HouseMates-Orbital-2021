@@ -14,7 +14,7 @@ import { ROOMMATE_FORM } from "../globalConstants"
 // RoommateDetail consists of profile pic, name, categories of tags and post button.
 const RoommateDetail = ({
   user,
-  userPost, getUserPosts,
+  userRoommatePosts, getUserPosts,
   post, getPostDetail,
   roommateCategories, getQuestions,
   prevPath,
@@ -64,11 +64,13 @@ const RoommateDetail = ({
     history.push("/chat")
   }
 
-  // componentDidMount
+  // useEffect
+  // Get roommate categories and roommate post detail
   useEffect(() => {
     if (roommateCategories.length === 0) getQuestions(ROOMMATE_FORM)
     getPostDetail(id)
   }, [])
+  // Get user roommate posts
   useEffect(() => (user ? getUserPosts(user.id) : null), [user])
 
   return (
@@ -152,7 +154,7 @@ const RoommateDetail = ({
           </Card>
 
           {/* Post button */}
-          {user && userPost?.length === 0 && (
+          {user && userRoommatePosts.length === 0 && (
             <Tooltip title="" onClick={handleClick}>
               <Fab color="primary" className={classes.tooltip}>
                 <AddIcon />
@@ -167,7 +169,7 @@ const RoommateDetail = ({
 
 const mapPropsToState = (state) => ({
   user: state.auth.user,
-  userPost: state.post.userPost,
+  userRoommatePosts: state.post.userRoommatePosts,
   post: state.post.post,
   roommateCategories: state.form.roommateCategories,
   prevPath: state.auth.prevPath,

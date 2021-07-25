@@ -32,6 +32,7 @@ import { getRoomList } from "../redux/chat/actions";
 import ProfileComponent from "../components/ProfileComponent";
 import UserGuide from "../pages/UserGuide";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
+import { getScoreList, resetGetScoreListSuccess } from "../redux/score/actions";
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
@@ -50,6 +51,7 @@ const Profile = ({
   roomList,
   getRoomList,
   editJustRegistered,
+  scoreList, getScoreList, resetGetScoreListSuccess,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -80,6 +82,7 @@ const Profile = ({
   const [topThreeRoommates, setTopThreeRoommates] = useState([]);
   const [starredHousings, setStarredHousings] = useState([]);
   const [newMsgs, setNewMsgs] = useState([])
+  const [scoreListObj, setScoreListObj] = useState({})
 
   // Handlers
   // Account settings
@@ -123,41 +126,22 @@ const Profile = ({
   };
 
   // componentDidMount
-  useEffect(() => {
-    loadUser();
-    resetEditBioSuccess();
-  }, [editBioSuccess]);
+  useEffect(() => { resetEditBioSuccess() }, [editBioSuccess]);
 
   // Top 3 roommates
-  // Get user roommate post
+  // Get user roommate post score list
+  useEffect(() => { if (user) getScoreList(undefined, user.id) }, [user]);
+  // Get top 3 roommate post ids and process user roommate post score list
   useEffect(() => {
-    if (user) {
-      getUserPosts(user.id, ROOMMATE_FORM);
-      getRoomList(user.id);
+    if (scoreList.length > 0) {
+      const temp = scoreList.slice(0, 3).map(post => user.id === post.owner1 ? post.post2 : post.post1)
+      setTopThreeRoommatesId(temp)
+      const temp2 = scoreList.reduce((prev, curr) => ({ ...prev, [user.id === curr.owner1 ? curr.post2 : curr.post1]: curr }), {})
+      setScoreListObj(temp2)
+      return () => resetGetScoreListSuccess()
     }
-  }, [user]);
-  // Sort user roommate post score list and get top 3 roommates id
-  useEffect(() => {
-    if (userRoommatePosts.length > 0) {
-      const unsortedScoreList = Object.values(userRoommatePosts[0].score_list);
-      const sortedScoreList = unsortedScoreList.sort((a, b) =>
-        a.score > b.score
-          ? -1
-          : a.score === b.score
-            ? a.post < b.post
-              ? -1
-              : 1
-            : 1
-      );
-      const topThreeRoommatesId = [];
-      for (let i = 0; i < 3; i++) {
-        if (i < sortedScoreList.length)
-          topThreeRoommatesId.push(sortedScoreList[i].post);
-      }
-      setTopThreeRoommatesId(topThreeRoommatesId);
-    }
-  }, [userRoommatePosts]);
-  // Get post detail page of top 3 roommates id
+  }, [scoreList]);
+  // Get top 3 roommate post detail pages
   useEffect(() => {
     if (
       topThreeRoommatesId.length > 0 &&
@@ -194,11 +178,12 @@ const Profile = ({
   }, [housingPost]);
 
   // New messages
+  useEffect(() => { if (user) getRoomList(user.id) }, [user])
   useEffect(() => {
-    const temp = roomList.slice(0, 3)
+    const temp3 = roomList.slice(0, 3)
       .filter((room) => room.messages.reduce((prev, curr) =>
         prev || (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? true : false), false))
-    setNewMsgs(temp)
+    setNewMsgs(temp3)
   }, [roomList])
 
   if (!isAuthenticated) { return <Redirect to="/login" />; }
@@ -319,7 +304,7 @@ const Profile = ({
 
               {/* Account settings */}
               <Grid item xs={12} md={4}>
-                <Paper style={{ padding: 20, height: 200, minWidth: 300 }}>
+                <Paper style={{ padding: 20, height: 200, minWidth: 320 }}>
                   <MenuList>
                     <span style={{ display: "flex", alignItems: "center" }}>
                       <AccountBoxIcon style={{ marginRight: 10 }} />
@@ -369,7 +354,7 @@ const Profile = ({
                         name={post.owner.first_name + " " + post.owner.last_name}
                         desc={post.owner.bio}
                         pic={post.owner.profile_pic}
-                        scoreList={userRoommatePosts[0]?.score_list}
+                        scoreListObj={scoreListObj}
                         type={ROOMMATE_FORM}
                         id={post.id}
                       />
@@ -465,6 +450,7 @@ const mapStateToProps = (state) => ({
   post: state.post.post,
   housingPost: state.post.housingPost,
   roomList: state.chat.roomList,
+  scoreList: state.score.scoreList,
 });
 
 const mapDispatchToProps = {
@@ -476,6 +462,8 @@ const mapDispatchToProps = {
   getUserPosts,
   getRoomList,
   editJustRegistered,
+  getScoreList,
+  resetGetScoreListSuccess,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

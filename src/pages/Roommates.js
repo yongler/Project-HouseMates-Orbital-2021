@@ -9,6 +9,7 @@ import FilterListIcon from '@material-ui/icons/FilterList'
 import RoommateCard from '../components/RoommateCard'
 import { getPostList, getUserPosts, searchPost, setPage, setFilter } from "../redux/post/actions"
 import { ALL_POSTS, MY_POSTS, PAGINATION, ROOMMATE_FORM } from '../globalConstants'
+import { getScoreList, resetGetScoreListSuccess } from "../redux/score/actions"
 
 // Posts consists of list of Roommate and post button.
 const Roommates = ({
@@ -19,6 +20,7 @@ const Roommates = ({
   searchedPost, searchedPostCount, searchItem, searchPost,
   page, setPage,
   filter, setFilter,
+  scoreList, getScoreList, resetGetScoreListSuccess,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -40,6 +42,7 @@ const Roommates = ({
 
   // States
   const [open, setOpen] = useState(false);
+  const [scoreListObj, setScoreListObj] = useState({})
 
   // Handlers
   const handlePost = () => { history.push('/roommate-form') }
@@ -70,9 +73,21 @@ const Roommates = ({
     getPostList(ROOMMATE_FORM)
   }
 
-  // componentDidMount
+  // useEffect
+  // Get roommate post list
   useEffect(() => { getPostList(ROOMMATE_FORM, page) }, [])
-  useEffect(() => { if (filter === MY_POSTS && user) getUserPosts(user.id, ROOMMATE_FORM, page) }, [user])
+  // Get roommate user post
+  useEffect(() => { if (user) getUserPosts(user.id, ROOMMATE_FORM) }, [user])
+  // Get roommate user post score list
+  useEffect(() => { if (userRoommatePosts.length > 0) { getScoreList(userRoommatePosts[0].id) } }, [userRoommatePosts])
+  // Procees roommate user post score list
+  useEffect(() => {
+    if (user) {
+      const temp = scoreList.reduce((prev, curr) => ({ ...prev, [user.id === curr.owner1 ? curr.post2 : curr.post1]: curr }), {})
+      setScoreListObj(temp)
+    }
+    return () => resetGetScoreListSuccess()
+  }, [scoreList, user])
 
   const postToRender = searchedPost ? searchedPost : filter === MY_POSTS ? userRoommatePosts : posts
   const countToRender = searchedPost ? searchedPostCount : filter === MY_POSTS ? userRoommatePostsCount : count
@@ -110,7 +125,7 @@ const Roommates = ({
           </Popper>
         </div>}
 
-      {postToRender.length !== 0
+      {postToRender?.length !== 0
         ?
         // List of posts 
         <Container>
@@ -124,7 +139,7 @@ const Roommates = ({
                 key={post.id}
                 className={classes.grid}
               >
-                <RoommateCard post={post} page={page} />
+                <RoommateCard post={post} page={page} scoreListObj={scoreListObj} />
               </Grid>))}
           </Grid>
         </Container>
@@ -147,7 +162,7 @@ const Roommates = ({
         null}
 
       {/* Post button */}
-      {user && userRoommatePosts?.length === 0 &&
+      {user && userRoommatePosts.length === 0 &&
         <Tooltip title="" onClick={handlePost}>
           <Fab color="primary" className={classes.tooltip}>
             <AddIcon />
@@ -169,6 +184,7 @@ const mapStateToProps = (state) => ({
   searchItem: state.post.searchItem,
   page: state.post.page,
   filter: state.post.filter,
+  scoreList: state.score.scoreList,
 })
 
 const mapDispatchToProps = {
@@ -177,6 +193,8 @@ const mapDispatchToProps = {
   searchPost,
   setPage,
   setFilter,
+  getScoreList,
+  resetGetScoreListSuccess,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Roommates)

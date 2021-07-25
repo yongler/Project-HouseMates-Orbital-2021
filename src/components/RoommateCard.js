@@ -18,25 +18,22 @@ import {
   deletePost,
   getPostList,
   getUserPosts,
-  getUserPostsFail,
   resetDeletePostSuccess,
 } from "../redux/post/actions";
 import Confirmation from "../components/Confirmation";
 import { ROOMMATE_FORM } from "../globalConstants";
 import { loadUser } from "../redux/auth/actions";
+import { getScoreList } from "../redux/score/actions";
 
 // RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.fUSER
 const RoommateCard = ({
-  post,
-  page,
+  post, scoreListObj,
   user,
-  loadUser,
-  deletePost,
-  deletePostSuccess,
-  resetDeletePostSuccess,
+  deletePost, deletePostSuccess, resetDeletePostSuccess,
   getPostList,
-  userRoommatePosts,
   getUserPosts,
+  page, 
+  getScoreList,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -94,6 +91,7 @@ const RoommateCard = ({
     resetDeletePostSuccess();
     getPostList(ROOMMATE_FORM, page);
     getUserPosts(user.id, ROOMMATE_FORM);
+    getScoreList(undefined, user.id)
     setOpen(false);
   };
 
@@ -131,10 +129,6 @@ const RoommateCard = ({
     }
     return topThreeTags;
   };
-
-  // componentDidMount
-  useEffect(() => loadUser(), []);
-  useEffect(() => (user ? getUserPosts(user.id) : null), [user]);
 
   return (
     <>
@@ -178,17 +172,12 @@ const RoommateCard = ({
               {/* Name */}
               <Typography variant="h5" color="textPrimary">
                 {post.owner.first_name} {post.owner.last_name}{" "}
-                {userRoommatePosts?.map((userPost) =>
-                  userPost.owner.id !== post.owner.id &&
-                  userPost.post_form_type === ROOMMATE_FORM &&
-                  post.score_list[userPost.id]?.score ? (
-                    <Chip
-                      label={post.score_list[userPost.id]?.score + "%"}
-                      color="secondary"
-                      className={classes.tag}
-                    />
-                  ) : null
-                )}
+                {scoreListObj?.[post.id] &&
+                  <Chip
+                    label={scoreListObj[post.id].score + "%"}
+                    color="secondary"
+                    className={classes.tag}
+                  />}
               </Typography>
 
               {/* Bio */}
@@ -240,6 +229,8 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
   userRoommatePosts: state.post.userRoommatePosts,
   deletePostSuccess: state.post.deletePostSuccess,
+  scoreList: state.score.scoreList,
+  page: state.post.page,
 });
 
 const mapDispatchToProps = {
@@ -248,6 +239,7 @@ const mapDispatchToProps = {
   getPostList,
   getUserPosts,
   loadUser,
+  getScoreList,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoommateCard);

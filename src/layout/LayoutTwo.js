@@ -13,6 +13,7 @@ const LayoutTwo = ({
   formLoading,
   postLoading,
   profileLoading,
+  scoreLoading,
   setTheme,
   theme,
 }) => {
@@ -110,7 +111,7 @@ const LayoutTwo = ({
             }}
           >
             {/* Loading spinner */}
-            {(postLoading || formLoading || profileLoading) && (
+            {(postLoading || formLoading || profileLoading || scoreLoading) && (
               <CircularProgress style={{ marginBottom: 40 }} />
             )}
 
@@ -135,6 +136,7 @@ const mapStateToProps = (state) => ({
   formLoading: state.form.formLoading,
   postLoading: state.post.postLoading,
   profileLoading: state.auth.profileLoading,
+  scoreLoading: state.score.scoreLoading,
 });
 
 export default connect(mapStateToProps)(LayoutTwo);
