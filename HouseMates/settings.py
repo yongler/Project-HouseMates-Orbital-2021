@@ -89,11 +89,11 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 CHANNEL_LAYERS = {
     "default": {
-        # "BACKEND": "channels.layers.InMemoryChannelLayer"
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts":[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        }
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+        # "BACKEND": "channels_redis.core.RedisChannelLayer",
+        # "CONFIG": {
+        #     "hosts":[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        # }
         # "BACKEND": "channels_redis.core.RedisChannelLayer",
         # "CONFIG": {
         #     "hosts": [("housematesorbital.herokuapp.com", 6379)],

@@ -77,8 +77,8 @@ const Chat = ({
   const textInput = useRef();
 
   // Constants
-  // const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-  const ws_scheme = "ws";
+  const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+  // const ws_scheme = "ws";
   const host =
     window.location.host === "localhost:8000"
       ? "localhost:8000/"
