@@ -32,7 +32,7 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom,
   };
 
   return (
-    <Paper style={{ width: "100%", marginBottom: 5, minWidth: 250 }}>
+    <Paper style={{ width: "100%", marginBottom: 5, minWidth: 170 }}>
       <ButtonBase
         style={{ width: "100%", borderRadius: 5 }}
         className={clsx({ [classes.active]: active || enter })}
@@ -62,7 +62,7 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom,
               }}
             >
               {/* Name */}
-              <Typography variant="body1">{name}</Typography>
+              <Typography variant="body1" noWrap>{name}</Typography>
 
               {/* Unread messages */}
               {unreadMsgs !== 0 && (
@@ -70,6 +70,8 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom,
                   style={{
                     width: 20,
                     height: 20,
+                    minWidth: 20,
+                    minHeight: 20,
                     backgroundColor: "red",
                     display: "flex",
                     justifyContent: "center",
@@ -85,12 +87,12 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom,
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               {/* Latest message */}
-              <Typography variant="body2" color="textSecondary">
-                {msg?.length > 15 ? msg.substring(0, 15) + "..." : msg}
+              <Typography variant="body2" color="textSecondary" noWrap style={{ maxWidth: 230, paddingRight: 5 }}>
+                {msg}
               </Typography>
 
               {/* Time */}
-              <Typography variant="body2" color="textSecondary" style={{ overflow: "hidden" }}>
+              <Typography variant="body2" color="textSecondary" style={{ minWidth: 60 }}>
                 {time?.split(" ")[1]}
               </Typography>
             </div>

@@ -304,7 +304,7 @@ const Profile = ({
 
               {/* Account settings */}
               <Grid item xs={12} md={4}>
-                <Paper style={{ padding: 20, height: 200, minWidth: 320 }}>
+                <Paper style={{ padding: 20, height: 240, minWidth: 320 }}>
                   <MenuList>
                     <span style={{ display: "flex", alignItems: "center" }}>
                       <AccountBoxIcon style={{ marginRight: 10 }} />
