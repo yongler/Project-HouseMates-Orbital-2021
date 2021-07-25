@@ -4,33 +4,38 @@ import { Avatar, ButtonBase, ListItem, ListItemAvatar, Paper, makeStyles, Typogr
 
 const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom, room, editMsg }) => {
   // Styling
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     active: {
       backgroundColor: theme.palette.action.hover,
     },
-  }))
+  }));
 
   // Hooks
-  const classes = useStyles()
+  const classes = useStyles();
 
   // States
-  const [enter, setEnter] = useState(false)
+  const [enter, setEnter] = useState(false);
 
   // Handlers
   const handleClick = () => {
-    setRoom(room.label)
-    room.messages.forEach(msg => {
-      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) editMsg(msg.id, true)
-    })
-  }
-  const handleMouseEnter = () => { setEnter(true) }
-  const handleMouseLeave = () => { setEnter(false) }
+    setRoom(room.label);
+    room.messages.forEach((msg) => {
+      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString())
+        editMsg(msg.id, true);
+    });
+  };
+  const handleMouseEnter = () => {
+    setEnter(true);
+  };
+  const handleMouseLeave = () => {
+    setEnter(false);
+  };
 
   return (
     <Paper style={{ width: "100%", marginBottom: 5, minWidth: 250 }}>
       <ButtonBase
         style={{ width: "100%", borderRadius: 5 }}
-        className={clsx({ [classes.active]: (active || enter) })}
+        className={clsx({ [classes.active]: active || enter })}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -41,16 +46,42 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom,
           <ListItemAvatar>
             <Avatar src={pic} />
           </ListItemAvatar>
-          <div style={{ display: 'flex', flexDirection: "column", width: "100%", overflow: "hidden" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               {/* Name */}
               <Typography variant="body1">{name}</Typography>
 
               {/* Unread messages */}
-              {unreadMsgs !== 0 &&
-                <div style={{ width: 20, height: 20, backgroundColor: "red", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%" }}>
-                  <div style={{ color: "white", textAlign: "center" }}>{unreadMsgs}</div>
-                </div>}
+              {unreadMsgs !== 0 && (
+                <div
+                  style={{
+                    width: 20,
+                    height: 20,
+                    backgroundColor: "red",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <div style={{ color: "white", textAlign: "center" }}>
+                    {unreadMsgs}
+                  </div>
+                </div>
+              )}
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               {/* Latest message */}
@@ -67,7 +98,7 @@ const ChatListItem = ({ user, name, pic, msg, time, unreadMsgs, active, setRoom,
         </ListItem>
       </ButtonBase>
     </Paper>
-  )
-}
+  );
+};
 
-export default ChatListItem
+export default ChatListItem;
