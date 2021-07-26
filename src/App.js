@@ -48,7 +48,7 @@ const App = () => {
       // primary: indigo,
       type: "dark",
       background: {
-        default: "#000000",
+        default: "#424242",
       },
       text: {
         primary: "#ffffff",
@@ -58,18 +58,6 @@ const App = () => {
 
   const [theme, setTheme] = useState(true);
   const appliedTheme = theme ? light : dark;
-
-  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-
-  // const theme2 = React.useMemo(
-  //   () =>
-  //     createMuiTheme({
-  //       palette: {
-  //         type: prefersDarkMode ? "dark" : "light",
-  //       },
-  //     }),
-  //   [prefersDarkMode]
-  // );
 
   return (
     <Provider store={store}>

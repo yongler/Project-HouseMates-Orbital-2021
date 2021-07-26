@@ -1,7 +1,7 @@
-import React, { useState, useRef, Fragment } from "react";
+import React, { useState, useRef, Fragment, useEffect } from "react";
 import { useHistory, Link, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
-import clsx from 'clsx'
+import clsx from "clsx";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
   AppBar,
@@ -22,7 +22,7 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
-import { logout } from "../redux/auth/actions";
+import { logout, changeTheme } from "../redux/auth/actions";
 import Logo from "../static/housemates-logo-without-text-white.svg";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
@@ -48,6 +48,7 @@ const NavBar = ({
   setPage,
   setTheme,
   theme,
+  changeTheme,
 }) => {
   // Styling (from left to right)
   const useStyles = makeStyles((theme) => ({
@@ -147,10 +148,10 @@ const NavBar = ({
     history.push("/login");
   };
   const handleClick = () => {
-    if (user) history.push("/profile");
+    history.push("/");
   };
   const handleSearch = (searchItem) => {
-    setPage(1)
+    setPage(1);
     searchPost(ROOMMATE_FORM, searchItem);
   };
   const handleCancelSearch = () => {
@@ -159,6 +160,16 @@ const NavBar = ({
     getPostList(ROOMMATE_FORM);
     setPage(1);
   };
+
+  const handleDarkMode = () => {
+    setTheme(!theme);
+    changeTheme(user.id, !theme);
+  };
+
+  // ComponentDidmount
+  useEffect(() => {
+    if (user) setTheme(user.light_theme);
+  }, [user]);
 
   return (
     <div>
@@ -181,14 +192,13 @@ const NavBar = ({
             src={Logo}
             width="45"
             height="45"
-            className={clsx(classes.logo, { [classes.pointer]: user })}
+            className={classes.pointer}
             onClick={handleClick}
           />
-
           {/* Title */}
           <Typography
             variant="h6"
-            className={clsx(classes.title, { [classes.pointer]: user })}
+            className={classes.pointer}
             onClick={handleClick}
           >
             HouseMates
@@ -260,7 +270,7 @@ const NavBar = ({
                                 edge="end"
                                 color="inherit"
                                 aria-label="mode"
-                                onClick={() => setTheme(!theme)}
+                                onClick={handleDarkMode}
                               >
                                 {icon}
                               </IconButton>
@@ -306,6 +316,7 @@ const mapDispatchToProps = {
   cancelSearch,
   getPostList,
   setPage,
+  changeTheme,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

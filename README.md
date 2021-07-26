@@ -27,10 +27,6 @@ python manage.py runserver
 ```
 
 ---
-## Things to note
-- settings.DEBUG = true during development and false during deployment
-  
----
 ## Collaborations 
 
 If interested in collaborations, do contact us at  [housematesorbital@gmail.com](housematesorbital@gmail.com)

@@ -80,6 +80,7 @@ class CustomUser(AbstractBaseUser):
     bio = models.CharField(default='', max_length=500, null=True, blank=True)
     # favourites = models.JSONField(default=list, null=True, blank=True)
     just_registered = models.BooleanField(default=True)
+    light_theme = models.BooleanField(default=True)
   
 
     USERNAME_FIELD = "email"
