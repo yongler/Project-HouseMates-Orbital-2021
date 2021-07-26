@@ -75,8 +75,10 @@ const Housings = ({
     setFilter(FILTERING)
   }
 
-  // componentDidMount
+  // useEffect
+  // Get housing post list
   useEffect(() => getPostList(HOUSING_FORM, page), [])
+  // Get user housing posts if filter to my posts
   useEffect(() => { if (filter === MY_POSTS && user) getUserPosts(user.id, HOUSING_FORM, page) }, [user])
 
   const postToRender = searchedPost ? searchedPost : filter === MY_POSTS ? userHousingPosts : housingPosts

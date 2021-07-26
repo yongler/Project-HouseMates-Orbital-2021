@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Button, Card, CardContent, CardHeader, Chip, Fab, Grid, IconButton, Paper, Tooltip, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { getPostDetail, getUserPosts } from "../redux/post/actions";
+import { getPostDetail } from "../redux/post/actions";
 import { getQuestions } from "../redux/form/actions";
 import { setChatUser } from "../redux/chat/actions";
 import { HOUSING_FORM } from "../globalConstants";
@@ -14,7 +14,6 @@ import ImageGallery from "../components/ImageGallery";
 // HousingDetail consists of profile pic, name, categories of tags and post button.
 const HousingDetail = ({
   user,
-  userHousingPosts, getUserPosts,
   housingPost, getPostDetail,
   housingCategories, getQuestions,
   prevPath,
@@ -70,12 +69,12 @@ const HousingDetail = ({
     history.push("/chat")
   }
 
-  // componentDidMount
+  // useEffect
+  // Get housing categories and housing post detail
   useEffect(() => {
     if (housingCategories.length === 0) getQuestions(HOUSING_FORM);
     getPostDetail(id);
   }, []);
-  useEffect(() => (user ? getUserPosts(user.id) : null), [user]);
 
   return (
     <div className={classes.card}>
@@ -193,7 +192,7 @@ const HousingDetail = ({
             </CardContent>
           </Card>
 
-          {user && userHousingPosts?.length === 0 && (
+          {user && (
             <Tooltip title="" onClick={handleClick}>
               <Fab color="primary" className={classes.tooltip}>
                 <AddIcon />
@@ -209,7 +208,6 @@ const HousingDetail = ({
 
 const mapPropsToState = (state) => ({
   user: state.auth.user,
-  userHousingPosts: state.post.userHousingPosts,
   housingPost: state.post.housingPost,
   housingCategories: state.form.housingCategories,
   prevPath: state.auth.prevPath,
@@ -218,7 +216,6 @@ const mapPropsToState = (state) => ({
 const mapDispatchToProps = {
   getQuestions,
   getPostDetail,
-  getUserPosts,
   setChatUser,
 };
 

@@ -5,17 +5,18 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, Radio, RadioGroup, Step, StepButton, Stepper, Typography } from '@material-ui/core'
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
-import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
+import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess, resetPostList } from '../redux/post/actions'
 import { ROOMMATE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, PRIORITY, SELF, OTHER } from '../globalConstants'
 
 // RoommateForm consists of stepper, (((summary of roommateQuestions and user inputs) and (back and submit buttons)), or ((list of roommateQuestions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 const RoommateForm = ({
   user,
   getQuestions, roommateQuestions,
-  getPostList, roommateCategories,
+  getPostList, posts, roommateCategories,
   createPost, createPostSuccess, resetCreatePostSuccess,
   editPost, editPostSuccess, resetEditPostSuccess,
   initialFormFields, id,
+  resetPostList,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -196,11 +197,16 @@ const RoommateForm = ({
   const handleClose = () => {
     resetCreatePostSuccess()
     resetEditPostSuccess()
+    resetPostList()
     setOpen(false)
-    history.push('/matchmaking')
+    if (posts.length > 0) {
+      history.push('/matchmaking')
+    } else {
+      history.push('/roommates')
+    }
   }
 
-  // componentDidMount
+  // useEffect
   // Get roommate form questions
   useEffect(() => { if (roommateQuestions.length === 0) getQuestions(ROOMMATE_FORM) }, [])
   // Get roommate form categories
@@ -527,6 +533,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
   roommateQuestions: state.form.roommateQuestions,
+  posts: state.post.posts,
   roommateCategories: state.form.roommateCategories,
   createPostSuccess: state.post.createPostSuccess,
   editPostSuccess: state.post.editPostSuccess,
@@ -540,6 +547,7 @@ const mapDispatchToProps = {
   resetEditPostSuccess,
   getUserPosts,
   getPostList,
+  resetPostList,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoommateForm)

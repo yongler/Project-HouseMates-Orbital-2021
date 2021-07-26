@@ -18,6 +18,7 @@ import {
   RESET_CREATE_POST_SUCCESS,
   RESET_EDIT_POST_SUCCESS,
   RESET_DELETE_POST_SUCCESS,
+  RESET_POST_LIST,
   SEARCH_POST_SUCCESS,
   SEARCH_POST_FAIL,
   CANCEL_SEARCH_SUCCESS,
@@ -140,9 +141,9 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         postLoading: false,
-        userPosts: null,
-        userRoommatePosts: null,
-        userHousingPosts: null,
+        userPosts: [],
+        userRoommatePosts: [],
+        userHousingPosts: [],
         postErrorMsg: payload,
       };
 
@@ -225,6 +226,15 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         deletePostSuccess: false,
+      };
+
+    case RESET_POST_LIST:
+      return {
+        ...state,
+        posts: [],
+        previous: null,
+        next: null,
+        userRoommatePosts: [],
       };
 
     case SEARCH_POST_SUCCESS:
