@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useHistory, Link } from "react-router-dom";
-import { ROOMMATE_FORM, HOUSING_FORM } from "../globalConstants";
+import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 import { setChatUser } from "../redux/chat/actions";
 
 const ProfileComponent = ({

@@ -15,7 +15,6 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import Pic from "../static/housing.jpg";
 import {
   deletePost,
   resetDeletePostSuccess,
@@ -28,6 +27,12 @@ import {
   loadUser,
   resetEditFavouritesSuccess,
 } from "../redux/auth/actions";
+import {
+  createFavourite,
+  deleteFavourite,
+  resetCreateFavouriteSuccess,
+  resetDeleteFavouriteSuccess,
+} from "../redux/favourite/actions";
 
 // HousingCardCard consists of housing description: name and facilities, and pic.
 const HousingCard = ({
@@ -39,9 +44,12 @@ const HousingCard = ({
   deletePostSuccess,
   resetDeletePostSuccess,
   getPostList,
-  editFavourites,
-  editFavouritesSuccess,
-  resetEditFavouritesSuccess,
+  createFavourite,
+  createFavouriteSuccess,
+  resetCreateFavouriteSuccess,
+  deleteFavourite,
+  deleteFavouriteSuccess,
+  resetDeleteFavouriteSuccess,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -105,20 +113,21 @@ const HousingCard = ({
     setOpen(false);
   };
   const handleFavourites = () => {
-    resetEditFavouritesSuccess();
-    const favourites = user.favourites || [];
-    if (favourites.includes(post.id)) {
-      favourites.splice(favourites.indexOf(post.id), 1);
-      editFavourites(user.first_name, user.last_name, user.id, favourites);
+    if (createFavouriteSuccess) resetCreateFavouriteSuccess();
+    if (deleteFavouriteSuccess) resetDeleteFavouriteSuccess();
+    const temp = user.favourite_set.filter(
+      (fav) => fav.temp_post_id === post.id
+    );
+    if (temp.length > 0) {
+      deleteFavourite(temp[0].id);
     } else {
-      favourites.push(post.id);
-      editFavourites(user.first_name, user.last_name, user.id, favourites);
+      createFavourite(user.id, post.id);
     }
   };
 
   useEffect(() => {
-    if (editFavouritesSuccess) loadUser();
-  }, [editFavouritesSuccess]);
+    if (createFavouriteSuccess || deleteFavouriteSuccess) loadUser();
+  }, [createFavouriteSuccess, deleteFavouriteSuccess]);
 
   return (
     <>
@@ -149,8 +158,14 @@ const HousingCard = ({
             <Tooltip title="" className={classes.edit}>
               <IconButton
                 className={clsx({
-                  [classes.red]: user?.favourites?.includes(post.id),
-                  [classes.white]: !user?.favourites?.includes(post.id),
+                  [classes.red]:
+                    user?.favourite_set?.filter(
+                      (fav) => fav.temp_post_id === post.id
+                    ).length > 0,
+                  [classes.white]:
+                    !user?.favourite_set?.filter(
+                      (fav) => fav.temp_post_id === post.id
+                    ).length === 0,
                 })}
                 onClick={handleFavourites}
               >
@@ -245,6 +260,8 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
   deletePostSuccess: state.post.deletePostSuccess,
   editFavouritesSuccess: state.auth.editFavouritesSuccess,
+  createFavouriteSuccess: state.favourite.createFavouriteSuccess,
+  deleteFavouriteSuccess: state.favourite.deleteFavouriteSuccess,
 });
 
 const mapDispatchToProps = {
@@ -254,6 +271,10 @@ const mapDispatchToProps = {
   editFavourites,
   loadUser,
   resetEditFavouritesSuccess,
+  createFavourite,
+  deleteFavourite,
+  resetCreateFavouriteSuccess,
+  resetDeleteFavouriteSuccess,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HousingCard);
