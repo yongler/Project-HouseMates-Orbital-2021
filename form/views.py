@@ -6,7 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
-from .serializers import QuestionSerializer, PostSerializer, ChoiceSerializer, FormSerializer, ScoreSerializer
+from .serializers import QuestionSerializer, PostSerializer, ChoiceSerializer, FormSerializer, ScoreSerializer, FavouriteSerializer
 from rest_framework import filters
 from .permissions import IsOwnerProfileOrReadOnly
 
@@ -14,7 +14,7 @@ from .permissions import IsOwnerProfileOrReadOnly
 from rest_framework.pagination import PageNumberPagination
 
 # import models 
-from .models import Question, Choice, Post, Form, Score
+from .models import Favourite, Question, Choice, Post, Form, Score
 
 # heroku setup
 from django.views import View
@@ -62,6 +62,19 @@ class ScoreView(viewsets.ModelViewSet):
 			queryset = queryset.filter(post1=post) | queryset.filter(post2=post)
 		if owner is not None:
 			queryset = queryset.filter(owner1=owner) | queryset.filter(owner2=owner)
+		return queryset
+
+class FavouriteView(viewsets.ModelViewSet):
+	serializer_class = FavouriteSerializer
+
+	def get_queryset(self):
+		queryset = Favourite.objects.all()
+		post = self.request.query_params.get('post')
+		owner = self.request.query_params.get('owner')
+		if post is not None:
+			queryset = queryset.filter(temp_post_id=post) 
+		if owner is not None:
+			queryset = queryset.filter(owner=owner) 
 		return queryset
 
 # class ChoiceView(viewsets.ModelViewSet):

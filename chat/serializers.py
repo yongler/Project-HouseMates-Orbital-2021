@@ -28,7 +28,6 @@ class RoomSerializer(serializers.ModelSerializer):
         "last_name":temp.last_name, 
         "profile_pic":str(temp.profile_pic),
         "bio":temp.bio ,
-        "favourites": temp.favourites,
         "last_login": temp.last_login.strftime('%b %d,%Y %I:%m%p')
         }
         else:
@@ -43,7 +42,6 @@ class RoomSerializer(serializers.ModelSerializer):
         "last_name":temp.last_name, 
         "profile_pic":str(temp.profile_pic),
         "bio":temp.bio ,
-        "favourites": temp.favourites,
         "last_login": temp.last_login.strftime('%b %d,%Y %I:%m%p')
         }
         else:

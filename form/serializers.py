@@ -1,8 +1,8 @@
 from django.db.models.base import Model
 from django.db.models.enums import Choices
 from rest_framework import serializers
-from .models import Question, Choice, Post, Score,  Form, Score
-from accounts.serializers import userProfileSerializer
+from .models import Favourite, Question, Choice, Post, Score,  Form, Score
+# from accounts.serializers import userProfileSerializer
 
 
 # Admin blank forms model serializers
@@ -25,7 +25,6 @@ class FormSerializer(serializers.ModelSerializer):
         fields = ['form_type']
 
 # User filled forms model serializers
-
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField()
 
@@ -36,27 +35,32 @@ class PostSerializer(serializers.ModelSerializer):
         "first_name":temp.first_name, 
         "last_name":temp.last_name, 
         "profile_pic":str(temp.profile_pic),
-        "bio":temp.bio ,
-        "favourites": temp.favourites}
+        "bio":temp.bio 
+        }
 
     class Meta:
         model = Post
         fields = '__all__'
 
 class ScoreSerializer(serializers.ModelSerializer):
-#     post1 = serializers.SerializerMethodField()
-
-#     def get_post1(self, instance):
-#         temp = instance.post1
-#         return {
-#         "id":temp.id, 
-#         "owner":temp.owner.id
-# }   
-
     class Meta:
         model = Score
         fields = '__all__'
 
+
+# Favourite posts
+class FavouriteSerializer(serializers.ModelSerializer):
+    post = serializers.SerializerMethodField()
+
+    def get_post(self, instance):
+        temp = instance.temp_post_id
+        post_obj = Post.objects.get(id=temp)
+        serializer = PostSerializer(post_obj)
+        return serializer.data
+
+    class Meta:
+        model = Favourite
+        fields = '__all__'
 
 # class SelectedChoiceSerializer(serializers.ModelSerializer):
 #     class Meta:

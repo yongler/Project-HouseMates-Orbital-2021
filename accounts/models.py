@@ -78,7 +78,7 @@ class CustomUser(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     profile_pic = models.URLField(default="", null=True, blank=True)
     bio = models.CharField(default='', max_length=500, null=True, blank=True)
-    favourites = models.JSONField(default=list, null=True, blank=True)
+    # favourites = models.JSONField(default=list, null=True, blank=True)
     just_registered = models.BooleanField(default=True)
   
 

@@ -47,6 +47,12 @@ class Score(models.Model):
     score = models.FloatField()
 
 
+# Favourite posts
+class Favourite(models.Model):
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
+    temp_post_id = models.IntegerField(default=0)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE ,null=True, related_name='post')
+
 # class Selected_choice(models.Model):
 #     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 #     question_category = models.CharField(max_length=200, default='')
