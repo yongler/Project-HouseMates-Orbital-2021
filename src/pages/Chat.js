@@ -2,23 +2,48 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import { uniqueNamesGenerator, adjectives, colors, animals } from "unique-names-generator";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from "unique-names-generator";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Grid, IconButton, List, Paper, TextField, Typography } from "@material-ui/core";
+import {
+  Avatar,
+  Grid,
+  IconButton,
+  List,
+  Paper,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 import SearchBar from "material-ui-search-bar";
 import SendIcon from "@material-ui/icons/Send";
 import ChatListItem from "../components/ChatListItem";
 import ChatMessage from "../components/ChatMessage";
-import { checkChatHistory, editMsg, getRoomList, postRoom, resetChatHistory, setChatUser } from "../redux/chat/actions";
+import {
+  checkChatHistory,
+  editMsg,
+  getRoomList,
+  postRoom,
+  resetChatHistory,
+  setChatUser,
+} from "../redux/chat/actions";
 import "./pages.css";
 
 const Chat = ({
-  user, isAuthenticated,
-  roomList, getRoomList,
+  user,
+  isAuthenticated,
+  roomList,
+  getRoomList,
   postRoom,
-  chatUser, setChatUser,
-  chatHistory, checkChatHistory, resetChatHistory,
+  chatUser,
+  setChatUser,
+  chatHistory,
+  checkChatHistory,
+  resetChatHistory,
   editMsg,
 }) => {
   // Styling
@@ -54,8 +79,11 @@ const Chat = ({
 
   // Helper function
   const markUnreadMsgsAsRead = () => {
-    messages.forEach(msg => { if (!msg.hasRead && msg.user_id.toString() !== user.id.toString()) editMsg(msg.id, true); });
-  }
+    messages.forEach((msg) => {
+      if (!msg.hasRead && msg.user_id.toString() !== user.id.toString())
+        editMsg(msg.id, true);
+    });
+  };
 
   // Handlers
   const handleChange = (e) => setMsgText(e.target.value);
@@ -75,19 +103,22 @@ const Chat = ({
 
     // Scroll to top of chat list
     const chatList = document.getElementById("chatList");
-    if (chatList) chatList.scrollTop = 0
+    if (chatList) chatList.scrollTop = 0;
   };
-
 
   // useEffects
   // Redirection from other page to chat
   // Get chat history
-  useEffect(() => { if (chatUser) checkChatHistory(user.id, chatUser.id); }, [chatUser]);
+  useEffect(() => {
+    if (chatUser) checkChatHistory(user.id, chatUser.id);
+  }, [chatUser]);
   // Check whether to create new room
   useEffect(() => {
     if (chatHistory) {
       if (chatHistory.length === 0) {
-        const shortName = uniqueNamesGenerator({ dictionaries: [colors, adjectives, animals] });
+        const shortName = uniqueNamesGenerator({
+          dictionaries: [colors, adjectives, animals],
+        });
         postRoom(user.id, chatUser.id, shortName);
         getRoomList(user.id);
         setRoom(shortName);
@@ -95,21 +126,35 @@ const Chat = ({
         setRoom(chatHistory[0].label);
       }
       resetChatHistory();
-      setChatUser(null)
+      setChatUser(null);
     }
   }, [chatHistory]);
 
   // Manual navigation to chat
   // Get user room list
-  useEffect(() => { if (user) getRoomList(user.id); }, [user]);
+  useEffect(() => {
+    if (user) getRoomList(user.id);
+  }, [user]);
   // Process user room list
   useEffect(() => {
-    const temp = roomList.reduce((prev, curr) => ({ ...prev, [curr.label]: curr }), {});
-    setRoomListByLabel(temp)
+    const temp = roomList.reduce(
+      (prev, curr) => ({ ...prev, [curr.label]: curr }),
+      {}
+    );
+    setRoomListByLabel(temp);
     if (roomList) {
-      roomList.forEach(room => {
-        const temp2 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/")
-        temp2.onopen = () => { console.log("WebSocket Client Connected: ", room.label) }
+      roomList.forEach((room) => {
+        const temp2 = new W3CWebSocket(
+          ws_scheme +
+            "://" +
+            window.location.host +
+            "/ws/chat/" +
+            room.label +
+            "/"
+        );
+        temp2.onopen = () => {
+          console.log("WebSocket Client Connected: ", room.label);
+        };
         temp2.onmessage = (message) => {
           const dataFromServer = JSON.parse(message.data);
           console.log("got reply! ", dataFromServer.type);
@@ -124,7 +169,7 @@ const Chat = ({
           }
           getRoomList(user.id);
         };
-      })
+      });
     }
   }, [roomList]);
   // Set active room and messages
@@ -136,20 +181,20 @@ const Chat = ({
   // Connect to active room
   useEffect(() => {
     if (room) {
-<<<<<<< HEAD
       const temp = new W3CWebSocket(
         ws_scheme + "://" + window.location.host + "/ws/chat/" + room + "/"
       );
-=======
-      const temp = new W3CWebSocket(ws_scheme + "://" + host + "ws/chat/" + room + "/");
->>>>>>> 30dbcc3c8adbddf4b7d64f3b8e593fb0df934b66
       setClient(temp);
     }
   }, [room]);
   useEffect(() => {
-    if (client) client.onopen = () => { console.log("WebSocket Client Connected: ", room); };
+    if (client)
+      client.onopen = () => {
+        console.log("WebSocket Client Connected: ", room);
+      };
     if (room) {
-      if (roomListByLabel[room]?.id !== activeRoom?.id) setActiveRoom(roomListByLabel[room]);
+      if (roomListByLabel[room]?.id !== activeRoom?.id)
+        setActiveRoom(roomListByLabel[room]);
       setMessages(roomListByLabel[room]?.messages);
     }
     if (user) getRoomList(user.id);
@@ -158,7 +203,9 @@ const Chat = ({
   // Update messages
   useEffect(() => {
     if (client) {
-      client.onopen = () => { console.log("WebSocket Client Connected: ", room); };
+      client.onopen = () => {
+        console.log("WebSocket Client Connected: ", room);
+      };
       client.onmessage = (message) => {
         const dataFromServer = JSON.parse(message.data);
         console.log("got reply! ", dataFromServer.type);
@@ -183,20 +230,28 @@ const Chat = ({
   }, [messages]);
 
   // Mark unread messages as read when sending new message (for case when user receives new messages when in the room)
-  useEffect(() => { if (!msgText) markUnreadMsgsAsRead() }, [msgText]);
-  
+  useEffect(() => {
+    if (!msgText) markUnreadMsgsAsRead();
+  }, [msgText]);
+
   // Clear and focus on message text field, and mark unread messages as read upon room change
   useEffect(() => {
     if (activeRoom) {
       setMsgText("");
       textInput.current.focus();
-      markUnreadMsgsAsRead()
+      markUnreadMsgsAsRead();
     }
   }, [activeRoom]);
 
-  if (!isAuthenticated) { return <Redirect to={{ pathname: "/login", state: { from: location.pathname } }} /> }
+  if (!isAuthenticated) {
+    return (
+      <Redirect
+        to={{ pathname: "/login", state: { from: location.pathname } }}
+      />
+    );
+  }
 
-  var lastDate = ""
+  var lastDate = "";
 
   return (
     <>
@@ -242,7 +297,12 @@ const Chat = ({
               <List
                 dense={true}
                 className={classes.list}
-                style={{ padding: 0, paddingRight: 5, height: "70vh", overflow: "auto" }}
+                style={{
+                  padding: 0,
+                  paddingRight: 5,
+                  height: "70vh",
+                  overflow: "auto",
+                }}
                 id="chatList"
               >
                 {roomList.map((room, index) => (
@@ -275,7 +335,7 @@ const Chat = ({
                             (prev, curr) =>
                               prev +
                               (!curr.hasRead &&
-                                curr.user_id.toString() !== user.id.toString()
+                              curr.user_id.toString() !== user.id.toString()
                                 ? 1
                                 : 0),
                             0
@@ -284,7 +344,7 @@ const Chat = ({
                           (prev, curr) =>
                             prev +
                             (!curr.hasRead &&
-                              curr.user_id.toString() !== user.id.toString()
+                            curr.user_id.toString() !== user.id.toString()
                               ? 1
                               : 0),
                           0
@@ -327,13 +387,13 @@ const Chat = ({
                   <Typography variant="h6" style={{ marginLeft: 20 }}>
                     {user?.id === activeRoom?.owner1.id
                       ? activeRoom?.owner2.first_name +
-                      " " +
-                      activeRoom?.owner2.last_name
+                        " " +
+                        activeRoom?.owner2.last_name
                       : user?.id === activeRoom?.owner2.id
-                        ? activeRoom?.owner1.first_name +
+                      ? activeRoom?.owner1.first_name +
                         " " +
                         activeRoom?.owner1.last_name
-                        : ""}
+                      : ""}
                   </Typography>
                 </Paper>
               </Grid>
@@ -346,21 +406,33 @@ const Chat = ({
                     id="chatBody"
                   >
                     {messages?.map((msg, index) => {
-                      if (index !== 0 && msg.timestamp && msg.timestamp.split(" ")[0] !== lastDate) {
-                        lastDate = msg.timestamp.split(" ")[0]
+                      if (
+                        index !== 0 &&
+                        msg.timestamp &&
+                        msg.timestamp.split(" ")[0] !== lastDate
+                      ) {
+                        lastDate = msg.timestamp.split(" ")[0];
                       }
                       return (
                         <>
-                          {msg.timestamp && msg.timestamp.split(" ")[0] !== lastDate &&
-                            <Typography variant="body2" color="textSecondary" align="center" gutterBottom>
-                              {msg.timestamp.split(" ")[0]}
-                            </Typography>}
+                          {msg.timestamp &&
+                            msg.timestamp.split(" ")[0] !== lastDate && (
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                align="center"
+                                gutterBottom
+                              >
+                                {msg.timestamp.split(" ")[0]}
+                              </Typography>
+                            )}
                           <ChatMessage
                             user={msg.user_id.toString() === user.id.toString()}
                             msg={msg.message}
                             time={msg.timestamp}
                           />
-                        </>)
+                        </>
+                      );
                     })}
                   </div>
                 </Paper>
