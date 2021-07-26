@@ -1,9 +1,7 @@
 from django.db.models.base import Model
 from django.db.models.enums import Choices
 from rest_framework import serializers
-from .models import Favourite, Question, Choice, Post, Score,  Form, Score
-# from accounts.serializers import userProfileSerializer
-
+from .models import Favourite, Question, Choice, Post, Score, Form
 
 # Admin blank forms model serializers
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -61,9 +59,4 @@ class FavouriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = '__all__'
-
-# class SelectedChoiceSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Selected_choice
-#         fields = '__all__'
 

@@ -207,7 +207,7 @@ const NavBar = ({
           <div className={classes.grow} />
 
           {/* Search bar */}
-          {location.pathname === "/roommates" && (
+          {(location.pathname === "/roommates" || location.pathname === "/housings") && (
             <SearchBar
               className={classes.search}
               value={data.search}

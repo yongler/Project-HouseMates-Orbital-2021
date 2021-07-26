@@ -116,7 +116,9 @@ const HousingCard = ({
     }
   };
 
-  useEffect(() => { if (editFavouritesSuccess) loadUser() }, [editFavouritesSuccess])
+  useEffect(() => {
+    if (editFavouritesSuccess) loadUser();
+  }, [editFavouritesSuccess]);
 
   return (
     <>
@@ -172,7 +174,7 @@ const HousingCard = ({
             {/* HousingCard description */}
             <CardContent className={classes.content}>
               {/* Name */}
-              <Typography variant="h5">
+              <Typography variant="h5" color="textPrimary">
                 {post.selected_choices[0][0].choice}
               </Typography>
 
@@ -206,7 +208,7 @@ const HousingCard = ({
                   alignItems: "center",
                 }}
               >
-                <Typography variant="h6">
+                <Typography variant="h6" color="textPrimary">
                   SGD {post.selected_choices[0][3].choice}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">

@@ -10,7 +10,6 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['id', 'user_id', 'message', 'timestamp', 'hasRead']
-        # fields = '__all__'
 
 
         

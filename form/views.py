@@ -1,14 +1,8 @@
 from django.shortcuts import render
-from django.http import JsonResponse
 from rest_framework import permissions, viewsets, generics
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.serializers import Serializer
-from .serializers import QuestionSerializer, PostSerializer, ChoiceSerializer, FormSerializer, ScoreSerializer, FavouriteSerializer
+from .serializers import QuestionSerializer, PostSerializer,  ScoreSerializer, FavouriteSerializer
 from rest_framework import filters
-from .permissions import IsOwnerProfileOrReadOnly
 
 # pagination 
 from rest_framework.pagination import PageNumberPagination
@@ -77,14 +71,6 @@ class FavouriteView(viewsets.ModelViewSet):
 			queryset = queryset.filter(owner=owner) 
 		return queryset
 
-# class ChoiceView(viewsets.ModelViewSet):
-# 	queryset = Choice.objects.all()
-# 	serializer_class = ChoiceSerializer
-
-# class FormView(viewsets.ModelViewSet):
-# 	queryset = Form.objects.all()
-# 	serializer_class = FormSerializer
-
 # to solve mimetypes issue
 class Assets(View):
     def get(self, _request, filename):
@@ -92,7 +78,6 @@ class Assets(View):
 
         if os.path.isfile(path):
             with open(path, 'rb') as file:
-                # return HttpResponse(file.read(), content_type='application/javascript')
                 return HttpResponse(file.read(), content_type='image/jpeg')
         else:
             return HttpResponseNotFound()
