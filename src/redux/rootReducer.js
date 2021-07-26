@@ -4,6 +4,7 @@ import formReducer from "./form/reducer";
 import postReducer from "./post/reducer";
 import chatReducer from "./chat/reducer";
 import scoreReducer from "./score/reducer";
+import favouriteReducer from "./favourite/reducer";
 
 const appReducer = combineReducers({
   auth: authReducer,
@@ -11,6 +12,7 @@ const appReducer = combineReducers({
   post: postReducer,
   chat: chatReducer,
   score: scoreReducer,
+  favourite: favouriteReducer
 });
 
 const rootReducer = (state, action) => {

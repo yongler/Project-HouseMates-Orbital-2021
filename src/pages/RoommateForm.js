@@ -232,7 +232,7 @@ const RoommateForm = ({
         {/* My choices */}
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel>You are...</FormLabel>
+            <FormLabel>My choice(s):</FormLabel>
             <RadioGroup
               name={question.id}
               value={formFields[currentCategory]?.[question.id]?.myChoice}
@@ -252,7 +252,7 @@ const RoommateForm = ({
         {/* Other choices */}
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel>Your ideal roommate is......</FormLabel>
+            <FormLabel>My ideal roommate's choice(s)</FormLabel>
             <RadioGroup
               name={question.id}
               value={formFields[currentCategory]?.[question.id]?.otherChoice}
@@ -272,7 +272,7 @@ const RoommateForm = ({
         {/* Priority */}
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel>This question is...</FormLabel>
+            <FormLabel>Question priority:</FormLabel>
             <RadioGroup
               name={question.id}
               value={formFields[currentCategory]?.[question.id]?.priority}
@@ -301,7 +301,7 @@ const RoommateForm = ({
         {/* My choices */}
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel>You are...</FormLabel>
+            <FormLabel>My choice(s):</FormLabel>
             <FormGroup>
               {question.choice_set.map(choice => (
                 <FormControlLabel
@@ -320,7 +320,7 @@ const RoommateForm = ({
         {/* Other choices */}
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel>Your ideal roommate is......</FormLabel>
+            <FormLabel>Your ideal roommate's choice(s):</FormLabel>
             <FormGroup>
               {question.choice_set.map(choice => (
                 <FormControlLabel
@@ -339,7 +339,7 @@ const RoommateForm = ({
         {/* Priority */}
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel>This question is...</FormLabel>
+            <FormLabel>Question priority:</FormLabel>
             <RadioGroup
               name={question.id}
               value={formFields[currentCategory]?.[question.id]?.priority}
@@ -387,15 +387,15 @@ const RoommateForm = ({
                 </Grid>
                 {/* My choice */}
                 <Grid item xs={3}>
-                  <Typography variant="body1" color="textSecondary">You are...</Typography>
+                  <Typography variant="body1" color="textSecondary">My choice(s):</Typography>
                 </Grid>
                 {/* Other choice */}
                 <Grid item xs={3}>
-                  <Typography variant="body1" color="textSecondary">Your ideal roommate is......</Typography>
+                  <Typography variant="body1" color="textSecondary">Your ideal roommate's choice(s):</Typography>
                 </Grid>
                 {/* Priority */}
                 <Grid item xs={3}>
-                  <Typography variant="body1" color="textSecondary">This question is...</Typography>
+                  <Typography variant="body1" color="textSecondary">Question priority:</Typography>
                 </Grid>
               </Grid>
 

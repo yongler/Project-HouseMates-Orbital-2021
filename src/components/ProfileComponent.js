@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useHistory, Link } from "react-router-dom";
-import { ROOMMATE_FORM } from "../globalConstants";
+import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 import { setChatUser } from "../redux/chat/actions";
 
 const ProfileComponent = ({ name, desc, pic, scoreListObj, unreadMsgs, type, id, chatUser, setChatUser }) => {
@@ -20,7 +20,7 @@ const ProfileComponent = ({ name, desc, pic, scoreListObj, unreadMsgs, type, id,
   const handleClick = () => {
     if (type === ROOMMATE_FORM) {
       history.push(`/roommates/${id}`);
-    } else if (type === ROOMMATE_FORM) {
+    } else if (type === HOUSING_FORM) {
       history.push(`/housings/${id}`);
     } else {
       setChatUser(chatUser);

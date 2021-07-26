@@ -21,13 +21,12 @@ import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import HomeIcon from "@material-ui/icons/Home";
 import PeopleIcon from "@material-ui/icons/People";
 import {
-  loadUser,
   changeProfilePic,
   editBio,
   resetEditBioSuccess,
   editJustRegistered,
 } from "../redux/auth/actions";
-import { getPostDetail, getUserPosts } from "../redux/post/actions";
+import { getPostDetail } from "../redux/post/actions";
 import { getRoomList } from "../redux/chat/actions";
 import ProfileComponent from "../components/ProfileComponent";
 import UserGuide from "../pages/UserGuide";
@@ -38,15 +37,11 @@ import { getScoreList, resetGetScoreListSuccess } from "../redux/score/actions";
 const Profile = ({
   isAuthenticated,
   user,
-  loadUser,
   changeProfilePic,
   editBio,
   editBioSuccess,
   resetEditBioSuccess,
-  userRoommatePosts,
-  getUserPosts,
   post,
-  housingPost,
   getPostDetail,
   roomList,
   getRoomList,
@@ -80,7 +75,6 @@ const Profile = ({
   const [bio, setBio] = useState("");
   const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([]);
   const [topThreeRoommates, setTopThreeRoommates] = useState([]);
-  const [starredHousings, setStarredHousings] = useState([]);
   const [newMsgs, setNewMsgs] = useState([])
   const [scoreListObj, setScoreListObj] = useState({})
 
@@ -156,26 +150,6 @@ const Profile = ({
       setTopThreeRoommates([...topThreeRoommates, post]);
     }
   }, [post]);
-
-  // Starred Housings
-  // Get post detail page of starred housings
-  useEffect(() => {
-    if (
-      user?.favourites.length > 0 &&
-      starredHousings.length < user.favourites.length
-    ) {
-      getPostDetail(user.favourites[starredHousings.length]);
-    }
-  }, [user, starredHousings]);
-  // Add to starred housings array
-  useEffect(() => {
-    if (
-      housingPost &&
-      housingPost.id === user?.favourites[starredHousings.length]
-    ) {
-      setStarredHousings([...starredHousings, housingPost]);
-    }
-  }, [housingPost]);
 
   // New messages
   useEffect(() => { if (user) getRoomList(user.id) }, [user])
@@ -372,7 +346,7 @@ const Profile = ({
                       Starred Housings
                     </Typography>
                   </span>
-                  {starredHousings.length === 0 ? (
+                  {user?.favourite_set?.length === 0 ? (
                     <Typography
                       variant="body1"
                       color="textSecondary"
@@ -381,14 +355,14 @@ const Profile = ({
                       No starred housings.
                     </Typography>
                   ) : (
-                    starredHousings.map((post) => (
+                    user?.favourite_set?.map((post) => (
                       <ProfileComponent
-                        key={post.id}
-                        name={post.selected_choices[0][0].choice}
-                        desc={post.selected_choices[0][1].choice}
-                        pic={post.images[0]}
+                        key={post.post.id}
+                        name={post.post.selected_choices[0][0].choice}
+                        desc={post.post.selected_choices[0][1].choice}
+                        pic={post.post.images[0]}
                         type={HOUSING_FORM}
-                        id={post.id}
+                        id={post.post.id}
                       />
                     ))
                   )}
@@ -446,9 +420,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
   editBioSuccess: state.auth.editBioSuccess,
-  userRoommatePosts: state.post.userRoommatePosts,
   post: state.post.post,
-  housingPost: state.post.housingPost,
   roomList: state.chat.roomList,
   scoreList: state.score.scoreList,
 });
@@ -457,9 +429,7 @@ const mapDispatchToProps = {
   changeProfilePic,
   editBio,
   resetEditBioSuccess,
-  loadUser,
   getPostDetail,
-  getUserPosts,
   getRoomList,
   editJustRegistered,
   getScoreList,
