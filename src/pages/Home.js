@@ -1,22 +1,24 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import { Link, useHistory } from 'react-router-dom'
-import { getPostList } from '../redux/post/actions'
-import { Button, Grid, makeStyles, Paper, Typography } from '@material-ui/core'
-import ProfileComponent from '../components/ProfileComponent'
-import { HOUSING_FORM, ROOMMATE_FORM } from '../globalConstants'
-import Footer from '../components/Footer'
-import Logo from '../static/housemates-logo-without-text-black.svg'
-import Pic from '../static/home.jpg'
-import Mates from '../static/mates.jpg'
-import House from '../static/house.jpg'
-import Chat from '../static/chat.png'
-import RoommateCard from '../components/RoommateCard'
-import HousingCard from '../components/HousingCard'
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
+import { getPostList } from "../redux/post/actions";
+import { Button, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
+import ProfileComponent from "../components/ProfileComponent";
+import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
+import Footer from "../components/Footer";
+import Logo from "../static/housemates-logo-without-text-black.svg";
+import Pic from "../static/home.jpg";
+import Mates from "../static/mates.jpg";
+import House from "../static/house.jpg";
+import Chat from "../static/chat.png";
+import RoommateCard from "../components/RoommateCard";
+import HousingCard from "../components/HousingCard";
+import promoVideo from "../static/2679.mp4";
+import { Player, ControlBar } from "video-react";
 
 const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
   // Styling
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     button: {
       borderRadius: 20,
       "&:hover": {
@@ -24,38 +26,54 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         color: "white",
       },
     },
-  }))
+  }));
 
   // After render
-  useEffect(() => { getPostList(ROOMMATE_FORM) }, [])
-  useEffect(() => { getPostList(HOUSING_FORM) }, [])
+  useEffect(() => {
+    getPostList(ROOMMATE_FORM);
+  }, []);
+  useEffect(() => {
+    getPostList(HOUSING_FORM);
+  }, []);
 
   // Hooks
-  const history = useHistory()
-  const classes = useStyles()
+  const history = useHistory();
+  const classes = useStyles();
 
   // Handlers
-  const handleLogin = () => history.push('/login')
-  const handleRegister = () => history.push('/register')
-  const handleSeeMore = () => history.push('/roommates')
+  const handleLogin = () => history.push("/login");
+  const handleRegister = () => history.push("/register");
+  const handleSeeMore = () => history.push("/roommates");
 
   return (
     <Grid container>
       <Paper style={{ width: "100%", margin: 20, marginTop: 20, padding: 10 }}>
-        <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
-          <img
-            alt="home"
-            src={Pic}
-            height="400"
-            style={{ opacity: 0.3 }}
-          />
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <img alt="home" src={Pic} height="400" style={{ opacity: 0.3 }} />
 
-          <div style={{ position: "absolute", width: "100%", height: 400, display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <img alt="logo" src={Logo} width="100" height="100" style={{ marginRight: 20 }} />
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: 400,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <img
+              alt="logo"
+              src={Logo}
+              width="100"
+              height="100"
+              style={{ marginRight: 20 }}
+            />
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <Typography variant="h2">
-                Welcome to HouseMates.
-              </Typography>
+              <Typography variant="h2">Welcome to HouseMates.</Typography>
               <Typography variant="h5">
                 Your one stop solution to a warm stay in Singapore.
               </Typography>
@@ -67,24 +85,57 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
       <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 80 }}>
         <Grid container item xs={12}>
           {/* Video */}
-          <Grid item xs={6} style={{ display: "flex", justifyContent: "center" }}>
-            Video
+          <Grid
+            item
+            xs={6}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            {/* <Player autoPlay width="auto" height="400">
+              <source src={promoVideo} />
+              <ControlBar autoHide={false} />
+            </Player> */}
+            <video>
+              <source src={promoVideo} />
+            </video>
           </Grid>
 
           {/* Login & register */}
-          <Grid item xs={6} style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+          <Grid
+            item
+            xs={6}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="body1">
               We cater towards your accomodation related needs,
             </Typography>
             <Typography variant="body1">
-              be it finding an accomodation with a housemate, or hosting your housings.
+              be it finding an accomodation with a housemate, or hosting your
+              housings.
             </Typography>
             <Typography variant="body1">
               Login or sign up now! No phone numbers required.
             </Typography>
             <div style={{ marginTop: 30 }}>
-              <Button variant="outlined" style={{ marginRight: 10 }} onClick={handleLogin} className={classes.button}>Login</Button>
-              <Button variant="outlined" onClick={handleRegister} className={classes.button}>Register</Button>
+              <Button
+                variant="outlined"
+                style={{ marginRight: 10 }}
+                onClick={handleLogin}
+                className={classes.button}
+              >
+                Login
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleRegister}
+                className={classes.button}
+              >
+                Register
+              </Button>
             </div>
           </Grid>
         </Grid>
@@ -92,7 +143,16 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
 
       <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 80 }}>
         <Grid container item xs={12}>
-          <Grid item xs={6} style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+          <Grid
+            item
+            xs={6}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="body1">
               With our latest matchmaking algorithm,
             </Typography>
@@ -103,21 +163,32 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
               Create an account to watch the algorithm does its magic!
             </Typography>
           </Grid>
-          <Grid item xs={6} style={{ display: "flex", justifyContent: "center" }}>
+          <Grid
+            item
+            xs={6}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
             <img alt="mates" src={Mates} height="250" />
           </Grid>
         </Grid>
       </Paper>
 
       <Grid container item xs={12} style={{ marginTop: 80 }}>
-        {posts.length > 0
-          ?
+        {posts.length > 0 ? (
           <>
-            <Grid container item xs={12} >
-              {posts.slice(0, 3).map(post =>
-                <Grid item xs={12} md={6} lg={4} key={post.id} style={{ display: "flex", flexDirection: "column" }}>
+            <Grid container item xs={12}>
+              {posts.slice(0, 3).map((post) => (
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  lg={4}
+                  key={post.id}
+                  style={{ display: "flex", flexDirection: "column" }}
+                >
                   <RoommateCard post={post} />
-                </Grid>)}
+                </Grid>
+              ))}
             </Grid>
             <Grid item xs={12} style={{ marginTop: 20 }}>
               <Typography align="center">
@@ -127,7 +198,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
               </Typography>
             </Grid>
           </>
-          :
+        ) : (
           <>
             {!postLoading && (
               <div style={{ textAlign: "center" }}>
@@ -136,18 +207,23 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
               </div>
             )}
           </>
-        }
+        )}
       </Grid>
 
       <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 80 }}>
         <Grid container item xs={12}>
-          <Grid item xs={6} style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            <Typography variant="body1">
-              Have a room to spare?
-            </Typography>
-            <Typography variant="body1">
-              We got you covered.
-            </Typography>
+          <Grid
+            item
+            xs={6}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="body1">Have a room to spare?</Typography>
+            <Typography variant="body1">We got you covered.</Typography>
             <Typography variant="body1">
               Showcase your properties with a comprehensive
             </Typography>
@@ -155,25 +231,29 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
               tagging feature that ensure maximum customer traffic.
             </Typography>
           </Grid>
-          <Grid item xs={6} style={{ display: "flex", justifyContent: "center" }}>
+          <Grid
+            item
+            xs={6}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
             <img alt="house" src={House} height="250" />
           </Grid>
         </Grid>
       </Paper>
 
       <Grid container item xs={12} style={{ marginTop: 80 }}>
-        {housingPosts.length > 0
-          ?
+        {housingPosts.length > 0 ? (
           <>
             <Grid container item xs={12}>
-              {housingPosts.slice(0, 3).map(post =>
+              {housingPosts.slice(0, 3).map((post) => (
                 <>
                   <Grid item xs={1} />
                   <Grid item xs={10} key={post.id} style={{ marginBottom: 30 }}>
                     <HousingCard post={post} />
                   </Grid>
                   <Grid item xs={1} />
-                </>)}
+                </>
+              ))}
             </Grid>
             <Grid item xs={12} style={{ marginTop: 20 }}>
               <Typography align="center">
@@ -183,7 +263,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
               </Typography>
             </Grid>
           </>
-          :
+        ) : (
           <>
             {!postLoading && (
               <div style={{ textAlign: "center" }}>
@@ -192,15 +272,28 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
               </div>
             )}
           </>
-        }
+        )}
       </Grid>
 
       <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 80 }}>
         <Grid container item xs={12}>
-          <Grid item xs={6} style={{ display: "flex", justifyContent: "center" }}>
+          <Grid
+            item
+            xs={6}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
             <img alt="chat" src={Chat} height="250" />
           </Grid>
-          <Grid item xs={6} style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+          <Grid
+            item
+            xs={6}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="body1">
               Your privacy is our priority.
             </Typography>
@@ -217,18 +310,18 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
       <Grid item xs={12} style={{ marginTop: 80 }}>
         <Footer />
       </Grid>
-    </Grid >
-  )
-}
+    </Grid>
+  );
+};
 
 const mapStateToProps = (state) => ({
   posts: state.post.posts,
   housingPosts: state.post.housingPosts,
   postLoading: state.post.postLoading,
-})
+});
 
 const mapDispatchToProps = {
   getPostList,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

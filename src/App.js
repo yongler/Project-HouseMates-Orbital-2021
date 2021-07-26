@@ -48,7 +48,7 @@ const App = () => {
       // primary: indigo,
       type: "dark",
       background: {
-        default: "#424242",
+        default: "#000000",
       },
       text: {
         primary: "#ffffff",

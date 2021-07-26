@@ -14,6 +14,8 @@ class Question(models.Model):
     category = models.CharField(max_length=200, default='')
     question_text = models.CharField(max_length=200)
     question_type = models.CharField(max_length=200, default='')
+    my_column_only = models.BooleanField(default=False)
+    is10000 = models.BooleanField(default=False)
 
     def __str__(self):
         return self.question_text
