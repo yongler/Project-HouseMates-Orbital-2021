@@ -37,7 +37,7 @@ SECRET_KEY = "django-insecure-!pj4x%qojxw8-cf0hb**-9cyz8u+*9xlsu2xa)m*117n+oe&cc
 DEBUG = False
 
 ASGI_APPLICATION = "HouseMates.routing.application"
-
+ 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
