@@ -6,7 +6,7 @@ import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, 
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess, resetPostList, searchPost } from '../redux/post/actions'
-import { ROOMMATE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT, PRIORITY, SELF, OTHER, MY_CHOICE_ONLY, IS_10000 } from '../globalConstants'
+import { ROOMMATE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT, PRIORITY, SELF, OTHER, MY_COLUMN_ONLY, IS_10000 } from '../globalConstants'
 
 // RoommateForm consists of stepper, (((summary of roommateQuestions and user inputs) and (back and submit buttons)), or ((list of roommateQuestions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 
@@ -14,7 +14,7 @@ const TextQuestion = ({ question, formFields, handleChange, currentCategory, Pri
   <>
     {/* Question */}
     <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
-    {!question.my_choice_only
+    {question.my_column_only
       ?
       // My choice only
       <Grid item xs={12}>
@@ -23,7 +23,7 @@ const TextQuestion = ({ question, formFields, handleChange, currentCategory, Pri
           fullWidth
           name={question.id}
           value={formFields[currentCategory]?.[question.id]?.myChoice}
-          onChange={(e) => handleChange(e, currentCategory, MY_CHOICE_ONLY)}
+          onChange={(e) => handleChange(e, currentCategory, MY_COLUMN_ONLY)}
         />
       </Grid>
       :
@@ -234,7 +234,7 @@ const RoommateForm = ({
         })
         break
 
-      case MY_CHOICE_ONLY:
+      case MY_COLUMN_ONLY:
         setFormFields({
           ...formFields,
           [category]: {
@@ -436,8 +436,25 @@ const RoommateForm = ({
       {/* Question */}
       <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
 
-      {question.my_choice_only
+      {question.my_column_only
         ?
+        // My choice only
+        <Grid item xs={12}>
+          <Select
+            variant="outlined"
+            fullWidth
+            name={question.id}
+            value={formFields[currentCategory]?.[question.id]?.myChoice}
+            onChange={(e) => handleChange(e, currentCategory, MY_COLUMN_ONLY)}
+          >
+            {question.choice_set.map((choice) => (
+              <MenuItem key={choice} value={choice}>
+                {choice}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        :
         <Grid container item spacing={8}>
           {/* My choices */}
           <Grid item xs={4}>
@@ -498,23 +515,6 @@ const RoommateForm = ({
               </RadioGroup>
             </FormControl>
           </Grid>
-        </Grid>
-        :
-        // My choice only
-        <Grid item xs={12}>
-          <Select
-            variant="outlined"
-            fullWidth
-            name={question.id}
-            value={formFields[currentCategory]?.[question.id]?.myChoice}
-            onChange={(e) => handleChange(e, currentCategory, MY_CHOICE_ONLY)}
-          >
-            {question.choice_set.map((choice) => (
-              <MenuItem key={choice} value={choice}>
-                {choice}
-              </MenuItem>
-            ))}
-          </Select>
         </Grid>}
     </>
   );
@@ -591,7 +591,7 @@ const RoommateForm = ({
                       </Grid>
                       {/* My choices */}
                       <Grid item xs={3}>
-                        {!question.my_choice_only
+                        {question.my_column_only
                           ?
                           <Typography variant="body1" gutterBottom>
                             {formFields[categoryIndex]?.[question.id]?.myChoice}
@@ -611,7 +611,7 @@ const RoommateForm = ({
                       </Grid>
                       {/* Other choices */}
                       <Grid item xs={3}>
-                        {!question.my_choice_only
+                        {question.my_column_only
                           ?
                           null
                           : question.question_type === MULTIPLE_CHOICE
@@ -628,7 +628,7 @@ const RoommateForm = ({
                       </Grid>
                       {/* Priority */}
                       <Grid item xs={3}>
-                        {!question.my_choice_only
+                        {question.my_column_only
                           ?
                           null
                           :

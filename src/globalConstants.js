@@ -11,7 +11,7 @@ export const PRIORITY = "Priority";
 
 export const SELF = 'Self'
 export const OTHER = 'Other'
-export const MY_CHOICE_ONLY = 'My choice only'
+export const MY_COLUMN_ONLY = 'My column only'
 
 export const IRRELEVANT = 'Irrelevant'
 export const A_LITTLE_IMPORTANT = 'A little important'
@@ -20,7 +20,7 @@ export const VERY_IMPORTANT = 'Very important'
 export const MANDATORY = 'Mandatory'
 export const IS_10000 = 'Is 10000'
 
-export const PAGINATION = 6;
+export const PAGINATION = 2;
 
 export const MY_POSTS = "My post(s)";
 export const ALL_POSTS = "Filter";

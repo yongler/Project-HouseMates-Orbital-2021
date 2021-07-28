@@ -19,9 +19,10 @@ import {
   getPostList,
   getUserPosts,
   resetDeletePostSuccess,
+  setPage,
 } from "../redux/post/actions";
 import Confirmation from "../components/Confirmation";
-import { ROOMMATE_FORM } from "../globalConstants";
+import { PAGINATION, ROOMMATE_FORM } from "../globalConstants";
 import { loadUser } from "../redux/auth/actions";
 import { getScoreList } from "../redux/score/actions";
 
@@ -32,7 +33,7 @@ const RoommateCard = ({
   deletePost, deletePostSuccess, resetDeletePostSuccess,
   getPostList,
   getUserPosts,
-  page, 
+  page, count, setPage,
   getScoreList,
 }) => {
   // Styling
@@ -89,7 +90,12 @@ const RoommateCard = ({
   };
   const handleClose = () => {
     resetDeletePostSuccess();
-    getPostList(ROOMMATE_FORM, page);
+    if (page > 1 && page > Math.ceil((count - 1) / PAGINATION)) {
+      getPostList(ROOMMATE_FORM, page - 1);
+      setPage(page - 1)
+    } else {
+      getPostList(ROOMMATE_FORM, page);
+    }
     getUserPosts(user.id, ROOMMATE_FORM);
     getScoreList(undefined, user.id)
     setOpen(false);
@@ -231,6 +237,7 @@ const mapStateToProps = (state) => ({
   deletePostSuccess: state.post.deletePostSuccess,
   scoreList: state.score.scoreList,
   page: state.post.page,
+  count: state.post.count,
 });
 
 const mapDispatchToProps = {
@@ -240,6 +247,7 @@ const mapDispatchToProps = {
   getUserPosts,
   loadUser,
   getScoreList,
+  setPage,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoommateCard);
