@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { connect } from "react-redux"
 import { makeStyles } from "@material-ui/core/styles"
-import { Avatar, Card, CardContent, CardHeader, Chip, Fab, IconButton, Tooltip, Typography } from "@material-ui/core"
+import { Avatar, Button, Card, CardContent, CardHeader, Chip, IconButton, Typography } from "@material-ui/core"
 import AddIcon from "@material-ui/icons/Add"
 import ChatIcon from "@material-ui/icons/Chat"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
@@ -42,10 +42,11 @@ const RoommateDetail = ({
     card: {
       width: "100%",
     },
-    tooltip: {
+    postBtn: {
       position: "fixed",
       bottom: theme.spacing(2),
       right: theme.spacing(3),
+      borderRadius: 20,
     },
   }))
 
@@ -102,11 +103,11 @@ const RoommateDetail = ({
               </span>
 
               {/* Bio */}
-              <Typography variant="body1" style={{ marginTop: -5, marginBottom: 10 }}>
+              <Typography variant="body1" color="textSecondary" style={{ marginTop: -5, marginBottom: 10 }}>
                 {post.owner.bio}
               </Typography>
 
-              <hr />
+              <br />
 
               {/* Text */}
               <Typography
@@ -159,13 +160,10 @@ const RoommateDetail = ({
           </Card>
 
           {/* Post button */}
-          {user && userRoommatePosts.length === 0 && (
-            <Tooltip title="" onClick={handleClick}>
-              <Fab color="primary" className={classes.tooltip}>
-                <AddIcon />
-              </Fab>
-            </Tooltip>
-          )}
+          {user && userRoommatePosts.length === 0 &&
+            <Button variant="contained" color="primary" startIcon={<AddIcon />} className={classes.postBtn} onClick={handleClick}>
+              Add post
+            </Button>}
         </>
       ) : null}
     </div>
