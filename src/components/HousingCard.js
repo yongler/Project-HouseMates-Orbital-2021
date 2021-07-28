@@ -27,7 +27,12 @@ import {
   loadUser,
   resetEditFavouritesSuccess,
 } from "../redux/auth/actions";
-import { createFavourite, deleteFavourite, resetCreateFavouriteSuccess, resetDeleteFavouriteSuccess } from '../redux/favourite/actions'
+import {
+  createFavourite,
+  deleteFavourite,
+  resetCreateFavouriteSuccess,
+  resetDeleteFavouriteSuccess,
+} from "../redux/favourite/actions";
 
 // HousingCardCard consists of housing description: name and facilities, and pic.
 const HousingCard = ({
@@ -39,8 +44,12 @@ const HousingCard = ({
   deletePostSuccess,
   resetDeletePostSuccess,
   getPostList,
-  createFavourite, createFavouriteSuccess, resetCreateFavouriteSuccess,
-  deleteFavourite, deleteFavouriteSuccess, resetDeleteFavouriteSuccess,
+  createFavourite,
+  createFavouriteSuccess,
+  resetCreateFavouriteSuccess,
+  deleteFavourite,
+  deleteFavouriteSuccess,
+  resetDeleteFavouriteSuccess,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -104,17 +113,21 @@ const HousingCard = ({
     setOpen(false);
   };
   const handleFavourites = () => {
-    if (createFavouriteSuccess) resetCreateFavouriteSuccess()
-    if (deleteFavouriteSuccess) resetDeleteFavouriteSuccess()
-    const temp = user.favourite_set.filter(fav => fav.temp_post_id === post.id)
+    if (createFavouriteSuccess) resetCreateFavouriteSuccess();
+    if (deleteFavouriteSuccess) resetDeleteFavouriteSuccess();
+    const temp = user.favourite_set.filter(
+      (fav) => fav.temp_post_id === post.id
+    );
     if (temp.length > 0) {
-      deleteFavourite(temp[0].id)
+      deleteFavourite(temp[0].id);
     } else {
-      createFavourite(user.id, post.id)
+      createFavourite(user.id, post.id);
     }
   };
 
-  useEffect(() => { if (createFavouriteSuccess || deleteFavouriteSuccess) loadUser() }, [createFavouriteSuccess, deleteFavouriteSuccess])
+  useEffect(() => {
+    if (createFavouriteSuccess || deleteFavouriteSuccess) loadUser();
+  }, [createFavouriteSuccess, deleteFavouriteSuccess]);
 
   return (
     <>
@@ -145,8 +158,14 @@ const HousingCard = ({
             <Tooltip title="" className={classes.edit}>
               <IconButton
                 className={clsx({
-                  [classes.red]: user?.favourite_set?.filter(fav => fav.temp_post_id === post.id).length > 0,
-                  [classes.white]: !user?.favourite_set?.filter(fav => fav.temp_post_id === post.id).length === 0,
+                  [classes.red]:
+                    user?.favourite_set?.filter(
+                      (fav) => fav.temp_post_id === post.id
+                    ).length > 0,
+                  [classes.white]:
+                    !user?.favourite_set?.filter(
+                      (fav) => fav.temp_post_id === post.id
+                    ).length === 0,
                 })}
                 onClick={handleFavourites}
               >
@@ -170,7 +189,7 @@ const HousingCard = ({
             {/* HousingCard description */}
             <CardContent className={classes.content}>
               {/* Name */}
-              <Typography variant="h5">
+              <Typography variant="h5" color="textPrimary">
                 {post.selected_choices[0][0].choice}
               </Typography>
 
@@ -204,11 +223,11 @@ const HousingCard = ({
                   alignItems: "center",
                 }}
               >
-                <Typography variant="h6">
+                <Typography variant="h6" color="textPrimary">
                   SGD {post.selected_choices[0][3].choice}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  &nbsp;/ night
+                  &nbsp;/ month
                 </Typography>
               </div>
             </CardContent>

@@ -16,7 +16,6 @@ class CustomUserAdmin(admin.ModelAdmin):
                  (None, {'fields': ['email']}),
                  (None, {'fields': ['profile_pic']}),
                  (None, {'fields': ['bio']}),
-                 (None, {'fields': ['favourites']}),
                  (None, {'fields': ['just_registered']}),
                  ]
 

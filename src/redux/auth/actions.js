@@ -40,6 +40,8 @@ import {
   GOOGLE_AUTH_FAIL,
   SET_JUST_REGISTERED_SUCCESS,
   SET_JUST_REGISTERED_FAIL,
+  CHANGE_THEME_SUCCESS,
+  CHANGE_THEME_FAIL,
 } from "./types";
 
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -462,7 +464,7 @@ export const changeProfilePic =
           await axios.patch(`/accounts/profiles/${id}/`, body, config);
           dispatch(changeProfilePicSuccess(profile_pic));
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     } catch (err) {
       dispatch(changeProfilePicFail(changeProfilePicFailErrorMsg));
     }
@@ -545,6 +547,29 @@ export const editJustRegistered =
       dispatch(editJustRegisteredFail(err));
     }
   };
+
+// Edit theme
+export const changeTheme = (id, light_theme) => async (dispatch) => {
+  // Get access token from local storage
+  const token = localStorage.getItem("access");
+
+  // Draft request
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${token}`,
+    },
+  };
+  const body = JSON.stringify({ light_theme });
+
+  // Put request
+  try {
+    await axios.patch(`/accounts/profiles/${id}/`, body, config);
+    dispatch(changeThemeSuccess(light_theme));
+  } catch (err) {
+    dispatch(changeThemeFail(err));
+  }
+};
 
 // Action Creators
 export const registerSuccess = () => ({ type: REGISTER_SUCCESS });
@@ -664,5 +689,14 @@ export const editJustRegisteredSuccess = (just_registered) => ({
 });
 export const editJustRegisteredFail = (err) => ({
   type: SET_JUST_REGISTERED_FAIL,
+  payload: err,
+});
+
+export const changeThemeSuccess = (light_theme) => ({
+  type: CHANGE_THEME_SUCCESS,
+  payload: light_theme,
+});
+export const changeThemeFail = (err) => ({
+  type: CHANGE_THEME_FAIL,
   payload: err,
 });

@@ -8,5 +8,4 @@ class userProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=CustomUser
-        # fields = '__all__'
-        fields = ('id', 'first_name', 'last_name', 'profile_pic', 'bio', "last_login", "just_registered", 'favourite_set')
+        fields = ('id', 'first_name', 'last_name', 'profile_pic', 'bio', "last_login", "just_registered", 'favourite_set', 'light_theme')

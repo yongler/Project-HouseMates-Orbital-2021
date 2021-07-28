@@ -38,6 +38,8 @@ import {
   GOOGLE_AUTH_FAIL,
   SET_JUST_REGISTERED_SUCCESS,
   SET_JUST_REGISTERED_FAIL,
+  CHANGE_THEME_SUCCESS,
+  CHANGE_THEME_FAIL,
 } from "./types";
 
 // Initial states
@@ -338,7 +340,17 @@ const authReducer = (state = initialState, action) => {
         ...state,
         user: updatedUser2,
       };
+    
+    case CHANGE_THEME_SUCCESS:
+      const updatedUser3 = { ...state.user };
+      updatedUser3.light_theme = payload;
 
+      return {
+        ...state,
+        user: updatedUser3,
+      };
+
+    case CHANGE_THEME_FAIL:
     case SET_JUST_REGISTERED_FAIL:
     default:
       return state;

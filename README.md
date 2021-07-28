@@ -13,6 +13,7 @@
 - [Poster]
 - [Documentation] 
 - [Developer guide]
+- [Cognitive Walkthrough]
 
 ---
 ## Getting started
@@ -27,10 +28,6 @@ python manage.py runserver
 ```
 
 ---
-## Things to note
-- settings.DEBUG = true during development and false during deployment
-  
----
 ## Collaborations 
 
 If interested in collaborations, do contact us at  [housematesorbital@gmail.com](housematesorbital@gmail.com)
@@ -39,8 +36,9 @@ If interested in collaborations, do contact us at  [housematesorbital@gmail.com]
 
 
 [Website]: https://housematesorbital.herokuapp.com/
-[Video]: https://drive.google.com/file/d/1Qq_O-xDxBkwFGBv5BVJdsCmHarahbMat/view?usp=sharing 
-[Poster]: https://drive.google.com/file/d/1m8fIU8g8oMp3aGYJQCG0FrY0w2pxe9ol/view?usp=sharing
-[Documentation]: https://docs.google.com/document/d/15YP8M2yLsO2hrO9KCudOdDSrc8GFp0T2Ubhxmt8GrdA/edit?usp=sharing
-[Developer guide]: https://docs.google.com/document/d/1EY_-xi3OXSbBJuggnQMHDQ9-PEKM4058wHgds8yHlEA/edit?usp=sharing
+[Video]: [https://drive.google.com/file/d/1Qq_O-xDxBkwFGBv5BVJdsCmHarahbMat/view?usp=sharing ](https://drive.google.com/file/d/1KeDcqG7U1gt98lqkOnnUpV1tjHj1a8OS/view?usp=sharing)
+[Cognitive Walkthrough]: https://drive.google.com/file/d/1KeDcqG7U1gt98lqkOnnUpV1tjHj1a8OS/view?usp=sharing
+[Poster]: https://drive.google.com/file/d/1dq5PYwDJUH9nrT0rTpD6yuWghK8gO4pH/view?usp=sharing
+[Documentation]: https://docs.google.com/document/d/16pjtKawz7sqSuMdYiBKtxLyIR5liNm7SvPhIsVVtp-c/edit?usp=sharing
+[Developer guide]: https://docs.google.com/document/d/10UjgAKWyJ8uNb9km_bVWmcQokz-bxytz31iyCi-oD8E/edit?usp=sharing
 

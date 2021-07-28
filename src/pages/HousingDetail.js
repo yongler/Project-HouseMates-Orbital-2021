@@ -2,7 +2,20 @@ import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Button, Card, CardContent, CardHeader, Chip, Fab, Grid, IconButton, Paper, Tooltip, Typography } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Chip,
+  Fab,
+  Grid,
+  IconButton,
+  Paper,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { getPostDetail } from "../redux/post/actions";
@@ -14,8 +27,10 @@ import ImageGallery from "../components/ImageGallery";
 // HousingDetail consists of profile pic, name, categories of tags and post button.
 const HousingDetail = ({
   user,
-  housingPost, getPostDetail,
-  housingCategories, getQuestions,
+  housingPost,
+  getPostDetail,
+  housingCategories,
+  getQuestions,
   prevPath,
   setChatUser,
 }) => {
@@ -60,12 +75,16 @@ const HousingDetail = ({
   const { id } = useParams();
 
   // Handlers
-  const handleBack = () => { history.push(prevPath); };
-  const handleClick = () => { history.push("/housing-form"); };
+  const handleBack = () => {
+    history.push(prevPath);
+  };
+  const handleClick = () => {
+    history.push("/housing-form");
+  };
   const handleChat = () => {
-    setChatUser(housingPost.owner)
-    history.push("/chat")
-  }
+    setChatUser(housingPost.owner);
+    history.push("/chat");
+  };
 
   // useEffect
   // Get housing categories and housing post detail
@@ -76,8 +95,7 @@ const HousingDetail = ({
 
   return (
     <div className={classes.card}>
-      {housingPost?.id.toString() === id.toString()
-        ?
+      {housingPost?.id.toString() === id.toString() ? (
         <>
           <Card>
             <CardHeader
@@ -93,18 +111,22 @@ const HousingDetail = ({
 
               <br />
 
-              <Typography variant="h5">{housingPost.selected_choices[0][0].choice}</Typography>
-              <Typography variant="body2" color="textSecondary">{housingPost.selected_choices[0][1].choice}</Typography>
+              <Typography variant="h5">
+                {housingPost.selected_choices[0][0].choice}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {housingPost.selected_choices[0][1].choice}
+              </Typography>
 
-              <br /><br />
+              <br />
+              <br />
 
               <Grid container>
                 <Grid container item xs={12} md={6}>
                   <Grid item xs={1} />
                   <Grid item xs={11}>
-                    {housingPost.selected_choices.map((category, index) => (
-                      index !== 0
-                        ?
+                    {housingPost.selected_choices.map((category, index) =>
+                      index !== 0 ? (
                         <div key={category} className={classes.category}>
                           <Typography
                             variant="body1"
@@ -114,30 +136,30 @@ const HousingDetail = ({
                             {housingCategories[index]}
                           </Typography>
 
-                          {category.map((question) => (Array.isArray(question.choice)
-                            ?
-                            <>
-                              {question.choice.map((choice) => (
-                                <Chip
-                                  key={choice}
-                                  className={classes.tag}
-                                  label={choice}
-                                  color="primary"
-                                />
-                              ))}
-                            </>
-                            :
-                            <Chip
-                              key={question}
-                              className={classes.tag}
-                              label={question.choice}
-                              color="primary"
-                            />
-                          ))}
+                          {category.map((question) =>
+                            Array.isArray(question.choice) ? (
+                              <>
+                                {question.choice.map((choice) => (
+                                  <Chip
+                                    key={choice}
+                                    className={classes.tag}
+                                    label={choice}
+                                    color="primary"
+                                  />
+                                ))}
+                              </>
+                            ) : (
+                              <Chip
+                                key={question}
+                                className={classes.tag}
+                                label={question.choice}
+                                color="primary"
+                              />
+                            )
+                          )}
                         </div>
-                        :
-                        null
-                    ))}
+                      ) : null
+                    )}
                   </Grid>
                 </Grid>
                 <Grid container item xs={12} md={6}>
@@ -145,13 +167,25 @@ const HousingDetail = ({
                   <Grid item xs={10}>
                     <Paper style={{ padding: 20 }}>
                       {/* Price */}
-                      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-                        <Typography variant="h6">SGD {housingPost.selected_choices[0][3].choice}</Typography>
-                        <Typography variant="body2" color="textSecondary">&nbsp;/ night</Typography>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography variant="h6">
+                          SGD {housingPost.selected_choices[0][3].choice}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          &nbsp;/ night
+                        </Typography>
                       </div>
 
                       {/* Location */}
-                      <Typography variant="body2" color="textSecondary">Located at {housingPost.selected_choices[0][2].choice}</Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        Located at {housingPost.selected_choices[0][2].choice}
+                      </Typography>
 
                       <br />
 
@@ -164,16 +198,22 @@ const HousingDetail = ({
 
                         <div>
                           {/* Name */}
-                          <Typography>{housingPost.owner.first_name} {housingPost.owner.last_name}</Typography>
+                          <Typography>
+                            {housingPost.owner.first_name}{" "}
+                            {housingPost.owner.last_name}
+                          </Typography>
                           {/* Bio */}
                           <Typography variant="body1" color="textSecondary">
-                            {housingPost.owner.bio.length > 25 ? housingPost.owner.bio.substring(0, 25) + "..." : housingPost.owner.bio}
+                            {housingPost.owner.bio.lengt &&
+                              (housingPost.owner.bio.length > 50
+                                ? housingPost.owner.bio.substring(0, 50) + "..."
+                                : housingPost.owner.bio)}
                           </Typography>
                         </div>
                       </div>
 
                       {/* Chat button */}
-                      {user && user.id !== housingPost.owner.id &&
+                      {user && user.id !== housingPost.owner.id && (
                         <Button
                           fullWidth
                           variant="contained"
@@ -181,7 +221,8 @@ const HousingDetail = ({
                           onClick={handleChat}
                         >
                           Chat with me
-                        </Button>}
+                        </Button>
+                      )}
                     </Paper>
                   </Grid>
                   <Grid item xs={1} />
@@ -198,8 +239,7 @@ const HousingDetail = ({
             </Tooltip>
           )}
         </>
-        :
-        null}
+      ) : null}
     </div>
   );
 };

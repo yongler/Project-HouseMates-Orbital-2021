@@ -14,7 +14,8 @@ import Chat from "../static/chat.png";
 import RoommateCard from "../components/RoommateCard";
 import HousingCard from "../components/HousingCard";
 import promoVideo from "../static/2679.mp4";
-import { Player, ControlBar } from "video-react";
+import videoPoster from "../static/videoPoster.png";
+import { ReactVideo } from "reactjs-media";
 
 const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
   // Styling
@@ -82,21 +83,22 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 80 }}>
+      <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 20 }}>
         <Grid container item xs={12}>
           {/* Video */}
           <Grid
             item
             xs={6}
-            style={{ display: "flex", justifyContent: "center" }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
-            {/* <Player autoPlay width="auto" height="400">
-              <source src={promoVideo} />
-              <ControlBar autoHide={false} />
-            </Player> */}
-            <video>
-              <source src={promoVideo} />
-            </video>
+            <ReactVideo
+              src={promoVideo}
+              poster={videoPoster}
+              primaryColor="red"
+            />
           </Grid>
 
           {/* Login & register */}
@@ -141,7 +143,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 80 }}>
+      <Paper style={{ width: "100%", margin: 20, padding: 50 }}>
         <Grid container item xs={12}>
           <Grid
             item
@@ -173,7 +175,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Grid container item xs={12} style={{ marginTop: 80 }}>
+      <Grid container item xs={12} style={{ marginTop: 20 }}>
         {posts.length > 0 ? (
           <>
             <Grid container item xs={12}>
@@ -210,7 +212,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         )}
       </Grid>
 
-      <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 80 }}>
+      <Paper style={{ width: "100%", margin: 20, padding: 50 }}>
         <Grid container item xs={12}>
           <Grid
             item
@@ -241,7 +243,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Grid container item xs={12} style={{ marginTop: 80 }}>
+      <Grid container item xs={12} style={{ marginTop: 20 }}>
         {housingPosts.length > 0 ? (
           <>
             <Grid container item xs={12}>
@@ -275,7 +277,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         )}
       </Grid>
 
-      <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 80 }}>
+      <Paper style={{ width: "100%", margin: 20, padding: 50 }}>
         <Grid container item xs={12}>
           <Grid
             item

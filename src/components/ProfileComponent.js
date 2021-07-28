@@ -12,7 +12,17 @@ import { useHistory, Link } from "react-router-dom";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 import { setChatUser } from "../redux/chat/actions";
 
-const ProfileComponent = ({ name, desc, pic, scoreListObj, unreadMsgs, type, id, chatUser, setChatUser }) => {
+const ProfileComponent = ({
+  name,
+  desc,
+  pic,
+  scoreListObj,
+  unreadMsgs,
+  type,
+  id,
+  chatUser,
+  setChatUser,
+}) => {
   // Hooks
   const history = useHistory();
 
@@ -42,20 +52,37 @@ const ProfileComponent = ({ name, desc, pic, scoreListObj, unreadMsgs, type, id,
               }}
             >
               <Typography>{name}</Typography>
-              {type === ROOMMATE_FORM
-                ? <Chip label={scoreListObj[id]?.score + "%"} color="secondary" size="small" />
-                : !type
-                  ?
-                  <>
-                    {unreadMsgs !== 0 &&
-                      <div style={{ width: 20, height: 20, backgroundColor: "red", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%" }}>
-                        <div style={{ color: "white", textAlign: "center" }}>{unreadMsgs}</div>
-                      </div>}
-                  </>
-                  : null}
+              {type === ROOMMATE_FORM ? (
+                <Chip
+                  label={scoreListObj[id]?.score + "%"}
+                  color="secondary"
+                  size="small"
+                />
+              ) : !type ? (
+                <>
+                  {unreadMsgs !== 0 && (
+                    <div
+                      style={{
+                        width: 20,
+                        height: 20,
+                        backgroundColor: "red",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: "50%",
+                      }}
+                    >
+                      <div style={{ color: "white", textAlign: "center" }}>
+                        {unreadMsgs}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : null}
             </div>
             <Typography variant="body1" color="textSecondary">
-              {desc && (desc.length > 25 ? desc.substring(0, 25) + "..." : desc)}
+              {desc &&
+                (desc.length > 25 ? desc.substring(0, 25) + "..." : desc)}
             </Typography>
           </CardContent>
         </CardActionArea>

@@ -28,12 +28,13 @@ class QuestionAdmin(admin.ModelAdmin):
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
 
-    fieldsets = [
-                 (None, {'fields': ['question_form_type']}),
-                 (None, {'fields': ['category']}),
-                 (None, {'fields': ['question_text']}),
-                 (None, {'fields': ['question_type']})
-                 ]
+    # fieldsets = [
+    #              (None, {'fields': ['question_form_type']}),
+    #              (None, {'fields': ['category']}),
+    #              (None, {'fields': ['question_text']}),
+    #              (None, {'fields': ['question_type']})
+    #              ]
+    list_display = [field.name for field in Question._meta.fields]
     inlines = [ChoiceInline]
 
 

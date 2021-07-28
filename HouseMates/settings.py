@@ -35,9 +35,9 @@ SECRET_KEY = "django-insecure-!pj4x%qojxw8-cf0hb**-9cyz8u+*9xlsu2xa)m*117n+oe&cc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 # DEBUG = False
-
+ 
 ASGI_APPLICATION = "HouseMates.routing.application"
-
+ 
 # CHANNEL_LAYERS = {
 #     "default": {
 #         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -46,7 +46,7 @@ ASGI_APPLICATION = "HouseMates.routing.application"
 #         }
 #     },
 # }
-
+ 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     "social_django",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -202,10 +203,10 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
     ),
-    'PAGE_SIZE': 2,
+    'PAGE_SIZE': 6,
     'DATETIME_FORMAT': "%d/%m/%Y %I:%M%p"
     
 }
@@ -237,8 +238,8 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": " /reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
-    # "SEND_CONFIRMATION_EMAIL": True,
-    # "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],

@@ -10,7 +10,6 @@ class Room(models.Model):
     owner1 = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='owner1')
     owner2 = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True,blank=True, related_name='owner2')
     label = models.SlugField(unique=True)
-    # date_modified = models.DateTimeField(auto_now=True)
  
     def __unicode__(self):
         return self.label
