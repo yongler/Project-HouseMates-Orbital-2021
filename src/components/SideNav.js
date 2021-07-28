@@ -84,7 +84,11 @@ const SideNav = ({
     },
     {
       text: 'Chat',
-      icon: <Badge badgeContent={5} color="secondary"><ChatIcon color="primary" /></Badge>,
+      icon:
+        // <Badge badgeContent={5} color="secondary">
+          <ChatIcon color="primary" />
+        // </Badge>
+      ,
       path: '/chat',
       private: true,
     },
@@ -94,12 +98,12 @@ const SideNav = ({
       path: '/profile',
       private: true,
     },
-    {
-      text: 'User guide',
-      icon: <NotesIcon color="primary" />,
-      path: "",
-      private: true,
-    },
+    // {
+    //   text: 'User guide',
+    //   icon: <NotesIcon color="primary" />,
+    //   path: "",
+    //   private: true,
+    // },
   ]
 
   // Hooks
