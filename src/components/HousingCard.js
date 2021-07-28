@@ -227,7 +227,7 @@ const HousingCard = ({
                   SGD {post.selected_choices[0][3].choice}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  &nbsp;/ night
+                  &nbsp;/ month
                 </Typography>
               </div>
             </CardContent>
