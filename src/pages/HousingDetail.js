@@ -41,8 +41,6 @@ const HousingDetail = ({
     },
     card: {
       width: "100%",
-      marginLeft: 23,
-      marginRight: 23,
     },
     tooltip: {
       position: "fixed",

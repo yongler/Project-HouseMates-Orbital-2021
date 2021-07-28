@@ -22,10 +22,11 @@ const Housings = ({
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
-    tooltip: {
+    postBtn: {
       position: 'fixed',
       bottom: theme.spacing(2),
       right: theme.spacing(3),
+      borderRadius: 20,
     },
     grid: {
       display: 'flex',
@@ -150,9 +151,9 @@ const Housings = ({
 
       {/* Post button */}
       {user &&
-        <Tooltip title="" onClick={handlePost}>
-          <Fab color="primary" className={classes.tooltip}><AddIcon /></Fab>
-        </Tooltip>}
+        <Button variant="contained" color="primary" startIcon={<AddIcon />} className={classes.postBtn} onClick={handlePost}>
+          Add post
+        </Button>}
     </div>
   )
 }

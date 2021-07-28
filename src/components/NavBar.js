@@ -137,10 +137,6 @@ const NavBar = ({
   const handleMenuClose = () => {
     setOpen(false);
   };
-  const handleProfile = () => {
-    setOpen(false);
-    history.push("/profile");
-  };
   const handleLogout = () => {
     setOpen(false);
     logout();
@@ -265,7 +261,6 @@ const NavBar = ({
                                 {icon}
                               </IconButton>
                             </MenuItem>
-                            <MenuItem onClick={handleProfile}>Profile</MenuItem>
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
                           </MenuList>
                         </ClickAwayListener>

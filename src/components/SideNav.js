@@ -3,18 +3,20 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 import clsx from 'clsx'
-import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
+import { Badge, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home'
 import PeopleIcon from '@material-ui/icons/People'
 import ChatIcon from "@material-ui/icons/Chat"
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import NotesIcon from '@material-ui/icons/Notes'
 import { setPage } from "../redux/post/actions"
 
 // SideNav consists of list of tabs.
-const SideNav = ({ 
+const SideNav = ({
   user,
-  drawerWidth, 
-  menuOpen, hoverOpen, drawerOpen, 
-  handleMouseEnter, handleMouseLeave, 
+  drawerWidth,
+  menuOpen, hoverOpen, drawerOpen,
+  handleMouseEnter, handleMouseLeave,
   setPage,
 }) => {
   // Styling
@@ -82,8 +84,20 @@ const SideNav = ({
     },
     {
       text: 'Chat',
-      icon: <ChatIcon color="primary" />,
+      icon: <Badge badgeContent={5} color="secondary"><ChatIcon color="primary" /></Badge>,
       path: '/chat',
+      private: true,
+    },
+    {
+      text: 'User dashboard',
+      icon: <AccountCircleIcon color="primary" />,
+      path: '/profile',
+      private: true,
+    },
+    {
+      text: 'User guide',
+      icon: <NotesIcon color="primary" />,
+      path: "",
       private: true,
     },
   ]
@@ -129,7 +143,7 @@ const SideNav = ({
             })}
           >
             <ListItemIcon>{category.icon}</ListItemIcon>
-            <ListItemText primary={category.text} />
+            <ListItemText primary={category.text} style={{ marginLeft: -16 }} />
           </ListItem>
         ))}
       </List>

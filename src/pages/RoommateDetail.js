@@ -41,8 +41,6 @@ const RoommateDetail = ({
     },
     card: {
       width: "100%",
-      marginLeft: 23,
-      marginRight: 23,
     },
     tooltip: {
       position: "fixed",
@@ -102,6 +100,13 @@ const RoommateDetail = ({
                 {user && user.id !== post.owner.id &&
                   <IconButton style={{ marginLeft: 5 }} onClick={handleChat}><ChatIcon /></IconButton>}
               </span>
+
+              {/* Bio */}
+              <Typography variant="body1" style={{ marginTop: -5, marginBottom: 10 }}>
+                {post.owner.bio}
+              </Typography>
+
+              <hr />
 
               {/* Text */}
               <Typography
