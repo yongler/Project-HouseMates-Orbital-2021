@@ -1,97 +1,116 @@
-import React from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core'
-import clsx from 'clsx'
-import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
-import HomeIcon from '@material-ui/icons/Home'
-import PeopleIcon from '@material-ui/icons/People'
-import ChatIcon from "@material-ui/icons/Chat"
-import { setPage } from "../redux/post/actions"
+import React from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core";
+import clsx from "clsx";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@material-ui/core";
+import HomeIcon from "@material-ui/icons/Home";
+import PeopleIcon from "@material-ui/icons/People";
+import ChatIcon from "@material-ui/icons/Chat";
+import { setPage } from "../redux/post/actions";
+import { noNewMsg } from "../pages/Profile";
 
 // SideNav consists of list of tabs.
-const SideNav = ({ 
+const SideNav = ({
   user,
-  drawerWidth, 
-  menuOpen, hoverOpen, drawerOpen, 
-  handleMouseEnter, handleMouseLeave, 
+  drawerWidth,
+  menuOpen,
+  hoverOpen,
+  drawerOpen,
+  handleMouseEnter,
+  handleMouseLeave,
   setPage,
+  noNewMsg,
 }) => {
   // Styling
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     active: {
       background: theme.palette.action.hover,
     },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
-      whiteSpace: 'nowrap',
-      position: 'absolute',
+      whiteSpace: "nowrap",
+      position: "absolute",
     },
     drawerOpen: {
       width: drawerWidth,
-      transition: theme.transitions.create('width', {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
     drawerOpenDelay: {
       width: drawerWidth,
-      transition: theme.transitions.create('width', {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      transitionDelay: '1s'
+      transitionDelay: "1s",
     },
     drawerClose: {
-      transition: theme.transitions.create('width', {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      overflowX: 'hidden',
+      overflowX: "hidden",
       width: theme.spacing(7) + 1,
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up("sm")]: {
         width: theme.spacing(7) + 1,
       },
     },
     toolbar: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-end",
       padding: theme.spacing(0, 1),
       minHeight: theme.mixins.toolbar.minHeight + 8,
     },
     hidden: {
       display: "none",
     },
-  }))
+    noMsg: {
+      color: "primary",
+    },
+    gotMsg: {
+      color: "secondary",
+    },
+  }));
+
+  // Hooks
+  const history = useHistory();
+  const location = useLocation();
+  const classes = useStyles();
 
   // Content
   const categories = [
     {
-      text: 'Housings',
+      text: "Housings",
       icon: <HomeIcon color="primary" />,
-      path: '/housings',
+      path: "/housings",
       private: false,
     },
     {
-      text: 'Roommates',
+      text: "Roommates",
       icon: <PeopleIcon color="primary" />,
-      path: '/roommates',
+      path: "/roommates",
       private: false,
     },
     {
-      text: 'Chat',
-      icon: <ChatIcon color="primary" />,
-      path: '/chat',
-      private: true,
+      text: "Chat",
+      icon: (
+        <ChatIcon className={clsx(noNewMsg ? classes.noMsg : classes.gotMsg)} />
+      ),
+      path: "/chat",
+      private: false,
     },
-  ]
-
-  // Hooks
-  const history = useHistory()
-  const location = useLocation()
-  const classes = useStyles()
+  ];
 
   return (
     <Drawer
@@ -115,17 +134,17 @@ const SideNav = ({
 
       {/* List of tabs */}
       <List>
-        {categories.map(category => (
+        {categories.map((category) => (
           <ListItem
             key={category.text}
             button
             onClick={() => {
-              history.push(category.path)
-              setPage(1)
+              history.push(category.path);
+              setPage(1);
             }}
             className={clsx({
               [classes.active]: location.pathname === category.path,
-              [classes.hidden]: category.private && !user
+              [classes.hidden]: category.private && !user,
             })}
           >
             <ListItemIcon>{category.icon}</ListItemIcon>
@@ -134,15 +153,15 @@ const SideNav = ({
         ))}
       </List>
     </Drawer>
-  )
-}
+  );
+};
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.auth.user,
-})
+});
 
 const mapDispatchToProps = {
   setPage,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(SideNav)
+export default connect(mapStateToProps, mapDispatchToProps)(SideNav);

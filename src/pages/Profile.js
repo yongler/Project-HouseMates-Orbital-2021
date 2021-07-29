@@ -33,6 +33,8 @@ import UserGuide from "../pages/UserGuide";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 import { getScoreList, resetGetScoreListSuccess } from "../redux/score/actions";
 
+export let noNewMsg;
+
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
   isAuthenticated,
@@ -46,7 +48,9 @@ const Profile = ({
   roomList,
   getRoomList,
   editJustRegistered,
-  scoreList, getScoreList, resetGetScoreListSuccess,
+  scoreList,
+  getScoreList,
+  resetGetScoreListSuccess,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -75,8 +79,8 @@ const Profile = ({
   const [bio, setBio] = useState("");
   const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([]);
   const [topThreeRoommates, setTopThreeRoommates] = useState([]);
-  const [newMsgs, setNewMsgs] = useState([])
-  const [scoreListObj, setScoreListObj] = useState({})
+  const [newMsgs, setNewMsgs] = useState([]);
+  const [scoreListObj, setScoreListObj] = useState({});
 
   // Handlers
   // Account settings
@@ -120,19 +124,31 @@ const Profile = ({
   };
 
   // componentDidMount
-  useEffect(() => { resetEditBioSuccess() }, [editBioSuccess]);
+  useEffect(() => {
+    resetEditBioSuccess();
+  }, [editBioSuccess]);
 
   // Top 3 roommates
   // Get user roommate post score list
-  useEffect(() => { if (user) getScoreList(undefined, user.id) }, [user]);
+  useEffect(() => {
+    if (user) getScoreList(undefined, user.id);
+  }, [user]);
   // Get top 3 roommate post ids and process user roommate post score list
   useEffect(() => {
     if (scoreList.length > 0) {
-      const temp = scoreList.slice(0, 3).map(post => user.id === post.owner1 ? post.post2 : post.post1)
-      setTopThreeRoommatesId(temp)
-      const temp2 = scoreList.reduce((prev, curr) => ({ ...prev, [user.id === curr.owner1 ? curr.post2 : curr.post1]: curr }), {})
-      setScoreListObj(temp2)
-      return () => resetGetScoreListSuccess()
+      const temp = scoreList
+        .slice(0, 3)
+        .map((post) => (user.id === post.owner1 ? post.post2 : post.post1));
+      setTopThreeRoommatesId(temp);
+      const temp2 = scoreList.reduce(
+        (prev, curr) => ({
+          ...prev,
+          [user.id === curr.owner1 ? curr.post2 : curr.post1]: curr,
+        }),
+        {}
+      );
+      setScoreListObj(temp2);
+      return () => resetGetScoreListSuccess();
     }
   }, [scoreList]);
   // Get top 3 roommate post detail pages
@@ -152,15 +168,28 @@ const Profile = ({
   }, [post]);
 
   // New messages
-  useEffect(() => { if (user) getRoomList(user.id) }, [user])
   useEffect(() => {
-    const temp3 = roomList.slice(0, 3)
-      .filter((room) => room.messages.reduce((prev, curr) =>
-        prev || (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? true : false), false))
-    setNewMsgs(temp3)
-  }, [roomList])
+    if (user) getRoomList(user.id);
+  }, [user]);
+  useEffect(() => {
+    const temp3 = roomList
+      .slice(0, 3)
+      .filter((room) =>
+        room.messages.reduce(
+          (prev, curr) =>
+            prev ||
+            (!curr.hasRead && curr.user_id.toString() !== user.id.toString()
+              ? true
+              : false),
+          false
+        )
+      );
+    setNewMsgs(temp3);
+  }, [roomList]);
 
-  if (!isAuthenticated) { return <Redirect to="/login" />; }
+  if (!isAuthenticated) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>
@@ -171,7 +200,15 @@ const Profile = ({
             <Grid container item xs={12} spacing={3}>
               {/* Profile */}
               <Grid container item xs={12} md={8}>
-                <Paper style={{ width: "100%", display: "flex", flexDirection: "row", padding: 10, minWidth: 320 }}>
+                <Paper
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "row",
+                    padding: 10,
+                    minWidth: 320,
+                  }}
+                >
                   {/* Profile pic */}
                   <Grid item xs={12} md={5} align="right">
                     <Badge
@@ -186,16 +223,19 @@ const Profile = ({
                         </IconButton>
                       }
                     >
-                      <Avatar className={classes.avatar} src={user.profile_pic} />
+                      <Avatar
+                        className={classes.avatar}
+                        src={user.profile_pic}
+                      />
                     </Badge>
 
                     <input
                       type="file"
                       id="image"
                       accept="image/png, image/jpeg"
-                      onChange={e => handleUpload(e)}
+                      onChange={(e) => handleUpload(e)}
                       ref={fileInput}
-                      style={{ display: 'none' }}
+                      style={{ display: "none" }}
                     />
                   </Grid>
                   <Grid item xs={0} md={1} />
@@ -207,8 +247,7 @@ const Profile = ({
                     </Typography>
                     {/* Bio */}
                     <Box mb={3}>
-                      {editBioTextFieldOpen
-                        ?
+                      {editBioTextFieldOpen ? (
                         <form onSubmit={handleEditBio}>
                           <Grid container>
                             <Grid item xs={12}>
@@ -231,7 +270,8 @@ const Profile = ({
                                 marginTop: 8,
                               }}
                             >
-                              <Button size="small"
+                              <Button
+                                size="small"
                                 onClick={handleCancel}
                                 style={{ marginRight: 8 }}
                               >
@@ -248,28 +288,28 @@ const Profile = ({
                             </Grid>
                           </Grid>
                         </form>
-                        : user.bio
-                          ?
-                          // Bio
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Typography variant="body1" color="textSecondary">
-                              {user.bio}
-                            </Typography>
-                            <Link variant="body2" onClick={handleEdit}>
-                              Edit
-                            </Link>
-                          </div>
-                          :
-                          // Add bio link
-                          <Link variant="body2" onClick={handleClick}>
-                            Add bio...
-                          </Link>}
+                      ) : user.bio ? (
+                        // Bio
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Typography variant="body1" color="textSecondary">
+                            {user.bio}
+                          </Typography>
+                          <Link variant="body2" onClick={handleEdit}>
+                            Edit
+                          </Link>
+                        </div>
+                      ) : (
+                        // Add bio link
+                        <Link variant="body2" onClick={handleClick}>
+                          Add bio...
+                        </Link>
+                      )}
                     </Box>
                   </Grid>
                   <Grid item xs={0} md={1} />
@@ -307,7 +347,13 @@ const Profile = ({
               {/* Top 3 roommates */}
               <Grid item xs={12} md={4}>
                 <Paper style={{ padding: 10, minWidth: 320 }}>
-                  <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <span
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <PeopleIcon style={{ marginRight: 10 }} />
                     <Typography variant="h6" display="inline" noWrap>
                       Top 3 Roommates
@@ -325,7 +371,9 @@ const Profile = ({
                     topThreeRoommates.map((post) => (
                       <ProfileComponent
                         key={post.owner.id}
-                        name={post.owner.first_name + " " + post.owner.last_name}
+                        name={
+                          post.owner.first_name + " " + post.owner.last_name
+                        }
                         desc={post.owner.bio}
                         pic={post.owner.profile_pic}
                         scoreListObj={scoreListObj}
@@ -340,7 +388,13 @@ const Profile = ({
               {/* Starred housings */}
               <Grid item xs={12} md={4}>
                 <Paper style={{ padding: 10, minWidth: 320 }}>
-                  <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <span
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <HomeIcon style={{ marginRight: 10 }} />
                     <Typography variant="h6" display="inline" noWrap>
                       Starred Housings
@@ -372,14 +426,19 @@ const Profile = ({
               {/* New messages */}
               <Grid item xs={12} md={4}>
                 <Paper style={{ padding: 10, minWidth: 320 }}>
-                  <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <span
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <ChatIcon style={{ marginRight: 10 }} />
                     <Typography variant="h6" display="inline" noWrap>
                       New messages
                     </Typography>
                   </span>
-                  {newMsgs.length === 0
-                    ?
+                  {newMsgs.length === 0 ? (
                     <Typography
                       variant="body1"
                       color="textSecondary"
@@ -387,25 +446,45 @@ const Profile = ({
                     >
                       No new messages.
                     </Typography>
-                    :
+                  ) : (
                     <>
                       {newMsgs.map((room) => (
                         <ProfileComponent
                           key={room.id}
-                          chatUser={user.id === room.owner1.id
-                            ? room.owner2
-                            : room.owner1}
-                          name={user.id === room.owner1.id
-                            ? room.owner2.first_name + " " + room.owner2.last_name
-                            : room.owner1.first_name + " " + room.owner1.last_name}
+                          chatUser={
+                            user.id === room.owner1.id
+                              ? room.owner2
+                              : room.owner1
+                          }
+                          name={
+                            user.id === room.owner1.id
+                              ? room.owner2.first_name +
+                                " " +
+                                room.owner2.last_name
+                              : room.owner1.first_name +
+                                " " +
+                                room.owner1.last_name
+                          }
                           desc={room.messages[room.messages.length - 1].message}
-                          pic={user.id === room.owner1.id
-                            ? room.owner2.profile_pic
-                            : room.owner1.profile_pic}
-                          unreadMsgs={room.messages.reduce((prev, curr) =>
-                            prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)}
-                        />))}
-                    </>}
+                          pic={
+                            user.id === room.owner1.id
+                              ? room.owner2.profile_pic
+                              : room.owner1.profile_pic
+                          }
+                          unreadMsgs={room.messages.reduce(
+                            (prev, curr) =>
+                              prev +
+                              (!curr.hasRead &&
+                              curr.user_id.toString() !== user.id.toString()
+                                ? 1
+                                : 0),
+                            0
+                          )}
+                        />
+                      ))}
+                    </>
+                  )}
+                  {(noNewMsg = newMsgs.length === 0)}
                 </Paper>
               </Grid>
             </Grid>
@@ -413,7 +492,7 @@ const Profile = ({
         )}
       </div>
     </>
-  )
+  );
 };
 
 const mapStateToProps = (state) => ({
