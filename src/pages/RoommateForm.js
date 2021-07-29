@@ -16,14 +16,14 @@ const TextQuestion = ({ question, formFields, handleChange, currentCategory, Pri
     <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
     {question.my_column_only
       ?
-      // My choice only
+      // My column only
       <Grid item xs={12}>
         <TextField
           variant="outlined"
           fullWidth
           name={question.id}
           value={formFields[currentCategory]?.[question.id]?.myChoice}
-          onChange={(e) => handleChange(e, currentCategory, MY_COLUMN_ONLY)}
+          onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE, MY_COLUMN_ONLY)}
         />
       </Grid>
       :
@@ -159,6 +159,7 @@ const RoommateForm = ({
               }
             })
             break
+
           case OTHER:
             setFormFields({
               ...formFields,
@@ -171,6 +172,23 @@ const RoommateForm = ({
               }
             })
             break
+
+          case MY_COLUMN_ONLY:
+            setFormFields({
+              ...formFields,
+              [category]: {
+                ...formFields[category],
+                [e.target.name]: {
+                  ...formFields[category]?.[e.target.name],
+                  question: e.target.name,
+                  myChoice: e.target.value,
+                  otherChoice: e.target.value,
+                  priority: IS_10000,
+                },
+              }
+            })
+            break
+
           default:
             break
         }
@@ -216,6 +234,29 @@ const RoommateForm = ({
               }
             })
             break
+
+          case MY_COLUMN_ONLY:
+            var myChoice = formFields[category]?.[e.target.name]?.myChoice || []
+            if (myChoice?.includes(e.target.value)) {
+              myChoice.splice(myChoice.indexOf(e.target.value), 1)
+            } else {
+              myChoice.push(e.target.value)
+            }
+            setFormFields({
+              ...formFields,
+              [category]: {
+                ...formFields[category],
+                [e.target.name]: {
+                  ...formFields[category]?.[e.target.name],
+                  question: e.target.name,
+                  myChoice: myChoice,
+                  otherChoice: myChoice,
+                  priority: IS_10000,
+                },
+              }
+            })
+            break
+
           default:
             break
         }
@@ -229,22 +270,6 @@ const RoommateForm = ({
             [e.target.name]: {
               ...formFields[category]?.[e.target.name],
               priority: e.target.value,
-            },
-          }
-        })
-        break
-
-      case MY_COLUMN_ONLY:
-        setFormFields({
-          ...formFields,
-          [category]: {
-            ...formFields[category],
-            [e.target.name]: {
-              ...formFields[category]?.[e.target.name],
-              question: e.target.name,
-              myChoice: e.target.value,
-              otherChoice: e.target.value,
-              priority: IS_10000,
             },
           }
         })
@@ -300,67 +325,86 @@ const RoommateForm = ({
       {/* Question */}
       <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
 
-      <Grid container spacing={8}>
-        {/* My choices */}
-        <Grid item xs={4}>
-          <FormControl>
-            <FormLabel>My choice(s):</FormLabel>
-            <RadioGroup
-              name={question.id}
-              value={formFields[currentCategory]?.[question.id]?.myChoice}
-              onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, SELF)}
-            >
-              {question.choice_set.map(choice => (
-                <FormControlLabel
-                  key={choice}
-                  control={<Radio color="primary" />}
-                  value={choice}
-                  label={choice}
-                />))}
-            </RadioGroup>
-          </FormControl>
+      {question.my_column_only
+        ?
+        // My column only
+        <Grid item xs={12}>
+          <RadioGroup
+            name={question.id}
+            value={formFields[currentCategory]?.[question.id]?.myChoice}
+            onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, MY_COLUMN_ONLY)}
+          >
+            {question.choice_set.map(choice => (
+              <FormControlLabel
+                key={choice}
+                control={<Radio color="primary" />}
+                value={choice}
+                label={choice}
+              />))}
+          </RadioGroup>
         </Grid>
+        :
+        <Grid container spacing={8}>
+          {/* My choices */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel>My choice(s):</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.myChoice}
+                onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, SELF)}
+              >
+                {question.choice_set.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
 
-        {/* Other choices */}
-        <Grid item xs={4}>
-          <FormControl>
-            <FormLabel>My ideal roommate's choice(s):</FormLabel>
-            <RadioGroup
-              name={question.id}
-              value={formFields[currentCategory]?.[question.id]?.otherChoice}
-              onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, OTHER)}
-            >
-              {question.choice_set.map(choice => (
-                <FormControlLabel
-                  key={choice}
-                  control={<Radio color="primary" />}
-                  value={choice}
-                  label={choice}
-                />))}
-            </RadioGroup>
-          </FormControl>
-        </Grid>
+          {/* Other choices */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel>My ideal roommate's choice(s):</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.otherChoice}
+                onChange={e => handleChange(e, currentCategory, SINGLE_CHOICE, OTHER)}
+              >
+                {question.choice_set.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
 
-        {/* Priority */}
-        <Grid item xs={4}>
-          <FormControl>
-            <FormLabel>Question priority:</FormLabel>
-            <RadioGroup
-              name={question.id}
-              value={formFields[currentCategory]?.[question.id]?.priority}
-              onChange={e => handleChange(e, currentCategory, PRIORITY)}
-            >
-              {priorityChoices.map(choice => (
-                <FormControlLabel
-                  key={choice}
-                  control={<Radio color="primary" />}
-                  value={choice}
-                  label={choice}
-                />))}
-            </RadioGroup>
-          </FormControl>
-        </Grid>
-      </Grid>
+          {/* Priority */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel>Question priority:</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.priority}
+                onChange={e => handleChange(e, currentCategory, PRIORITY)}
+              >
+                {priorityChoices.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+        </Grid>}
     </>
   )
 
@@ -369,65 +413,83 @@ const RoommateForm = ({
       {/* Question */}
       <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
 
-      <Grid container item spacing={8}>
-        {/* My choices */}
-        <Grid item xs={4}>
-          <FormControl>
-            <FormLabel>My choice(s):</FormLabel>
-            <FormGroup>
-              {question.choice_set.map(choice => (
-                <FormControlLabel
-                  key={choice}
-                  control={<Checkbox color="primary" />}
-                  name={question.id}
-                  value={choice}
-                  label={choice}
-                  checked={formFields[currentCategory]?.[question.id]?.myChoice?.includes(choice)}
-                  onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, SELF)}
-                />))}
-            </FormGroup>
-          </FormControl>
+      {question.my_column_only
+        ?
+        // My column only
+        <Grid item xs={12}>
+          <FormGroup>
+            {question.choice_set.map(choice => (
+              <FormControlLabel
+                key={choice}
+                control={<Checkbox color="primary" />}
+                name={question.id}
+                value={choice}
+                label={choice}
+                checked={formFields[currentCategory]?.[question.id]?.myChoice?.includes(choice)}
+                onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, MY_COLUMN_ONLY)}
+              />))}
+          </FormGroup>
         </Grid>
+        :
+        <Grid container item spacing={8}>
+          {/* My choices */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel>My choice(s):</FormLabel>
+              <FormGroup>
+                {question.choice_set.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Checkbox color="primary" />}
+                    name={question.id}
+                    value={choice}
+                    label={choice}
+                    checked={formFields[currentCategory]?.[question.id]?.myChoice?.includes(choice)}
+                    onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, SELF)}
+                  />))}
+              </FormGroup>
+            </FormControl>
+          </Grid>
 
-        {/* Other choices */}
-        <Grid item xs={4}>
-          <FormControl>
-            <FormLabel>My ideal roommate's choice(s):</FormLabel>
-            <FormGroup>
-              {question.choice_set.map(choice => (
-                <FormControlLabel
-                  name={question.id}
-                  value={choice}
-                  control={<Checkbox color="primary" />}
-                  checked={formFields[currentCategory]?.[question.id]?.otherChoice?.includes(choice)}
-                  label={choice}
-                  key={choice}
-                  onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, OTHER)}
-                />))}
-            </FormGroup>
-          </FormControl>
-        </Grid>
+          {/* Other choices */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel>My ideal roommate's choice(s):</FormLabel>
+              <FormGroup>
+                {question.choice_set.map(choice => (
+                  <FormControlLabel
+                    name={question.id}
+                    value={choice}
+                    control={<Checkbox color="primary" />}
+                    checked={formFields[currentCategory]?.[question.id]?.otherChoice?.includes(choice)}
+                    label={choice}
+                    key={choice}
+                    onChange={e => handleChange(e, currentCategory, MULTIPLE_CHOICE, OTHER)}
+                  />))}
+              </FormGroup>
+            </FormControl>
+          </Grid>
 
-        {/* Priority */}
-        <Grid item xs={4}>
-          <FormControl>
-            <FormLabel>Question priority:</FormLabel>
-            <RadioGroup
-              name={question.id}
-              value={formFields[currentCategory]?.[question.id]?.priority}
-              onChange={e => handleChange(e, currentCategory, PRIORITY)}
-            >
-              {priorityChoices.map(choice => (
-                <FormControlLabel
-                  key={choice}
-                  control={<Radio color="primary" />}
-                  value={choice}
-                  label={choice}
-                />))}
-            </RadioGroup>
-          </FormControl>
-        </Grid>
-      </Grid>
+          {/* Priority */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel>Question priority:</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.priority}
+                onChange={e => handleChange(e, currentCategory, PRIORITY)}
+              >
+                {priorityChoices.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+        </Grid>}
     </>
   )
 
@@ -438,14 +500,14 @@ const RoommateForm = ({
 
       {question.my_column_only
         ?
-        // My choice only
+        // My column only
         <Grid item xs={12}>
           <Select
             variant="outlined"
             fullWidth
             name={question.id}
             value={formFields[currentCategory]?.[question.id]?.myChoice}
-            onChange={(e) => handleChange(e, currentCategory, MY_COLUMN_ONLY)}
+            onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE, MY_COLUMN_ONLY)}
           >
             {question.choice_set.map((choice) => (
               <MenuItem key={choice} value={choice}>
@@ -591,23 +653,17 @@ const RoommateForm = ({
                       </Grid>
                       {/* My choices */}
                       <Grid item xs={3}>
-                        {question.my_column_only
+                        {question.question_type === MULTIPLE_CHOICE
                           ?
+                          // Multiple choice
                           <Typography variant="body1" gutterBottom>
-                            {formFields[categoryIndex]?.[question.id]?.myChoice}
+                            {formFields[categoryIndex]?.[question.id]?.myChoice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
                           </Typography>
                           :
-                          question.question_type === MULTIPLE_CHOICE
-                            ?
-                            // Multiple choice
-                            <Typography variant="body1" gutterBottom>
-                              {formFields[categoryIndex]?.[question.id]?.myChoice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
-                            </Typography>
-                            :
-                            // Single choice
-                            <Typography variant="body1" gutterBottom>
-                              {formFields[categoryIndex]?.[question.id]?.myChoice}
-                            </Typography>}
+                          // Single choice
+                          <Typography variant="body1" gutterBottom>
+                            {formFields[categoryIndex]?.[question.id]?.myChoice}
+                          </Typography>}
                       </Grid>
                       {/* Other choices */}
                       <Grid item xs={3}>
@@ -716,6 +772,7 @@ const RoommateForm = ({
 
   return (
     <>
+      {console.log(formFields)}
       {roommateQuestions.length !== 0 && roommateCategories.length !== 0
         ?
         <Paper className={classes.paper}>

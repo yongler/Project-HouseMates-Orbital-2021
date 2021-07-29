@@ -22,7 +22,7 @@ import {
   setPage,
 } from "../redux/post/actions";
 import Confirmation from "../components/Confirmation";
-import { PAGINATION, ROOMMATE_FORM } from "../globalConstants";
+import { A_LITTLE_IMPORTANT, IRRELEVANT, IS_10000, MANDATORY, PAGINATION, ROOMMATE_FORM, SOMEWHAT_IMPORTANT, VERY_IMPORTANT, TAGS_NUMBER } from "../globalConstants";
 import { loadUser } from "../redux/auth/actions";
 import { getScoreList } from "../redux/score/actions";
 
@@ -103,11 +103,12 @@ const RoommateCard = ({
 
   // Constants
   const priorityChoices = [
-    "Irrelevant",
-    "A little important",
-    "Somewhat important",
-    "Very important",
-    "Mandatory",
+    IRRELEVANT,
+    A_LITTLE_IMPORTANT,
+    SOMEWHAT_IMPORTANT,
+    VERY_IMPORTANT,
+    MANDATORY,
+    IS_10000,
   ];
 
   // Helper Functions
@@ -118,12 +119,12 @@ const RoommateCard = ({
       for (let j = 0; j < categories.length; j++) {
         for (let k = 0; k < categories[j].length; k++) {
           if (
-            topThreeTags.length < 3 &&
+            topThreeTags.length < TAGS_NUMBER &&
             categories[j][k].priority === priorityChoices[i]
           ) {
             if (Array.isArray(categories[j][k].otherChoice)) {
               for (let h = 0; h < categories[j][k].otherChoice.length; h++) {
-                if (topThreeTags.length < 3)
+                if (topThreeTags.length < TAGS_NUMBER)
                   topThreeTags.push(categories[j][k].otherChoice[h]);
               }
             } else {

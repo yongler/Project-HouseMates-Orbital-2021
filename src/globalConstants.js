@@ -20,6 +20,8 @@ export const VERY_IMPORTANT = 'Very important'
 export const MANDATORY = 'Mandatory'
 export const IS_10000 = 'Is 10000'
 
+export const TAGS_NUMBER = 3
+
 export const PAGINATION = 6;
 
 export const MY_POSTS = "My post";
