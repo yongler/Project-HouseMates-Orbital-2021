@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from "react"
 import { useHistory } from 'react-router-dom'
 import { connect } from "react-redux"
 import { makeStyles } from "@material-ui/core"
-import { Box, Button, Container, ClickAwayListener, Fab, Grid, Grow, MenuList, MenuItem, Paper, Popper, Tooltip, Typography } from "@material-ui/core"
+import { Box, Button, Container, ClickAwayListener, Grid, Grow, MenuList, MenuItem, Paper, Popper, Typography } from "@material-ui/core"
 import Pagination from '@material-ui/lab/Pagination'
 import AddIcon from "@material-ui/icons/Add"
 import FilterListIcon from '@material-ui/icons/FilterList'
 import RoommateCard from '../components/RoommateCard'
 import { getPostList, getUserPosts, searchPost, setPage, setFilter } from "../redux/post/actions"
-import { ALL_POSTS, MY_POSTS, PAGINATION, ROOMMATE_FORM } from '../globalConstants'
+import { ALL_POSTS, MY_HOUSING_POSTS, MY_POSTS, PAGINATION, ROOMMATE_FORM } from '../globalConstants'
 import { getScoreList, resetGetScoreListSuccess } from "../redux/score/actions"
 
 // Posts consists of list of Roommate and post button.
@@ -24,10 +24,11 @@ const Roommates = ({
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
-    tooltip: {
+    postBtn: {
       position: "fixed",
       bottom: theme.spacing(2),
       right: theme.spacing(3),
+      borderRadius: 20,
     },
     grid: {
       display: "flex",
@@ -104,7 +105,7 @@ const Roommates = ({
             startIcon={<FilterListIcon />}
             style={{ textDecoration: "none" }}
           >
-            {filter}
+            {filter === MY_HOUSING_POSTS ? ALL_POSTS : filter}
           </Button>
           <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal placement={'bottom-end'}>
             {({ TransitionProps, placement }) => (
@@ -115,7 +116,7 @@ const Roommates = ({
                 <Paper>
                   <ClickAwayListener onClickAway={handleClose}>
                     <MenuList>
-                      <MenuItem onClick={handleMyPosts}>My post(s)</MenuItem>
+                      <MenuItem onClick={handleMyPosts}>My post</MenuItem>
                       <MenuItem onClick={handleAllPosts}>All posts</MenuItem>
                     </MenuList>
                   </ClickAwayListener>
@@ -163,11 +164,9 @@ const Roommates = ({
 
       {/* Post button */}
       {user && userRoommatePosts.length === 0 &&
-        <Tooltip title="" onClick={handlePost}>
-          <Fab color="primary" className={classes.tooltip}>
-            <AddIcon />
-          </Fab>
-        </Tooltip>}
+        <Button variant="contained" color="primary" startIcon={<AddIcon />} className={classes.postBtn} onClick={handlePost}>
+          Add post
+        </Button>}
     </div>
   )
 }

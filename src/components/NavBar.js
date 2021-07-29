@@ -138,10 +138,6 @@ const NavBar = ({
   const handleMenuClose = () => {
     setOpen(false);
   };
-  const handleProfile = () => {
-    setOpen(false);
-    history.push("/profile");
-  };
   const handleLogout = () => {
     setOpen(false);
     logout();
@@ -192,13 +188,13 @@ const NavBar = ({
             src={Logo}
             width="45"
             height="45"
-            className={classes.pointer}
+            className={classes.logo}
             onClick={handleClick}
           />
           {/* Title */}
           <Typography
             variant="h6"
-            className={classes.pointer}
+            className={classes.title}
             onClick={handleClick}
           >
             HouseMates
@@ -265,17 +261,17 @@ const NavBar = ({
                       <Paper>
                         <ClickAwayListener onClickAway={handleMenuClose}>
                           <MenuList>
-                            <MenuItem>
+                            <MenuItem onClick={handleDarkMode}>
                               <IconButton
                                 edge="end"
                                 color="inherit"
                                 aria-label="mode"
-                                onClick={handleDarkMode}
+                                style={{ backgroundColor: 'transparent' }}
+                                disableRipple
                               >
                                 {icon}
                               </IconButton>
                             </MenuItem>
-                            <MenuItem onClick={handleProfile}>Profile</MenuItem>
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
                           </MenuList>
                         </ClickAwayListener>

@@ -214,7 +214,7 @@ const HousingForm = ({
     history.push("/housings");
   };
 
-  // componentDidMount
+  // useEffects
   // Get housing form questions
   useEffect(() => { if (housingQuestions.length === 0) getQuestions(HOUSING_FORM); }, []);
   // Get housing form categories

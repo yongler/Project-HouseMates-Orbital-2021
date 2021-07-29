@@ -56,13 +56,12 @@ const HousingDetail = ({
     },
     card: {
       width: "100%",
-      marginLeft: 23,
-      marginRight: 23,
     },
-    tooltip: {
+    postBtn: {
       position: "fixed",
       bottom: theme.spacing(2),
       right: theme.spacing(3),
+      borderRadius: 20,
     },
     media: {
       width: 400,
@@ -233,13 +232,10 @@ const HousingDetail = ({
             </CardContent>
           </Card>
 
-          {user && (
-            <Tooltip title="" onClick={handleClick}>
-              <Fab color="primary" className={classes.tooltip}>
-                <AddIcon />
-              </Fab>
-            </Tooltip>
-          )}
+          {user &&
+            <Button variant="contained" color="primary" startIcon={<AddIcon />} className={classes.postBtn} onClick={handleClick}>
+              Add post
+            </Button>}
         </>
       ) : null}
     </div>

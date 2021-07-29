@@ -2,13 +2,66 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, Radio, RadioGroup, Step, StepButton, Stepper, Typography } from '@material-ui/core'
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, MenuItem, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
-import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess, resetPostList } from '../redux/post/actions'
-import { ROOMMATE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, PRIORITY, SELF, OTHER } from '../globalConstants'
+import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess, resetPostList, searchPost } from '../redux/post/actions'
+import { ROOMMATE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT, PRIORITY, SELF, OTHER, MY_COLUMN_ONLY, IS_10000 } from '../globalConstants'
 
 // RoommateForm consists of stepper, (((summary of roommateQuestions and user inputs) and (back and submit buttons)), or ((list of roommateQuestions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
+
+const TextQuestion = ({ question, formFields, handleChange, currentCategory, PriorityComponent }) => (
+  <>
+    {/* Question */}
+    <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
+    {question.my_column_only
+      ?
+      // My choice only
+      <Grid item xs={12}>
+        <TextField
+          variant="outlined"
+          fullWidth
+          name={question.id}
+          value={formFields[currentCategory]?.[question.id]?.myChoice}
+          onChange={(e) => handleChange(e, currentCategory, MY_COLUMN_ONLY)}
+        />
+      </Grid>
+      :
+      <Grid container item spacing={8}>
+        {/* My choices */}
+        <Grid item xs={4}>
+          <FormControl>
+            <FormLabel style={{ marginBottom: 10 }}>My choice(s):</FormLabel>
+            <TextField
+              variant="outlined"
+              fullWidth
+              name={question.id}
+              value={formFields[currentCategory]?.[question.id]?.myChoice}
+              onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE, SELF)}
+            />
+          </FormControl>
+        </Grid>
+
+        {/* Other choices */}
+        <Grid item xs={4}>
+          <FormControl>
+            <FormLabel style={{ marginBottom: 10 }}>My ideal roommate's choice(s):</FormLabel>
+            <TextField
+              variant="outlined"
+              fullWidth
+              name={question.id}
+              value={formFields[currentCategory]?.[question.id]?.otherChoice}
+              onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE, OTHER)}
+            />
+          </FormControl>
+        </Grid>
+
+        {/* Priority */}
+        <PriorityComponent question={question} />
+      </Grid>}
+  </>
+);
+
 const RoommateForm = ({
   user,
   getQuestions, roommateQuestions,
@@ -70,6 +123,7 @@ const RoommateForm = ({
   const [open, setOpen] = useState(false)
 
   // Handlers
+  // Stepper
   const handleNext = () => {
     window.scrollTo(0, 0)
     setCurrentCategory((prev) => prev + 1)
@@ -87,6 +141,7 @@ const RoommateForm = ({
   const handleStep = (category) => () =>
     category <= maxCategory ? setCurrentCategory(category) : null
 
+  // Form fields
   const handleChange = (e, category, type, selfOther) => {
     switch (type) {
       case SINGLE_CHOICE:
@@ -179,11 +234,28 @@ const RoommateForm = ({
         })
         break
 
+      case MY_COLUMN_ONLY:
+        setFormFields({
+          ...formFields,
+          [category]: {
+            ...formFields[category],
+            [e.target.name]: {
+              ...formFields[category]?.[e.target.name],
+              question: e.target.name,
+              myChoice: e.target.value,
+              otherChoice: e.target.value,
+              priority: IS_10000,
+            },
+          }
+        })
+        break
+
       default:
         break
     }
   }
 
+  // Confirmation dialog
   const handleConfirmation = () => { setOpen(true) }
   const handleCancel = () => setOpen(false)
   const handleSubmit = () => {
@@ -206,7 +278,7 @@ const RoommateForm = ({
     }
   }
 
-  // useEffect
+  // useEffects
   // Get roommate form questions
   useEffect(() => { if (roommateQuestions.length === 0) getQuestions(ROOMMATE_FORM) }, [])
   // Get roommate form categories
@@ -252,7 +324,7 @@ const RoommateForm = ({
         {/* Other choices */}
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel>My ideal roommate's choice(s)</FormLabel>
+            <FormLabel>My ideal roommate's choice(s):</FormLabel>
             <RadioGroup
               name={question.id}
               value={formFields[currentCategory]?.[question.id]?.otherChoice}
@@ -320,7 +392,7 @@ const RoommateForm = ({
         {/* Other choices */}
         <Grid item xs={4}>
           <FormControl>
-            <FormLabel>Your ideal roommate's choice(s):</FormLabel>
+            <FormLabel>My ideal roommate's choice(s):</FormLabel>
             <FormGroup>
               {question.choice_set.map(choice => (
                 <FormControlLabel
@@ -359,6 +431,115 @@ const RoommateForm = ({
     </>
   )
 
+  const SelectQuestion = ({ question }) => (
+    <>
+      {/* Question */}
+      <Typography variant="h6" color="textPrimary" gutterBottom>{question.question_text}</Typography>
+
+      {question.my_column_only
+        ?
+        // My choice only
+        <Grid item xs={12}>
+          <Select
+            variant="outlined"
+            fullWidth
+            name={question.id}
+            value={formFields[currentCategory]?.[question.id]?.myChoice}
+            onChange={(e) => handleChange(e, currentCategory, MY_COLUMN_ONLY)}
+          >
+            {question.choice_set.map((choice) => (
+              <MenuItem key={choice} value={choice}>
+                {choice}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        :
+        <Grid container item spacing={8}>
+          {/* My choices */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel style={{ marginBottom: 10 }}>My choice(s):</FormLabel>
+              <Select
+                variant="outlined"
+                fullWidth
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.myChoice}
+                onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE, SELF)}
+              >
+                {question.choice_set.map((choice) => (
+                  <MenuItem key={choice} value={choice}>
+                    {choice}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Other choices */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel style={{ marginBottom: 10 }}>My ideal roommate's choice(s):</FormLabel>
+              <Select
+                variant="outlined"
+                fullWidth
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.otherChoice}
+                onChange={(e) => handleChange(e, currentCategory, SINGLE_CHOICE, OTHER)}
+              >
+                {question.choice_set.map((choice) => (
+                  <MenuItem key={choice} value={choice}>
+                    {choice}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Priority */}
+          <Grid item xs={4}>
+            <FormControl>
+              <FormLabel>Question priority:</FormLabel>
+              <RadioGroup
+                name={question.id}
+                value={formFields[currentCategory]?.[question.id]?.priority}
+                onChange={e => handleChange(e, currentCategory, PRIORITY)}
+              >
+                {priorityChoices.map(choice => (
+                  <FormControlLabel
+                    key={choice}
+                    control={<Radio color="primary" />}
+                    value={choice}
+                    label={choice}
+                  />))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+        </Grid>}
+    </>
+  );
+
+  const Priority = ({ question }) => (
+    <Grid item xs={4}>
+      <FormControl>
+        <FormLabel>Question priority:</FormLabel>
+        <RadioGroup
+          name={question.id}
+          value={formFields[currentCategory]?.[question.id]?.priority}
+          onChange={e => handleChange(e, currentCategory, PRIORITY)}
+        >
+          {priorityChoices.map(choice => (
+            <FormControlLabel
+              key={choice}
+              control={<Radio color="primary" />}
+              value={choice}
+              label={choice}
+            />))}
+        </RadioGroup>
+      </FormControl>
+    </Grid>
+  );
+
   const stepper =
     <Stepper nonLinear alternativeLabel activeStep={currentCategory}>
       {roommateCategories.map((category, index) => (
@@ -391,7 +572,7 @@ const RoommateForm = ({
                 </Grid>
                 {/* Other choice */}
                 <Grid item xs={3}>
-                  <Typography variant="body1" color="textSecondary">Your ideal roommate's choice(s):</Typography>
+                  <Typography variant="body1" color="textSecondary">My ideal roommate's choice(s):</Typography>
                 </Grid>
                 {/* Priority */}
                 <Grid item xs={3}>
@@ -410,37 +591,50 @@ const RoommateForm = ({
                       </Grid>
                       {/* My choices */}
                       <Grid item xs={3}>
-                        {question.question_type === MULTIPLE_CHOICE
+                        {question.my_column_only
                           ?
-                          // Multiple choice
-                          <Typography variant="body1" gutterBottom>
-                            {formFields[categoryIndex]?.[question.id]?.myChoice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
-                          </Typography>
-                          :
-                          // Single choice
                           <Typography variant="body1" gutterBottom>
                             {formFields[categoryIndex]?.[question.id]?.myChoice}
-                          </Typography>}
+                          </Typography>
+                          :
+                          question.question_type === MULTIPLE_CHOICE
+                            ?
+                            // Multiple choice
+                            <Typography variant="body1" gutterBottom>
+                              {formFields[categoryIndex]?.[question.id]?.myChoice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
+                            </Typography>
+                            :
+                            // Single choice
+                            <Typography variant="body1" gutterBottom>
+                              {formFields[categoryIndex]?.[question.id]?.myChoice}
+                            </Typography>}
                       </Grid>
                       {/* Other choices */}
                       <Grid item xs={3}>
-                        {question.question_type === MULTIPLE_CHOICE
+                        {question.my_column_only
                           ?
-                          // Multiple choice
-                          <Typography variant="body1" gutterBottom>
-                            {formFields[categoryIndex]?.[question.id]?.otherChoice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
-                          </Typography>
-                          :
-                          // Single choice
-                          <Typography variant="body1" gutterBottom>
-                            {formFields[categoryIndex]?.[question.id]?.otherChoice}
-                          </Typography>}
+                          null
+                          : question.question_type === MULTIPLE_CHOICE
+                            ?
+                            // Multiple choice
+                            <Typography variant="body1" gutterBottom>
+                              {formFields[categoryIndex]?.[question.id]?.otherChoice?.reduce((prev, curr) => (prev ? prev + ", " : prev) + curr, '')}
+                            </Typography>
+                            :
+                            // Single choice
+                            <Typography variant="body1" gutterBottom>
+                              {formFields[categoryIndex]?.[question.id]?.otherChoice}
+                            </Typography>}
                       </Grid>
                       {/* Priority */}
                       <Grid item xs={3}>
-                        <Typography variant="body1" gutterBottom>
-                          {formFields[categoryIndex]?.[question.id]?.priority}
-                        </Typography>
+                        {question.my_column_only
+                          ?
+                          null
+                          :
+                          <Typography variant="body1" gutterBottom>
+                            {formFields[categoryIndex]?.[question.id]?.priority}
+                          </Typography>}
                       </Grid>
                     </Grid>))}
               </Grid>
@@ -475,7 +669,17 @@ const RoommateForm = ({
             <Grid item xs={12} style={{ marginBottom: 32 }}>
               {question.question_type === SINGLE_CHOICE
                 ? <SingleChoiceQuestion question={question} />
-                : <MultipleChoiceQuestion question={question} />}
+                : question.question_type === MULTIPLE_CHOICE
+                  ? <MultipleChoiceQuestion question={question} />
+                  : question.question_type === TEXT
+                    ? <TextQuestion
+                      question={question}
+                      formFields={formFields}
+                      handleChange={handleChange}
+                      currentCategory={currentCategory}
+                      PriorityComponent={Priority}
+                    />
+                    : <SelectQuestion question={question} />}
             </Grid>))}
       </Grid>
 

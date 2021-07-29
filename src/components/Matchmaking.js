@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { Button, Paper, Typography } from '@material-ui/core'
-import { ROOMMATE_FORM, IRRELEVANT, A_LITTLE_IMPORTANT, SOMEWHAT_IMPORTANT, VERY_IMPORTANT, MANDATORY } from '../globalConstants'
+import { ROOMMATE_FORM, IRRELEVANT, A_LITTLE_IMPORTANT, SOMEWHAT_IMPORTANT, VERY_IMPORTANT, MANDATORY, IS_10000 } from '../globalConstants'
 import { loadUser } from '../redux/auth/actions'
 import { getUserPosts, getPostList, editPost, resetEditPostSuccess } from '../redux/post/actions'
 import { createScore, editScore, getScoreList, resetGetScoreListSuccess, scoreLoading } from '../redux/score/actions'
@@ -34,6 +34,7 @@ const Matchmaking = ({
       case SOMEWHAT_IMPORTANT: return 10
       case VERY_IMPORTANT: return 50
       case MANDATORY: return 250
+      case IS_10000: return 10000
       default: return 0
     }
   }
