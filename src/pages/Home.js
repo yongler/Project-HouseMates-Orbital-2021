@@ -88,7 +88,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
           {/* Video */}
           <Grid
             item
-            xs={6}
+            xs={12} md={6}
             style={{
               display: "flex",
               justifyContent: "center",
@@ -104,7 +104,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
           {/* Login & register */}
           <Grid
             item
-            xs={6}
+            xs={12} md={6}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -112,14 +112,14 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
               alignItems: "center",
             }}
           >
-            <Typography variant="body1">
+            <Typography variant="body1" align="center">
               We cater towards your accomodation related needs,
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body1" align="center">
               be it finding an accomodation with a housemate, or hosting your
               housings.
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body1" align="center">
               Login or sign up now! No phone numbers required.
             </Typography>
             <div style={{ marginTop: 30 }}>
@@ -147,7 +147,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         <Grid container item xs={12}>
           <Grid
             item
-            xs={6}
+            xs={12} md={6}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -167,7 +167,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
           </Grid>
           <Grid
             item
-            xs={6}
+            xs={12} md={6}
             style={{ display: "flex", justifyContent: "center" }}
           >
             <img alt="mates" src={Mates} height="250" />
@@ -186,7 +186,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
                   md={6}
                   lg={4}
                   key={post.id}
-                  style={{ display: "flex", flexDirection: "column" }}
+                  style={{ display: "flex", flexDirection: "column", marginBottom: 30 }}
                 >
                   <RoommateCard post={post} />
                 </Grid>
@@ -216,7 +216,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         <Grid container item xs={12}>
           <Grid
             item
-            xs={6}
+            xs={12} md={6}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -281,14 +281,14 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         <Grid container item xs={12}>
           <Grid
             item
-            xs={6}
+            xs={12} md={6}
             style={{ display: "flex", justifyContent: "center" }}
           >
             <img alt="chat" src={Chat} height="250" />
           </Grid>
           <Grid
             item
-            xs={6}
+            xs={12} md={6}
             style={{
               display: "flex",
               flexDirection: "column",

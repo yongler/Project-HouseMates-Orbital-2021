@@ -192,9 +192,9 @@ const Profile = ({
               <Grid container item xs={12} spacing={3}>
                 {/* Profile */}
                 <Grid container item xs={12} md={8}>
-                  <Paper style={{ width: "100%", display: "flex", padding: 10, minWidth: 230 }}>
+                  <Paper style={{ width: "100%", display: "flex", flexWrap: "wrap", padding: 10, minWidth: 230 }}>
                     {/* Profile pic */}
-                    <Grid item xs={12} md={5} align="right">
+                    <Grid item xs={12} md={6} align="center">
                       <Badge
                         overlap="circle"
                         anchorOrigin={{
@@ -219,11 +219,10 @@ const Profile = ({
                         style={{ display: 'none' }}
                       />
                     </Grid>
-                    <Grid item xs={0} md={1} />
                     {/* Name and bio */}
                     <Grid item xs={12} md={5} align="center">
                       {/* Name */}
-                      <Typography variant="h5" style={{ marginTop: 50 }}>
+                      <Typography variant="h5" style={{ marginTop: 30 }}>
                         {user.first_name} {user.last_name}
                       </Typography>
                       {/* Bio */}

@@ -221,6 +221,7 @@ const Chat = ({
   }
 
   var lastDate = "";
+  var changeDate = false
 
   return (
     <>
@@ -356,7 +357,7 @@ const Chat = ({
                     className={clsx({[classes.pointer]: userRoommatePosts.length > 0})}
                     onClick={handlePostDetail}
                   />
-                  <Typography variant="h6" style={{ marginLeft: 20 }}>
+                  <Typography variant="h6" style={{ marginLeft: 20 }} noWrap>
                     {user?.id === activeRoom?.owner1.id
                       ? activeRoom?.owner2.first_name +
                       " " +
@@ -378,17 +379,18 @@ const Chat = ({
                     id="chatBody"
                   >
                     {messages?.map((msg, index) => {
+                      changeDate = false
                       if (
-                        index !== 0 &&
                         msg.timestamp &&
                         msg.timestamp.split(" ")[0] !== lastDate
                       ) {
                         lastDate = msg.timestamp.split(" ")[0];
+                        changeDate = true
                       }
                       return (
                         <>
                           {msg.timestamp &&
-                            msg.timestamp.split(" ")[0] !== lastDate && (
+                            changeDate && (
                               <Typography
                                 variant="body2"
                                 color="textSecondary"
