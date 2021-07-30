@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, Redirect } from "react-router-dom";
+import { useLocation, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import clsx from 'clsx'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   uniqueNamesGenerator,
@@ -32,6 +33,8 @@ import {
   setChatUser,
 } from "../redux/chat/actions";
 import "./pages.css";
+import { getUserPosts } from "../redux/post/actions";
+import { ROOMMATE_FORM } from "../globalConstants";
 
 const Chat = ({
   user,
@@ -45,6 +48,7 @@ const Chat = ({
   checkChatHistory,
   resetChatHistory,
   editMsg,
+  userRoommatePosts, getUserPosts,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -59,6 +63,9 @@ const Chat = ({
       width: "100%",
       overflow: "auto",
     },
+    pointer: {
+      cursor: "pointer",
+    }
   }));
 
   // States
@@ -69,11 +76,16 @@ const Chat = ({
   const [msgText, setMsgText] = useState("");
   const [roomListByLabel, setRoomListByLabel] = useState([]);
   const [oneTimePass, setOneTimePass] = useState(true)
+  const [postId, setPostId] = useState(null)
 
   // Hooks
   const classes = useStyles();
   const location = useLocation();
+  const history = useHistory()
   const textInput = useRef();
+
+  // Handlers
+  const handlePostDetail = () => { if (postId) history.push(`/roommates/${postId}`) }
 
   // Constants
   const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
@@ -175,8 +187,12 @@ const Chat = ({
       if (roomListByLabel[room]?.id !== activeRoom?.id)
         setActiveRoom(roomListByLabel[room]);
       setMessages(roomListByLabel[room]?.messages);
+      getUserPosts(roomListByLabel[room].user1 === user.id ? roomListByLabel[room].user2 : roomListByLabel[room].user1, ROOMMATE_FORM)
     }
   }, [room]);
+  useEffect(() => {
+    if (userRoommatePosts.length > 0) setPostId(userRoommatePosts[0].id)
+  }, [userRoommatePosts])
 
   // Scroll to bottom of messages when there is a new message
   useEffect(() => {
@@ -336,6 +352,9 @@ const Chat = ({
                         ? activeRoom?.owner2?.profile_pic
                         : activeRoom?.owner1?.profile_pic
                     }
+                    style={{ marginLeft: 10 }}
+                    className={clsx({[classes.pointer]: userRoommatePosts.length > 0})}
+                    onClick={handlePostDetail}
                   />
                   <Typography variant="h6" style={{ marginLeft: 20 }}>
                     {user?.id === activeRoom?.owner1.id
@@ -467,6 +486,7 @@ const mapStateToProps = (state) => ({
   roomList: state.chat.roomList,
   chatUser: state.chat.chatUser,
   chatHistory: state.chat.chatHistory,
+  userRoommatePosts: state.post.userRoommatePosts,
 });
 
 const mapDispatchToProps = {
@@ -476,6 +496,7 @@ const mapDispatchToProps = {
   setChatUser,
   resetChatHistory,
   editMsg,
+  getUserPosts,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

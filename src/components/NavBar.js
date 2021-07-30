@@ -66,9 +66,11 @@ const NavBar = ({
     },
     logo: {
       marginRight: 10,
+      cursor: "pointer",
     },
     title: {
       marginRight: 30,
+      cursor: "pointer",
     },
     grow: {
       flexGrow: 1,
@@ -113,9 +115,6 @@ const NavBar = ({
     },
     white: {
       color: "white",
-    },
-    pointer: {
-      cursor: "pointer",
     },
   }));
 

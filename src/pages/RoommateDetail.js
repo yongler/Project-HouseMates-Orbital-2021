@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { connect } from "react-redux"
 import { makeStyles } from "@material-ui/core/styles"
-import { Avatar, Button, Card, CardContent, CardHeader, Chip, IconButton, Typography } from "@material-ui/core"
+import { Avatar, Button, Card, CardContent, CardHeader, Chip, Divider, IconButton, Typography } from "@material-ui/core"
 import AddIcon from "@material-ui/icons/Add"
 import ChatIcon from "@material-ui/icons/Chat"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
@@ -94,24 +94,24 @@ const RoommateDetail = ({
               />
 
               {/* Name */}
-              <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <span style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: 5 }}>
                 <Typography variant="h5" display="inline">
                   {post.owner.first_name} {post.owner.last_name}
                 </Typography>
                 {user && user.id !== post.owner.id &&
-                  <IconButton style={{ marginLeft: 5 }} onClick={handleChat}><ChatIcon /></IconButton>}
+                  <IconButton style={{ marginLeft: 5 }} onClick={handleChat} color="primary"><ChatIcon /></IconButton>}
               </span>
 
               {/* Bio */}
-              <Typography variant="body1" color="textSecondary" style={{ marginTop: -5, marginBottom: 10 }}>
+              <Typography variant="body1" style={{ marginTop: -5 }}>
                 {post.owner.bio}
               </Typography>
 
-              <br />
+              <Divider style={{ width: "70%", marginBottom: 20, marginTop: 20 }} />
 
               {/* Text */}
               <Typography
-                variant="body2"
+                variant="body1"
                 color="textSecondary"
                 className={classes.category}
               >
