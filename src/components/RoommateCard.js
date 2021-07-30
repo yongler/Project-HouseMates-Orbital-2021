@@ -40,6 +40,7 @@ const RoommateCard = ({
   const useStyles = makeStyles((theme) => ({
     card: {
       width: 345,
+      height: 423,
       cursor: "pointer",
       alignSelf: "center",
     },

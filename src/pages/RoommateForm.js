@@ -669,7 +669,7 @@ const RoommateForm = ({
                       <Grid item xs={3}>
                         {question.my_column_only
                           ?
-                          null
+                          <Typography variant="body1" gutterBottom>-</Typography>
                           : question.question_type === MULTIPLE_CHOICE
                             ?
                             // Multiple choice
@@ -686,7 +686,7 @@ const RoommateForm = ({
                       <Grid item xs={3}>
                         {question.my_column_only
                           ?
-                          null
+                          <Typography variant="body1" gutterBottom>-</Typography>
                           :
                           <Typography variant="body1" gutterBottom>
                             {formFields[categoryIndex]?.[question.id]?.priority}
@@ -772,7 +772,6 @@ const RoommateForm = ({
 
   return (
     <>
-      {console.log(formFields)}
       {roommateQuestions.length !== 0 && roommateCategories.length !== 0
         ?
         <Paper className={classes.paper}>
