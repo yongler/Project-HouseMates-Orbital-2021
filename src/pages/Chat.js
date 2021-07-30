@@ -68,6 +68,7 @@ const Chat = ({
   const [client, setClient] = useState(null);
   const [msgText, setMsgText] = useState("");
   const [roomListByLabel, setRoomListByLabel] = useState([]);
+  const [oneTimePass, setOneTimePass] = useState(true)
 
   // Hooks
   const classes = useStyles();
@@ -83,6 +84,7 @@ const Chat = ({
       if (!msg.hasRead && msg.user_id.toString() !== user.id.toString())
         editMsg(msg.id, true);
     });
+    if (user) getRoomList(user.id)
   };
 
   // Handlers
@@ -132,35 +134,22 @@ const Chat = ({
 
   // Manual navigation to chat
   // Get user room list
+  useEffect(() => { if (!chatHistory && user) getRoomList(user.id); }, [user]);
+  // Process user room list and connect to all room once
   useEffect(() => {
-    if (user) getRoomList(user.id);
-  }, [user]);
-  // Process user room list
-  useEffect(() => {
-    const temp = roomList.reduce(
-      (prev, curr) => ({ ...prev, [curr.label]: curr }),
-      {}
-    );
+    const temp = roomList.reduce((prev, curr) => ({ ...prev, [curr.label]: curr }), {});
     setRoomListByLabel(temp);
-    if (roomList) {
+    if (oneTimePass && roomList.length > 0) {
+      setOneTimePass(false)
       roomList.forEach((room) => {
-        const temp2 = new W3CWebSocket(
-          ws_scheme +
-            "://" +
-            window.location.host +
-            "/ws/chat/" +
-            room.label +
-            "/"
-        );
-        temp2.onopen = () => {
-          console.log("WebSocket Client Connected: ", room.label);
-        };
+        const temp2 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
+        temp2.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
         temp2.onmessage = (message) => {
           const dataFromServer = JSON.parse(message.data);
           console.log("got reply! ", dataFromServer.type);
-          if (dataFromServer) {
+          if (dataFromServer && messages?.length > 0) {
             setMessages([
-              // ...messages,
+              ...messages,
               {
                 message: dataFromServer.message,
                 user_id: dataFromServer.owner,
@@ -181,47 +170,13 @@ const Chat = ({
   // Connect to active room
   useEffect(() => {
     if (room) {
-      const temp = new W3CWebSocket(
-        ws_scheme + "://" + window.location.host + "/ws/chat/" + room + "/"
-      );
+      const temp = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room + "/");
       setClient(temp);
-    }
-  }, [room]);
-  useEffect(() => {
-    if (client)
-      client.onopen = () => {
-        console.log("WebSocket Client Connected: ", room);
-      };
-    if (room) {
       if (roomListByLabel[room]?.id !== activeRoom?.id)
         setActiveRoom(roomListByLabel[room]);
       setMessages(roomListByLabel[room]?.messages);
     }
-    if (user) getRoomList(user.id);
-  }, [client]);
-
-  // Update messages
-  useEffect(() => {
-    if (client) {
-      client.onopen = () => {
-        console.log("WebSocket Client Connected: ", room);
-      };
-      client.onmessage = (message) => {
-        const dataFromServer = JSON.parse(message.data);
-        console.log("got reply! ", dataFromServer.type);
-        if (dataFromServer) {
-          setMessages([
-            ...messages,
-            {
-              message: dataFromServer.message,
-              user_id: dataFromServer.owner,
-            },
-          ]);
-        }
-        getRoomList(user.id);
-      };
-    }
-  });
+  }, [room]);
 
   // Scroll to bottom of messages when there is a new message
   useEffect(() => {
@@ -230,9 +185,7 @@ const Chat = ({
   }, [messages]);
 
   // Mark unread messages as read when sending new message (for case when user receives new messages when in the room)
-  useEffect(() => {
-    if (!msgText) markUnreadMsgsAsRead();
-  }, [msgText]);
+  useEffect(() => { if (!msgText) markUnreadMsgsAsRead(); }, [msgText]);
 
   // Clear and focus on message text field, and mark unread messages as read upon room change
   useEffect(() => {
@@ -335,7 +288,7 @@ const Chat = ({
                             (prev, curr) =>
                               prev +
                               (!curr.hasRead &&
-                              curr.user_id.toString() !== user.id.toString()
+                                curr.user_id.toString() !== user.id.toString()
                                 ? 1
                                 : 0),
                             0
@@ -344,7 +297,7 @@ const Chat = ({
                           (prev, curr) =>
                             prev +
                             (!curr.hasRead &&
-                            curr.user_id.toString() !== user.id.toString()
+                              curr.user_id.toString() !== user.id.toString()
                               ? 1
                               : 0),
                           0
@@ -387,13 +340,13 @@ const Chat = ({
                   <Typography variant="h6" style={{ marginLeft: 20 }}>
                     {user?.id === activeRoom?.owner1.id
                       ? activeRoom?.owner2.first_name +
-                        " " +
-                        activeRoom?.owner2.last_name
+                      " " +
+                      activeRoom?.owner2.last_name
                       : user?.id === activeRoom?.owner2.id
-                      ? activeRoom?.owner1.first_name +
+                        ? activeRoom?.owner1.first_name +
                         " " +
                         activeRoom?.owner1.last_name
-                      : ""}
+                        : ""}
                   </Typography>
                 </Paper>
               </Grid>

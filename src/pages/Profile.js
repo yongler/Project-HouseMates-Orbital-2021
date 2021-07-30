@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Avatar,
@@ -78,6 +79,10 @@ const Profile = ({
   const [topThreeRoommates, setTopThreeRoommates] = useState([]);
   const [newMsgs, setNewMsgs] = useState([])
   const [scoreListObj, setScoreListObj] = useState({})
+  const [oneTimePass, setOneTimePass] = useState(true)
+
+  // Constants
+  const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
 
   // Handlers
   // Account settings
@@ -164,6 +169,14 @@ const Profile = ({
       .filter((room) => room.messages.reduce((prev, curr) =>
         prev || (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? true : false), false))
     setNewMsgs(temp3)
+    if (oneTimePass && roomList.length > 0) {
+      setOneTimePass(false)
+      roomList.forEach((room) => {
+        const temp4 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
+        temp4.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
+        temp4.onmessage = () => { getRoomList(user.id); };
+      });
+    }
   }, [roomList])
 
   if (!isAuthenticated) { return <Redirect to="/login" />; }

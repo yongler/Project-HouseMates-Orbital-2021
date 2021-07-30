@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 import clsx from 'clsx'
@@ -10,6 +11,7 @@ import ChatIcon from "@material-ui/icons/Chat"
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import NotesIcon from '@material-ui/icons/Notes'
 import { setPage } from "../redux/post/actions"
+import { getRoomList } from '../redux/chat/actions';
 
 // SideNav consists of list of tabs.
 const SideNav = ({
@@ -18,6 +20,7 @@ const SideNav = ({
   menuOpen, hoverOpen, drawerOpen,
   handleMouseEnter, handleMouseLeave,
   setPage,
+  roomList, getRoomList,
 }) => {
   // Styling
   const useStyles = makeStyles(theme => ({
@@ -68,6 +71,29 @@ const SideNav = ({
     },
   }))
 
+  // Constants
+  const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+
+  // Hooks
+  const history = useHistory()
+  const location = useLocation()
+  const classes = useStyles()
+
+  // States
+  const [oneTimePass, setOneTimePass] = useState(true)
+
+  // useEffects
+  useEffect(() => {
+    if (oneTimePass && roomList.length > 0) {
+      setOneTimePass(false)
+      roomList.forEach((room) => {
+        const temp4 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
+        temp4.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
+        temp4.onmessage = () => { getRoomList(user.id); };
+      });
+    }
+  }, [roomList])
+
   // Content
   const categories = [
     {
@@ -85,9 +111,13 @@ const SideNav = ({
     {
       text: 'Chat',
       icon:
-        // <Badge badgeContent={5} color="secondary">
+        <Badge
+          badgeContent={roomList.reduce((prevRoom, currRoom) =>
+            prevRoom + currRoom.messages.reduce((prevMsg, currMsg) =>
+              prevMsg + (!currMsg.hasRead && currMsg.user_id.toString() !== user.id.toString() ? 1 : 0), 0), 0)}
+          color="secondary">
           <ChatIcon color="primary" />
-        // </Badge>
+        </Badge>
       ,
       path: '/chat',
       private: true,
@@ -105,11 +135,6 @@ const SideNav = ({
     //   private: true,
     // },
   ]
-
-  // Hooks
-  const history = useHistory()
-  const location = useLocation()
-  const classes = useStyles()
 
   return (
     <Drawer
@@ -157,10 +182,12 @@ const SideNav = ({
 
 const mapStateToProps = state => ({
   user: state.auth.user,
+  roomList: state.chat.roomList,
 })
 
 const mapDispatchToProps = {
   setPage,
+  getRoomList,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideNav)
