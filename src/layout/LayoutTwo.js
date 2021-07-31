@@ -16,6 +16,7 @@ const LayoutTwo = ({
   scoreLoading,
   setTheme,
   theme,
+  OneSignal
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -81,6 +82,7 @@ const LayoutTwo = ({
         handleMenuButton={handleMenuButton}
         setTheme={setTheme}
         theme={theme}
+        OneSignal={OneSignal}
       />
 
       {/* SideNav */}

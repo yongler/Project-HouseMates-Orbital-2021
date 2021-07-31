@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Provider } from "react-redux";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { indigo, green, yellow, blue } from "@material-ui/core/colors";
@@ -33,6 +33,32 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { BrowserRouter, Switch, Route, useLocation } from "react-router-dom";
 
 const App = () => {
+  // notifications
+  // window.OneSignal = window.OneSignal || [];
+  // const OneSignal = window.OneSignal;
+
+  // useEffect(() => {
+  //   OneSignal.push(() => {
+  //     OneSignal.init({
+  //       // appId: "7a1f6bc9-67f0-4a47-9bca-6b118e833d42",
+  //       appId: "73fde6d7-bcde-4f66-b624-ac2a00bd6cbd",
+  //     });
+  //   });
+  // }, []);
+  //   <script
+  //   src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"
+  //   async=""
+  // ></script>
+  // <script>
+  //   window.OneSignal = window.OneSignal || [];
+  //   OneSignal.push(function () {
+  //     OneSignal.init({
+  //       appId: "73fde6d7-bcde-4f66-b624-ac2a00bd6cbd",
+  //     });
+  //   });
+  // </script>
+  const OneSignal = 1;
+
   // Styling
   const light = createMuiTheme({
     palette: {
@@ -124,6 +150,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 exact
@@ -132,6 +159,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 path="/housings/:id"
@@ -139,6 +167,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 exact
@@ -147,6 +176,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 path="/roommates/:id"
@@ -154,6 +184,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 path="/roommate-form"
@@ -161,6 +192,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 path="/housing-form"
@@ -168,6 +200,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 path="/edit-roommate-form/:id"
@@ -175,6 +208,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 path="/edit-housing-form/:id"
@@ -182,6 +216,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 path="/profile"
@@ -189,6 +224,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 path="/matchmaking"
@@ -196,6 +232,7 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
               <RouteWrapper
                 exact
@@ -204,8 +241,8 @@ const App = () => {
                 layout={LayoutTwo}
                 setTheme={setTheme}
                 theme={theme}
+                OneSignal={OneSignal}
               />
-
               {/* Routes with no layout */}
               <Route
                 exact
@@ -214,12 +251,12 @@ const App = () => {
                 setTheme={setTheme}
                 theme={theme}
               />
-              <Route
+              {/* <Route
                 path="*"
                 component={Home}
                 setTheme={setTheme}
                 theme={theme}
-              />
+              /> */}
             </Switch>
           </Layout>
         </BrowserRouter>

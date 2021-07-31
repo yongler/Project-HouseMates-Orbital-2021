@@ -1,25 +1,39 @@
-import React from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core'
-import clsx from 'clsx'
-import { Badge, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
-import HomeIcon from '@material-ui/icons/Home'
-import PeopleIcon from '@material-ui/icons/People'
-import ChatIcon from "@material-ui/icons/Chat"
-import AccountCircleIcon from '@material-ui/icons/AccountCircle'
-import NotesIcon from '@material-ui/icons/Notes'
-import { setPage } from "../redux/post/actions"
+import React from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core";
+import clsx from "clsx";
+import {
+  Badge,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@material-ui/core";
+import HomeIcon from "@material-ui/icons/Home";
+import PeopleIcon from "@material-ui/icons/People";
+import ChatIcon from "@material-ui/icons/Chat";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import NotesIcon from "@material-ui/icons/Notes";
+import { setPage } from "../redux/post/actions";
 import { noNewMsg } from "../pages/Profile";
+import UserGuide from "../pages/UserGuide";
+import { editJustRegistered } from "../redux/auth/actions";
 
 // SideNav consists of list of tabs.
 const SideNav = ({
   user,
   drawerWidth,
-  menuOpen, hoverOpen, drawerOpen,
-  handleMouseEnter, handleMouseLeave,
+  menuOpen,
+  hoverOpen,
+  drawerOpen,
+  handleMouseEnter,
+  handleMouseLeave,
   setPage,
   noNewMsg,
+  UserGuide,
+  editJustRegistered,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -84,6 +98,12 @@ const SideNav = ({
   // Content
   const categories = [
     {
+      text: "User dashboard",
+      icon: <AccountCircleIcon color="primary" />,
+      path: "/profile",
+      private: true,
+    },
+    {
       text: "Housings",
       icon: <HomeIcon color="primary" />,
       path: "/housings",
@@ -96,34 +116,22 @@ const SideNav = ({
       private: false,
     },
     {
-      text: 'Chat',
-      icon:
+      text: "Chat",
+      icon: (
         // <Badge badgeContent={5} color="secondary">
-        // className={clsx(noNewMsg ? classes.noMsg : classes.gotMsg)} 
-          <ChatIcon color="primary" />
+        <ChatIcon color="primary" />
         // </Badge>
-      ,
-      path: '/chat',
-      private: true,
-    },
-    {
-      text: 'User dashboard',
-      icon: <AccountCircleIcon color="primary" />,
-      path: '/profile',
-      private: true,
+      ),
+      path: "/chat",
+      private: false,
     },
     // {
-    //   text: 'User guide',
+    //   text: "User guide",
     //   icon: <NotesIcon color="primary" />,
     //   path: "",
     //   private: true,
     // },
-  ]
-
-  // Hooks
-  const history = useHistory()
-  const location = useLocation()
-  const classes = useStyles()
+  ];
 
   return (
     <Drawer
@@ -175,6 +183,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setPage,
+  editJustRegistered,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideNav);

@@ -7,13 +7,14 @@ const RouteWrapper = ({
   layout: Layout,
   setTheme,
   theme,
+  OneSignal,
   ...rest
 }) => {
   return (
     <Route
       {...rest}
       render={(props) => (
-        <Layout {...props} title={title} setTheme={setTheme} theme={theme}>
+        <Layout {...props} title={title} setTheme={setTheme} theme={theme} OneSignal={OneSignal}>
           <Component {...props} />
         </Layout>
       )}

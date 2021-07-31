@@ -45,6 +45,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
   const handleLogin = () => history.push("/login");
   const handleRegister = () => history.push("/register");
   const handleSeeMore = () => history.push("/roommates");
+  const handleSeeMoreHousing = () => history.push("/housing");
 
   return (
     <Grid container>
@@ -259,7 +260,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
             </Grid>
             <Grid item xs={12} style={{ marginTop: 20 }}>
               <Typography align="center">
-                <Link variant="body2" onClick={handleSeeMore}>
+                <Link variant="body2" onClick={handleSeeMoreHousing}>
                   See more
                 </Link>
               </Typography>
