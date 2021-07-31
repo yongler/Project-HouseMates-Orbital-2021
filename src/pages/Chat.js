@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, Redirect } from "react-router-dom";
+import { useLocation, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import clsx from 'clsx'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   uniqueNamesGenerator,
@@ -32,7 +33,8 @@ import {
   setChatUser,
 } from "../redux/chat/actions";
 import "./pages.css";
-import Logo from "../static/housemates-logo-without-text-white.svg";
+import { getUserPosts } from "../redux/post/actions";
+import { ROOMMATE_FORM } from "../globalConstants";
 
 const Chat = ({
   user,
@@ -46,7 +48,8 @@ const Chat = ({
   checkChatHistory,
   resetChatHistory,
   editMsg,
-  OneSignal
+  OneSignal,
+  userRoommatePosts, getUserPosts,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -61,6 +64,9 @@ const Chat = ({
       width: "100%",
       overflow: "auto",
     },
+    pointer: {
+      cursor: "pointer",
+    }
   }));
 
   // States
@@ -70,11 +76,17 @@ const Chat = ({
   const [client, setClient] = useState(null);
   const [msgText, setMsgText] = useState("");
   const [roomListByLabel, setRoomListByLabel] = useState([]);
+  const [oneTimePass, setOneTimePass] = useState(true)
+  const [postId, setPostId] = useState(null)
 
   // Hooks
   const classes = useStyles();
   const location = useLocation();
+  const history = useHistory()
   const textInput = useRef();
+
+  // Handlers
+  const handlePostDetail = () => { if (postId) history.push(`/roommates/${postId}`) }
 
   // Constants
   const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
@@ -85,6 +97,7 @@ const Chat = ({
       if (!msg.hasRead && msg.user_id.toString() !== user.id.toString())
         editMsg(msg.id, true);
     });
+    if (user) getRoomList(user.id)
   };
 
   // Handlers
@@ -134,35 +147,22 @@ const Chat = ({
 
   // Manual navigation to chat
   // Get user room list
+  useEffect(() => { if (!chatHistory && user) getRoomList(user.id); }, [user]);
+  // Process user room list and connect to all room once
   useEffect(() => {
-    if (user) getRoomList(user.id);
-  }, [user]);
-  // Process user room list
-  useEffect(() => {
-    const temp = roomList.reduce(
-      (prev, curr) => ({ ...prev, [curr.label]: curr }),
-      {}
-    );
+    const temp = roomList.reduce((prev, curr) => ({ ...prev, [curr.label]: curr }), {});
     setRoomListByLabel(temp);
-    if (roomList) {
+    if (oneTimePass && roomList.length > 0) {
+      setOneTimePass(false)
       roomList.forEach((room) => {
-        const temp2 = new W3CWebSocket(
-          ws_scheme +
-            "://" +
-            window.location.host +
-            "/ws/chat/" +
-            room.label +
-            "/"
-        );
-        temp2.onopen = () => {
-          console.log("WebSocket Client Connected: ", room.label);
-        };
+        const temp2 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
+        temp2.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
         temp2.onmessage = (message) => {
           const dataFromServer = JSON.parse(message.data);
           console.log("got reply! ", dataFromServer.type);
-          if (dataFromServer) {
+          if (dataFromServer && messages?.length > 0) {
             setMessages([
-              // ...messages,
+              ...messages,
               {
                 message: dataFromServer.message,
                 user_id: dataFromServer.owner,
@@ -192,56 +192,17 @@ const Chat = ({
   // Connect to active room
   useEffect(() => {
     if (room) {
-      const temp = new W3CWebSocket(
-        ws_scheme + "://" + window.location.host + "/ws/chat/" + room + "/"
-      );
+      const temp = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room + "/");
       setClient(temp);
-    }
-  }, [room]);
-  useEffect(() => {
-    if (client)
-      client.onopen = () => {
-        console.log("WebSocket Client Connected: ", room);
-      };
-    if (room) {
       if (roomListByLabel[room]?.id !== activeRoom?.id)
         setActiveRoom(roomListByLabel[room]);
       setMessages(roomListByLabel[room]?.messages);
+      getUserPosts(roomListByLabel[room].user1 === user.id ? roomListByLabel[room].user2 : roomListByLabel[room].user1, ROOMMATE_FORM)
     }
-    if (user) getRoomList(user.id);
-  }, [client]);
-
-  // Update messages
+  }, [room]);
   useEffect(() => {
-    if (client) {
-      client.onopen = () => {
-        console.log("WebSocket Client Connected: ", room);
-      };
-      client.onmessage = (message) => {
-        const dataFromServer = JSON.parse(message.data);
-        console.log("got reply! ", dataFromServer.type);
-        if (dataFromServer) {
-          setMessages([
-            ...messages,
-            {
-              message: dataFromServer.message,
-              user_id: dataFromServer.owner,
-            },
-          ]);
-          OneSignal.sendSelfNotification(
-            "HouseMates Notification",
-            "You have a new chat message!",
-            "https://localhost:3000/chat",
-            'https://onesignal.com/images/notification_logo.png',
-            {
-              notificationType: "news-feature",
-            }
-          );
-        }
-        getRoomList(user.id);
-      };
-    }
-  });
+    if (userRoommatePosts.length > 0) setPostId(userRoommatePosts[0].id)
+  }, [userRoommatePosts])
 
   // Scroll to bottom of messages when there is a new message
   useEffect(() => {
@@ -250,9 +211,7 @@ const Chat = ({
   }, [messages]);
 
   // Mark unread messages as read when sending new message (for case when user receives new messages when in the room)
-  useEffect(() => {
-    if (!msgText) markUnreadMsgsAsRead();
-  }, [msgText]);
+  useEffect(() => { if (!msgText) markUnreadMsgsAsRead(); }, [msgText]);
 
   // Clear and focus on message text field, and mark unread messages as read upon room change
   useEffect(() => {
@@ -272,6 +231,7 @@ const Chat = ({
   }
 
   var lastDate = "";
+  var changeDate = false
 
   return (
     <>
@@ -355,7 +315,7 @@ const Chat = ({
                             (prev, curr) =>
                               prev +
                               (!curr.hasRead &&
-                              curr.user_id.toString() !== user.id.toString()
+                                curr.user_id.toString() !== user.id.toString()
                                 ? 1
                                 : 0),
                             0
@@ -364,7 +324,7 @@ const Chat = ({
                           (prev, curr) =>
                             prev +
                             (!curr.hasRead &&
-                            curr.user_id.toString() !== user.id.toString()
+                              curr.user_id.toString() !== user.id.toString()
                               ? 1
                               : 0),
                           0
@@ -403,17 +363,20 @@ const Chat = ({
                         ? activeRoom?.owner2?.profile_pic
                         : activeRoom?.owner1?.profile_pic
                     }
+                    style={{ marginLeft: 10 }}
+                    className={clsx({[classes.pointer]: userRoommatePosts.length > 0})}
+                    onClick={handlePostDetail}
                   />
-                  <Typography variant="h6" style={{ marginLeft: 20 }}>
+                  <Typography variant="h6" style={{ marginLeft: 20 }} noWrap>
                     {user?.id === activeRoom?.owner1.id
                       ? activeRoom?.owner2.first_name +
-                        " " +
-                        activeRoom?.owner2.last_name
+                      " " +
+                      activeRoom?.owner2.last_name
                       : user?.id === activeRoom?.owner2.id
-                      ? activeRoom?.owner1.first_name +
+                        ? activeRoom?.owner1.first_name +
                         " " +
                         activeRoom?.owner1.last_name
-                      : ""}
+                        : ""}
                   </Typography>
                 </Paper>
               </Grid>
@@ -426,17 +389,18 @@ const Chat = ({
                     id="chatBody"
                   >
                     {messages?.map((msg, index) => {
+                      changeDate = false
                       if (
-                        index !== 0 &&
                         msg.timestamp &&
                         msg.timestamp.split(" ")[0] !== lastDate
                       ) {
                         lastDate = msg.timestamp.split(" ")[0];
+                        changeDate = true
                       }
                       return (
                         <>
                           {msg.timestamp &&
-                            msg.timestamp.split(" ")[0] !== lastDate && (
+                            changeDate && (
                               <Typography
                                 variant="body2"
                                 color="textSecondary"
@@ -534,6 +498,7 @@ const mapStateToProps = (state) => ({
   roomList: state.chat.roomList,
   chatUser: state.chat.chatUser,
   chatHistory: state.chat.chatHistory,
+  userRoommatePosts: state.post.userRoommatePosts,
 });
 
 const mapDispatchToProps = {
@@ -543,6 +508,7 @@ const mapDispatchToProps = {
   setChatUser,
   resetChatHistory,
   editMsg,
+  getUserPosts,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

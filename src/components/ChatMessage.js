@@ -17,6 +17,7 @@ const ChatMessage = ({ user, msg, time }) => {
       marginRight: 5,
       borderRadius: 10,
       maxWidth: "50%",
+      minWidth: 80,
       display: "flex",
       flexDirection: 'column',
     },

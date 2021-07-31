@@ -63,6 +63,9 @@ const Layout = ({
   // componentDidUpdate
   useEffect(() => {
     window.scroll(0, 0);
+    if (authErrorMsg) resetAuthErrorMsg();
+    if (formErrorMsg) resetFormErrorMsg();
+    if (postErrorMsg) resetPostErrorMsg();
     return () => {
       setPrevPath(location.pathname);
     };
@@ -128,9 +131,9 @@ const Layout = ({
       </Snackbar>
 
       {/* Sheild */}
-      {(authErrorMsg || formErrorMsg || postErrorMsg) && (
+      {/* {(authErrorMsg || formErrorMsg || postErrorMsg) && (
         <div className={"sheild"} style={{ zIndex: 1501 }} />
-      )}
+      )} */}
 
       {/* Layout */}
       {children}

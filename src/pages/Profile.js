@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Avatar,
@@ -82,8 +83,12 @@ const Profile = ({
   const [bio, setBio] = useState("");
   const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([]);
   const [topThreeRoommates, setTopThreeRoommates] = useState([]);
-  const [newMsgs, setNewMsgs] = useState([]);
-  const [scoreListObj, setScoreListObj] = useState({});
+  const [newMsgs, setNewMsgs] = useState([])
+  const [scoreListObj, setScoreListObj] = useState({})
+  const [oneTimePass, setOneTimePass] = useState(true)
+
+  // Constants
+  const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
 
   // Handlers
   // Account settings
@@ -175,23 +180,19 @@ const Profile = ({
 
   // New messages
   useEffect(() => {
-    if (user) getRoomList(user.id);
-  }, [user]);
-  useEffect(() => {
-    const temp3 = roomList
-      .slice(0, 3)
-      .filter((room) =>
-        room.messages.reduce(
-          (prev, curr) =>
-            prev ||
-            (!curr.hasRead && curr.user_id.toString() !== user.id.toString()
-              ? true
-              : false),
-          false
-        )
-      );
-    setNewMsgs(temp3);
-  }, [roomList]);
+    const temp3 = roomList.slice(0, 3)
+      .filter((room) => room.messages.reduce((prev, curr) =>
+        prev || (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? true : false), false))
+    setNewMsgs(temp3)
+    if (oneTimePass && roomList.length > 0) {
+      setOneTimePass(false)
+      roomList.forEach((room) => {
+        const temp4 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
+        temp4.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
+        temp4.onmessage = () => { getRoomList(user.id); };
+      });
+    }
+  }, [roomList])
 
   if (!isAuthenticated) {
     return <Redirect to="/login" />;
@@ -213,16 +214,9 @@ const Profile = ({
               <Grid container item xs={12} spacing={3}>
                 {/* Profile */}
                 <Grid container item xs={12} md={8}>
-                  <Paper
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      padding: 10,
-                      minWidth: 230,
-                    }}
-                  >
+                  <Paper style={{ width: "100%", display: "flex", flexWrap: "wrap", padding: 10, minWidth: 230 }}>
                     {/* Profile pic */}
-                    <Grid item xs={12} md={5} align="right">
+                    <Grid item xs={12} md={6} align="center">
                       <Badge
                         overlap="circle"
                         anchorOrigin={{
@@ -250,11 +244,10 @@ const Profile = ({
                         style={{ display: "none" }}
                       />
                     </Grid>
-                    <Grid item xs={0} md={1} />
                     {/* Name and bio */}
                     <Grid item xs={12} md={5} align="center">
                       {/* Name */}
-                      <Typography variant="h5" style={{ marginTop: 50 }}>
+                      <Typography variant="h5" style={{ marginTop: 30 }}>
                         {user.first_name} {user.last_name}
                       </Typography>
                       {/* Bio */}
