@@ -88,11 +88,6 @@ const SideNav = ({
   // Constants
   const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
 
-  // Hooks
-  const history = useHistory()
-  const location = useLocation()
-  const classes = useStyles()
-
   // States
   const [oneTimePass, setOneTimePass] = useState(true)
 
