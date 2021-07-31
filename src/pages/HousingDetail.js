@@ -179,11 +179,11 @@ const HousingDetail = ({
                           SGD {housingPost.selected_choices[0][3].choice}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                          &nbsp;/ night
+                          &nbsp;/ month
                         </Typography>
                       </div>
 
-                      {/* Location */}
+                      {/* Location */}  
                       <Typography variant="body2" color="textSecondary">
                         Located at {housingPost.selected_choices[0][2].choice}
                       </Typography>
@@ -232,10 +232,17 @@ const HousingDetail = ({
             </CardContent>
           </Card>
 
-          {user &&
-            <Button variant="contained" color="primary" startIcon={<AddIcon />} className={classes.postBtn} onClick={handleClick}>
+          {user && (
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              className={classes.postBtn}
+              onClick={handleClick}
+            >
               Add post
-            </Button>}
+            </Button>
+          )}
         </>
       ) : null}
     </div>

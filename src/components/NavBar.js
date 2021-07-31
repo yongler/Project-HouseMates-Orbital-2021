@@ -167,7 +167,7 @@ const NavBar = ({
       "HouseMates Notification",
       "You have a new chat message!",
       "https://localhost:3000/chat",
-      'https://onesignal.com/images/notification_logo.png',
+      "https://onesignal.com/images/notification_logo.png",
       {
         notificationType: "news-feature",
       }
@@ -286,7 +286,7 @@ const NavBar = ({
                               </IconButton>
                             </MenuItem>
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                            <MenuItem onClick={handleNoti}>Noti</MenuItem>
+                            {/* <MenuItem onClick={handleNoti}>Noti</MenuItem> */}
                           </MenuList>
                         </ClickAwayListener>
                       </Paper>

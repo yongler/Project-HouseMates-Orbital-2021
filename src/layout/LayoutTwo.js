@@ -122,7 +122,7 @@ const LayoutTwo = ({
 
             {/* Footer */}
             {location.pathname !== "/chat" && (
-              <div style={{ marginTop: 60 }}>
+              <div style={{ width: "100%", marginTop: 60 }}>
                 <Footer />
               </div>
             )}

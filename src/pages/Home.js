@@ -16,6 +16,7 @@ import HousingCard from "../components/HousingCard";
 import promoVideo from "../static/2679.mp4";
 import videoPoster from "../static/videoPoster.png";
 import { ReactVideo } from "reactjs-media";
+import { YoutubePlayer } from "reactjs-media";
 
 const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
   // Styling
@@ -27,6 +28,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         color: "white",
       },
     },
+    greyPaper: { background: "#f2f2f2" },
   }));
 
   // After render
@@ -48,20 +50,26 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
   const handleSeeMoreHousing = () => history.push("/housing");
 
   return (
-    <Grid container>
-      <Paper style={{ width: "100%", margin: 20, marginTop: 20, padding: 10 }}>
+    <div className={classes.greyPaper}>
+      <Paper style={{ width: "100%" }} elevation={0}>
         <Grid
           item
           xs={12}
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <img alt="home" src={Pic} height="400" style={{ opacity: 0.3 }} />
+          <img
+            alt="home"
+            src={Pic}
+            width="100%"
+            height="auto"
+            style={{ opacity: 0.3 }}
+          />
 
           <div
             style={{
               position: "absolute",
               width: "100%",
-              height: 400,
+              height: "600",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -72,7 +80,7 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
               src={Logo}
               width="100"
               height="100"
-              style={{ marginRight: 20 }}
+              // style={{ marginRight: 20 }}
             />
             <div style={{ display: "flex", flexDirection: "column" }}>
               <Typography variant="h2">Welcome to HouseMates.</Typography>
@@ -84,28 +92,34 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Paper style={{ width: "100%", margin: 20, padding: 50, marginTop: 20 }}>
+      <Paper
+        style={{ width: "100%", padding: 50 }}
+        elevation={0}
+        className={classes.greyPaper}
+      >
         <Grid container item xs={12}>
           {/* Video */}
           <Grid
             item
-            xs={12} md={6}
+            xs={12}
+            md={6}
             style={{
               display: "flex",
               justifyContent: "center",
             }}
           >
-            <ReactVideo
-              src={promoVideo}
-              poster={videoPoster}
-              primaryColor="red"
+            <YoutubePlayer
+              src="https://youtu.be/4rTMdQzsm6U?autoplay=1&mute=1" // Reqiured
+              width={650}
+              height={400}
             />
           </Grid>
 
           {/* Login & register */}
           <Grid
             item
-            xs={12} md={6}
+            xs={12}
+            md={6}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -114,12 +128,14 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
             }}
           >
             <Typography variant="body1" align="center">
-              We cater towards your accomodation related needs,
+              Be it finding an accomodation with a housemate, or promoting your
+              properties,
             </Typography>
+            <Typography variant="body1" align="center"></Typography>
             <Typography variant="body1" align="center">
-              be it finding an accomodation with a housemate, or hosting your
-              housings.
+              we cater towards your accomodation related needs.
             </Typography>
+            <br />
             <Typography variant="body1" align="center">
               Login or sign up now! No phone numbers required.
             </Typography>
@@ -144,11 +160,12 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Paper style={{ width: "100%", margin: 20, padding: 50 }}>
+      <Paper style={{ width: "100%", padding: 50 }} elevation={0}>
         <Grid container item xs={12}>
           <Grid
             item
-            xs={12} md={6}
+            xs={12}
+            md={6}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -168,7 +185,8 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
           </Grid>
           <Grid
             item
-            xs={12} md={6}
+            xs={12}
+            md={6}
             style={{ display: "flex", justifyContent: "center" }}
           >
             <img alt="mates" src={Mates} height="250" />
@@ -176,7 +194,26 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Grid container item xs={12} style={{ marginTop: 20 }}>
+      <Grid container item xs={12} elevation={0} style={{ margin: 50 }} align="center">
+        <Grid item xs={6}>
+          <Typography
+            variant="h4"
+            align="left"
+            style={{
+              marginLeft: 120,
+              marginBottom: 20,
+            }}
+          >
+            Latest Housemates
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography align="right" style={{ marginRight: 200, marginTop: 20 }}>
+            <Link variant="body1" onClick={handleSeeMoreHousing}>
+              See more
+            </Link>
+          </Typography>
+        </Grid>
         {posts.length > 0 ? (
           <>
             <Grid container item xs={12}>
@@ -185,20 +222,19 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
                   item
                   xs={12}
                   md={6}
-                  lg={4}
+                  lg={3}
                   key={post.id}
-                  style={{ display: "flex", flexDirection: "column", marginBottom: 30 }}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginBottom: 30,
+                    // marginRight: 30,
+                    marginLeft: 70,
+                  }}
                 >
                   <RoommateCard post={post} />
                 </Grid>
               ))}
-            </Grid>
-            <Grid item xs={12} style={{ marginTop: 20 }}>
-              <Typography align="center">
-                <Link variant="body2" onClick={handleSeeMore}>
-                  See more
-                </Link>
-              </Typography>
             </Grid>
           </>
         ) : (
@@ -213,11 +249,12 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         )}
       </Grid>
 
-      <Paper style={{ width: "100%", margin: 20, padding: 50 }}>
+      <Paper style={{ width: "100%", padding: 50 }} elevation={0}>
         <Grid container item xs={12}>
           <Grid
             item
-            xs={12} md={6}
+            xs={12}
+            md={6}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -244,10 +281,36 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Grid container item xs={12} style={{ marginTop: 20 }}>
+      <Grid
+        container
+        item
+        xs={12}
+        className={classes.greyPaper}
+        style={{ marginTop: 50 }}
+      >
+        <Grid item xs={6}>
+          <Typography
+            variant="h4"
+            align="left"
+            style={{
+              marginLeft: 150,
+              marginBottom: 20,
+            }}
+          >
+            Latest Housings
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography align="right" style={{ marginRight: 150, marginTop: 20 }}>
+            <Link variant="body1" onClick={handleSeeMoreHousing}>
+              See more
+            </Link>
+          </Typography>
+        </Grid>
+
         {housingPosts.length > 0 ? (
           <>
-            <Grid container item xs={12}>
+            <Grid container item xs={12} style={{ marginBottom: 30 }}>
               {housingPosts.slice(0, 3).map((post) => (
                 <>
                   <Grid item xs={1} />
@@ -257,13 +320,6 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
                   <Grid item xs={1} />
                 </>
               ))}
-            </Grid>
-            <Grid item xs={12} style={{ marginTop: 20 }}>
-              <Typography align="center">
-                <Link variant="body2" onClick={handleSeeMoreHousing}>
-                  See more
-                </Link>
-              </Typography>
             </Grid>
           </>
         ) : (
@@ -278,18 +334,20 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         )}
       </Grid>
 
-      <Paper style={{ width: "100%", margin: 20, padding: 50 }}>
+      <Paper style={{ width: "100%", padding: 50 }} elevation={0}>
         <Grid container item xs={12}>
           <Grid
             item
-            xs={12} md={6}
+            xs={12}
+            md={6}
             style={{ display: "flex", justifyContent: "center" }}
           >
-            <img alt="chat" src={Chat} height="250" />
+            <img alt="chat" src={Chat} height="250" border="2px solid" />
           </Grid>
           <Grid
             item
-            xs={12} md={6}
+            xs={12}
+            md={6}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -310,10 +368,10 @@ const Home = ({ posts, housingPosts, postLoading, getPostList }) => {
         </Grid>
       </Paper>
 
-      <Grid item xs={12} style={{ marginTop: 80 }}>
+      <Grid item xs={12}>
         <Footer />
       </Grid>
-    </Grid>
+    </div>
   );
 };
 
