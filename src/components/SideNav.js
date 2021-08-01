@@ -102,7 +102,7 @@ const SideNav = ({
   const [oneTimePass, setOneTimePass] = useState(true);
 
   // useEffects
-  useEffect(() => { if (user) getRoomList(user.id) }, [user.id])
+  useEffect(() => { if (user) getRoomList(user.id) }, [user])
   useEffect(() => {
     if (oneTimePass && roomList.length > 0) {
       setOneTimePass(false);
