@@ -11,9 +11,13 @@ import { connect } from "react-redux";
 
 import chatPic from "../static/chat.png";
 import roommateAddPic from "../static/roommates-button.png";
-import roommateResultsPic from "../static/roommate-matchmake.png";
+import roommateResultsPic from "../static/roommate-results2.png";
+import filterPic from "../static/filter.png";
+import searchPic from "../static/search.png";
+import darkmodePic from "../static/darkmode.png";
 import dashboardPic from "../static/dashboard.png";
-import housingPic from "../static/housing2.jfif";
+import userguidePic from "../static/userguide.png";
+import housingPic from "../static/housing.jfif";
 
 // import { editJustRegistered } from "../redux/auth/actions";
 
@@ -21,7 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export const UserGuide = ({ user, editJustRegistered }) => {
+export const UserGuide = ({ user, editJustRegistered, userGuide }) => {
   // states
   const [open, setOpen] = React.useState(true);
   const [fullWidth, setFullWidth] = React.useState(true);
@@ -49,7 +53,7 @@ export const UserGuide = ({ user, editJustRegistered }) => {
     },
     Media: {
       height: "auto",
-      width: "90%",
+      width: "80%",
       border: "2px solid #555",
     },
   }));
@@ -60,23 +64,40 @@ export const UserGuide = ({ user, editJustRegistered }) => {
   const allTexts = [
     {
       pic: dashboardPic,
-      text: "This is your own personalised dashboard, where you can have an overview of the whole website. Go ahead and customize your picture and bio as you wish!",
+      text: "This is your own personalised dashboard, where you can have an overview of the whole website. Also, you can visit the other pages from the side navigation bar on the left",
     },
     {
       pic: roommateAddPic,
-      text: "Click on the add button to find your ideal housemate",
+      text: "Click on the add button to find your ideal housemate and see your top 3 candidates in the user dashboard",
     },
     {
       pic: roommateResultsPic,
-      text: "Now you can see the results of the matchmaking algorithm as well as edit or delete your choices",
+      text: "Now you can see the results of the matchmaking algorithm as well as edit or delete your post",
+    },
+    {
+      pic: searchPic,
+      text: "Use the search bar to quickly search through the posts!",
+    },
+    {
+      pic: filterPic,
+      text: "To locate your post, select the my post filter on the right",
     },
     {
       pic: chatPic,
-      text: "Click on any of the posts for more details. Inside, you can click on the chat icon to contact the other person",
+      text: "Click on any of the posts for more details. Inside, you can click on the chat icon to contact the other person. New messages will also be shown on the side navigation bar",
     },
     {
       pic: housingPic,
-      text: "Add housing posts to your favourites via the heart icon! You can conveniently see them in the dashboard afterwards",
+      text: "Add housing posts to your favourites via the heart icon on the top right hand corner! You can conveniently see them in the dashboard afterwards",
+    },
+
+    {
+      pic: darkmodePic,
+      text: "You can also toggle between darkmode and lightmode in HouseMates!",
+    },
+    {
+      pic: userguidePic,
+      text: "If you want to see the user guide again, find me in the user dashboard!",
     },
   ];
 
@@ -84,7 +105,6 @@ export const UserGuide = ({ user, editJustRegistered }) => {
     <div>
       <Dialog
         open={user && user.just_registered}
-        // open={false}
         TransitionComponent={Transition}
         keepMounted
         fullWidth={fullWidth}
@@ -105,7 +125,7 @@ export const UserGuide = ({ user, editJustRegistered }) => {
           <DialogContentText
             id="alert-dialog-slide-description"
             align="center"
-            variant="h6"
+            variant="h5"
           >
             {currentCount + 1}. {allTexts[currentCount]["text"]}
           </DialogContentText>

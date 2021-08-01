@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, MenuItem, Paper, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, MenuItem, Paper, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography,  IconButton } from '@material-ui/core'
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess } from '../redux/post/actions'
 import { HOUSING_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT, SELECT, FILE } from '../globalConstants'
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+
 
 // HousingForm consists of stepper, (((summary of questions and user inputs) and (back and submit buttons)), or ((list of questions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 
@@ -470,6 +472,11 @@ const HousingForm = ({
     <>
       {housingQuestions.length !== 0 && housingCategories.length !== 0 ? (
         <Paper className={classes.paper}>
+          <IconButton onClick={() => history.push("/housings")}>
+            <ArrowBackIcon />Back to all posts
+          </IconButton>
+          <br />
+          <br />
           {stepper}
 
           <div>

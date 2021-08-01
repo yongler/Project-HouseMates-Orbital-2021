@@ -34,11 +34,15 @@ import ProfileComponent from "../components/ProfileComponent";
 import UserGuide from "../pages/UserGuide";
 import { HOUSING_FORM, ROOMMATE_FORM } from "../globalConstants";
 import { getScoreList, resetGetScoreListSuccess } from "../redux/score/actions";
+import NotesIcon from "@material-ui/icons/Notes";
+
+export let noNewMsg;
 
 // Profile consists of profile pic, name and list of settings.
 const Profile = ({
   isAuthenticated,
-  user, loadUser,
+  user,
+  loadUser,
   changeProfilePic,
   editBio,
   editBioSuccess,
@@ -48,7 +52,9 @@ const Profile = ({
   roomList,
   getRoomList,
   editJustRegistered,
-  scoreList, getScoreList, resetGetScoreListSuccess,
+  scoreList,
+  getScoreList,
+  resetGetScoreListSuccess,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -128,22 +134,32 @@ const Profile = ({
   // componentDidMount
   useEffect(() => {
     if (editBioSuccess) {
-      loadUser()
-      resetEditBioSuccess()
+      loadUser();
+      resetEditBioSuccess();
     }
   }, [editBioSuccess]);
 
   // Top 3 roommates
   // Get user roommate post score list
-  useEffect(() => { if (user) getScoreList(undefined, user.id) }, [user]);
+  useEffect(() => {
+    if (user) getScoreList(undefined, user.id);
+  }, [user]);
   // Get top 3 roommate post ids and process user roommate post score list
   useEffect(() => {
     if (scoreList.length > 0) {
-      const temp = scoreList.slice(0, 3).map(post => user.id === post.owner1 ? post.post2 : post.post1)
-      setTopThreeRoommatesId(temp)
-      const temp2 = scoreList.reduce((prev, curr) => ({ ...prev, [user.id === curr.owner1 ? curr.post2 : curr.post1]: curr }), {})
-      setScoreListObj(temp2)
-      return () => resetGetScoreListSuccess()
+      const temp = scoreList
+        .slice(0, 3)
+        .map((post) => (user.id === post.owner1 ? post.post2 : post.post1));
+      setTopThreeRoommatesId(temp);
+      const temp2 = scoreList.reduce(
+        (prev, curr) => ({
+          ...prev,
+          [user.id === curr.owner1 ? curr.post2 : curr.post1]: curr,
+        }),
+        {}
+      );
+      setScoreListObj(temp2);
+      return () => resetGetScoreListSuccess();
     }
   }, [scoreList]);
   // Get top 3 roommate post detail pages
@@ -163,7 +179,6 @@ const Profile = ({
   }, [post]);
 
   // New messages
-  useEffect(() => { if (user) getRoomList(user.id) }, [user])
   useEffect(() => {
     const temp3 = roomList.slice(0, 3)
       .filter((room) => room.messages.reduce((prev, curr) =>
@@ -179,7 +194,9 @@ const Profile = ({
     }
   }, [roomList])
 
-  if (!isAuthenticated) { return <Redirect to="/login" />; }
+  if (!isAuthenticated) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>
@@ -187,7 +204,12 @@ const Profile = ({
       <div className={classes.card}>
         {user && (
           <>
-            <Typography variant="h6" style={{ marginLeft: 5, marginBottom: 10 }}>User Dashboard</Typography>
+            <Typography
+              variant="h6"
+              style={{ marginLeft: 5, marginBottom: 10 }}
+            >
+              User Dashboard
+            </Typography>
             <Grid container spacing={3}>
               <Grid container item xs={12} spacing={3}>
                 {/* Profile */}
@@ -207,16 +229,19 @@ const Profile = ({
                           </IconButton>
                         }
                       >
-                        <Avatar className={classes.avatar} src={user.profile_pic} />
+                        <Avatar
+                          className={classes.avatar}
+                          src={user.profile_pic}
+                        />
                       </Badge>
 
                       <input
                         type="file"
                         id="image"
                         accept="image/png, image/jpeg"
-                        onChange={e => handleUpload(e)}
+                        onChange={(e) => handleUpload(e)}
                         ref={fileInput}
-                        style={{ display: 'none' }}
+                        style={{ display: "none" }}
                       />
                     </Grid>
                     {/* Name and bio */}
@@ -227,8 +252,7 @@ const Profile = ({
                       </Typography>
                       {/* Bio */}
                       <Box mb={3}>
-                        {editBioTextFieldOpen
-                          ?
+                        {editBioTextFieldOpen ? (
                           <form onSubmit={handleEditBio}>
                             <Grid container>
                               <Grid item xs={12}>
@@ -251,7 +275,8 @@ const Profile = ({
                                   marginTop: 8,
                                 }}
                               >
-                                <Button size="small"
+                                <Button
+                                  size="small"
                                   onClick={handleCancel}
                                   style={{ marginRight: 8 }}
                                 >
@@ -268,28 +293,28 @@ const Profile = ({
                               </Grid>
                             </Grid>
                           </form>
-                          : user.bio
-                            ?
-                            // Bio
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Typography variant="body1" color="textSecondary">
-                                {user.bio}
-                              </Typography>
-                              <Link variant="body2" onClick={handleEdit}>
-                                Edit
-                              </Link>
-                            </div>
-                            :
-                            // Add bio link
-                            <Link variant="body2" onClick={handleClick}>
-                              Add bio...
-                            </Link>}
+                        ) : user.bio ? (
+                          // Bio
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography variant="body1" color="textSecondary">
+                              {user.bio}
+                            </Typography>
+                            <Link variant="body2" onClick={handleEdit}>
+                              Edit
+                            </Link>
+                          </div>
+                        ) : (
+                          // Add bio link
+                          <Link variant="body2" onClick={handleClick}>
+                            Add bio...
+                          </Link>
+                        )}
                       </Box>
                     </Grid>
                     <Grid item xs={0} md={1} />
@@ -298,7 +323,7 @@ const Profile = ({
 
                 {/* Account settings */}
                 <Grid item xs={12} md={4}>
-                  <Paper style={{ padding: 20, height: 240, minWidth: 230 }}>
+                  <Paper style={{ padding: 20, height: 140, minWidth: 230, marginBottom: 20 }}>
                     <MenuList>
                       <span style={{ display: "flex", alignItems: "center" }}>
                         <AccountBoxIcon style={{ marginRight: 10 }} />
@@ -309,7 +334,7 @@ const Profile = ({
                       <MenuItem
                         style={{ marginLeft: -10 }}
                         onClick={handleChangePassword}
-                      >
+                        >
                         <Typography noWrap>Change password</Typography>
                       </MenuItem>
                       <MenuItem
@@ -320,6 +345,19 @@ const Profile = ({
                       </MenuItem>
                     </MenuList>
                   </Paper>
+                  <Paper style={{ padding: 20, height: 80, minWidth: 230}}>
+                    <MenuList>
+                      <MenuItem
+                        style={{ marginLeft: -10 }}
+                        onClick={() => editJustRegistered(user.first_name, user.last_name, user.id, true)}
+                      >
+                        <NotesIcon style={{ marginRight: 10 }} />
+                        <Typography variant="h6" display="inline" noWrap>
+                          User Guide
+                        </Typography>
+                      </MenuItem>
+                    </MenuList>
+                  </Paper>
                 </Grid>
               </Grid>
 
@@ -327,7 +365,13 @@ const Profile = ({
                 {/* Top 3 roommates */}
                 <Grid item xs={12} md={4}>
                   <Paper style={{ padding: 10, minWidth: 230 }}>
-                    <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <span
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <PeopleIcon style={{ marginRight: 10 }} />
                       <Typography variant="h6" display="inline" noWrap>
                         Top 3 Roommates
@@ -345,7 +389,9 @@ const Profile = ({
                       topThreeRoommates.map((post) => (
                         <ProfileComponent
                           key={post.owner.id}
-                          name={post.owner.first_name + " " + post.owner.last_name}
+                          name={
+                            post.owner.first_name + " " + post.owner.last_name
+                          }
                           desc={post.owner.bio}
                           pic={post.owner.profile_pic}
                           scoreListObj={scoreListObj}
@@ -360,7 +406,13 @@ const Profile = ({
                 {/* Starred housings */}
                 <Grid item xs={12} md={4}>
                   <Paper style={{ padding: 10, minWidth: 230 }}>
-                    <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <span
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <HomeIcon style={{ marginRight: 10 }} />
                       <Typography variant="h6" display="inline" noWrap>
                         Starred Housings
@@ -392,14 +444,19 @@ const Profile = ({
                 {/* New messages */}
                 <Grid item xs={12} md={4}>
                   <Paper style={{ padding: 10, minWidth: 230 }}>
-                    <span style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <span
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <ChatIcon style={{ marginRight: 10 }} />
                       <Typography variant="h6" display="inline" noWrap>
                         New messages
                       </Typography>
                     </span>
-                    {newMsgs.length === 0
-                      ?
+                    {newMsgs.length === 0 ? (
                       <Typography
                         variant="body1"
                         color="textSecondary"
@@ -407,25 +464,46 @@ const Profile = ({
                       >
                         No new messages.
                       </Typography>
-                      :
+                    ) : (
                       <>
                         {newMsgs.map((room) => (
                           <ProfileComponent
                             key={room.id}
-                            chatUser={user.id === room.owner1.id
-                              ? room.owner2
-                              : room.owner1}
-                            name={user.id === room.owner1.id
-                              ? room.owner2.first_name + " " + room.owner2.last_name
-                              : room.owner1.first_name + " " + room.owner1.last_name}
-                            desc={room.messages[room.messages.length - 1].message}
-                            pic={user.id === room.owner1.id
-                              ? room.owner2.profile_pic
-                              : room.owner1.profile_pic}
-                            unreadMsgs={room.messages.reduce((prev, curr) =>
-                              prev + (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? 1 : 0), 0)}
-                          />))}
-                      </>}
+                            chatUser={
+                              user.id === room.owner1.id
+                                ? room.owner2
+                                : room.owner1
+                            }
+                            name={
+                              user.id === room.owner1.id
+                                ? room.owner2.first_name +
+                                  " " +
+                                  room.owner2.last_name
+                                : room.owner1.first_name +
+                                  " " +
+                                  room.owner1.last_name
+                            }
+                            desc={
+                              room.messages[room.messages.length - 1].message
+                            }
+                            pic={
+                              user.id === room.owner1.id
+                                ? room.owner2.profile_pic
+                                : room.owner1.profile_pic
+                            }
+                            unreadMsgs={room.messages.reduce(
+                              (prev, curr) =>
+                                prev +
+                                (!curr.hasRead &&
+                                curr.user_id.toString() !== user.id.toString()
+                                  ? 1
+                                  : 0),
+                              0
+                            )}
+                          />
+                        ))}
+                      </>
+                    )}
                   </Paper>
                 </Grid>
               </Grid>
@@ -434,7 +512,7 @@ const Profile = ({
         )}
       </div>
     </>
-  )
+  );
 };
 
 const mapStateToProps = (state) => ({

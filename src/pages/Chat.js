@@ -48,6 +48,7 @@ const Chat = ({
   checkChatHistory,
   resetChatHistory,
   editMsg,
+  OneSignal,
   userRoommatePosts, getUserPosts,
 }) => {
   // Styling
@@ -167,6 +168,15 @@ const Chat = ({
                 user_id: dataFromServer.owner,
               },
             ]);
+            OneSignal.sendSelfNotification(
+              "HouseMates Notification",
+              "You have a new chat message!",
+              "https://localhost:3000/chat",
+              'https://onesignal.com/images/notification_logo.png',
+              {
+                notificationType: "news-feature",
+              }
+            );
           }
           getRoomList(user.id);
         };

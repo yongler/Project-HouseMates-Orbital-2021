@@ -49,6 +49,7 @@ const NavBar = ({
   setTheme,
   theme,
   changeTheme,
+  OneSignal,
 }) => {
   // Styling (from left to right)
   const useStyles = makeStyles((theme) => ({
@@ -161,6 +162,18 @@ const NavBar = ({
     changeTheme(user.id, !theme);
   };
 
+  const handleNoti = () => {
+    OneSignal.sendSelfNotification(
+      "HouseMates Notification",
+      "You have a new chat message!",
+      "https://localhost:3000/chat",
+      "https://onesignal.com/images/notification_logo.png",
+      {
+        notificationType: "news-feature",
+      }
+    );
+  };
+
   // ComponentDidmount
   useEffect(() => {
     if (user) setTheme(user.light_theme);
@@ -202,7 +215,8 @@ const NavBar = ({
           <div className={classes.grow} />
 
           {/* Search bar */}
-          {(location.pathname === "/roommates" || location.pathname === "/housings") && (
+          {(location.pathname === "/roommates" ||
+            location.pathname === "/housings") && (
             <SearchBar
               className={classes.search}
               value={data.search}
@@ -265,13 +279,14 @@ const NavBar = ({
                                 edge="end"
                                 color="inherit"
                                 aria-label="mode"
-                                style={{ backgroundColor: 'transparent' }}
+                                style={{ backgroundColor: "transparent" }}
                                 disableRipple
                               >
                                 {icon}
                               </IconButton>
                             </MenuItem>
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                            {/* <MenuItem onClick={handleNoti}>Noti</MenuItem> */}
                           </MenuList>
                         </ClickAwayListener>
                       </Paper>

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, MenuItem, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography } from '@material-ui/core'
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, MenuItem, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography,  IconButton } from '@material-ui/core'
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess, resetPostList, searchPost } from '../redux/post/actions'
 import { ROOMMATE_FORM, MULTIPLE_CHOICE, SINGLE_CHOICE, TEXT, PRIORITY, SELF, OTHER, MY_COLUMN_ONLY, IS_10000 } from '../globalConstants'
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+
 
 // RoommateForm consists of stepper, (((summary of roommateQuestions and user inputs) and (back and submit buttons)), or ((list of roommateQuestions with their corresponding list of choices based on category) and (back and next buttons))), dependent on current category. A confirmation dialog will popped up upon submission.
 
@@ -775,6 +777,11 @@ const RoommateForm = ({
       {roommateQuestions.length !== 0 && roommateCategories.length !== 0
         ?
         <Paper className={classes.paper}>
+              <IconButton onClick={() => history.push("/housings")}>
+            <ArrowBackIcon />Back to all posts
+          </IconButton>
+          <br />
+          <br />
           {stepper}
 
           <div>
