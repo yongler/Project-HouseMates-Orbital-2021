@@ -74,7 +74,7 @@ const Chat = ({
   const [messages, setMessages] = useState([]);
   const [client, setClient] = useState(null);
   const [msgText, setMsgText] = useState("");
-  const [roomListByLabel, setRoomListByLabel] = useState([]);
+  const [roomListByLabel, setRoomListByLabel] = useState({});
   const [oneTimePass, setOneTimePass] = useState(true)
   const [postId, setPostId] = useState(null)
 
@@ -184,9 +184,10 @@ const Chat = ({
     if (room) {
       const temp = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room + "/");
       setClient(temp);
-      if (roomListByLabel[room]?.id !== activeRoom?.id)
-        setActiveRoom(roomListByLabel[room]);
-      setMessages(roomListByLabel[room]?.messages);
+    }
+    if (roomListByLabel[room]) {
+      if (roomListByLabel[room].id !== activeRoom?.id) setActiveRoom(roomListByLabel[room]);
+      setMessages(roomListByLabel[room].messages);
       getUserPosts(roomListByLabel[room].user1 === user.id ? roomListByLabel[room].user2 : roomListByLabel[room].user1, ROOMMATE_FORM)
     }
   }, [room]);
@@ -354,7 +355,7 @@ const Chat = ({
                         : activeRoom?.owner1?.profile_pic
                     }
                     style={{ marginLeft: 10 }}
-                    className={clsx({[classes.pointer]: userRoommatePosts.length > 0})}
+                    className={clsx({ [classes.pointer]: userRoommatePosts.length > 0 })}
                     onClick={handlePostDetail}
                   />
                   <Typography variant="h6" style={{ marginLeft: 20 }} noWrap>

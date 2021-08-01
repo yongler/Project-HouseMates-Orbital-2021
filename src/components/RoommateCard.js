@@ -174,7 +174,7 @@ const RoommateCard = ({
             title={post.owner.first_name + " " + post.owner.last_name}
           />
 
-          <CardActionArea>
+          <CardActionArea style={{ height: 263 }}>
             {/* Poster's description */}
             <CardContent>
               {/* Name */}

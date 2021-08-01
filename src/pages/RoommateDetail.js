@@ -103,9 +103,11 @@ const RoommateDetail = ({
               </span>
 
               {/* Bio */}
-              <Typography variant="body1" style={{ marginTop: -5 }}>
-                {post.owner.bio}
-              </Typography>
+              <div style={{ maxWidth: "60%" }}>
+                <Typography variant="body1" style={{ marginTop: -5 }} align="center">
+                  {post.owner.bio}
+                </Typography>
+              </div>
 
               <Divider style={{ width: "70%", marginBottom: 20, marginTop: 20 }} />
 
