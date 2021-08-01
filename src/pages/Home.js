@@ -144,9 +144,9 @@ const Home = ({
               }}
             >
               <YoutubePlayer
-                src="https://youtu.be/jtneFF4psgM?autoplay=1&mute=1" // Reqiured
-                width={650}
-                height={365}
+                src="https://youtu.be/jtneFF4psgM?autoplay=1&mute=1" // Required
+                width={600}
+                height={350}
               />
             </Grid>
 
@@ -167,15 +167,15 @@ const Home = ({
                 align="center"
                 color={classes.blackText}
               >
-                Be it finding an accomodation with a housemate, or promoting
-                your properties,
+                Be it finding an accomodation with a housemate or promoting your
+                properties,
               </BlackTextTypography>
               <BlackTextTypography
                 variant="body1"
                 align="center"
                 color="primary"
               >
-                we cater towards your accomodation related needs.
+                we cater towards all your needs.
               </BlackTextTypography>
               <br />
               <BlackTextTypography

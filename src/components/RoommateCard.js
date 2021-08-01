@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
 import {
+  Avatar,
   Card,
   CardActionArea,
   CardContent,
@@ -22,18 +23,33 @@ import {
   setPage,
 } from "../redux/post/actions";
 import Confirmation from "../components/Confirmation";
-import { A_LITTLE_IMPORTANT, IRRELEVANT, IS_10000, MANDATORY, PAGINATION, ROOMMATE_FORM, SOMEWHAT_IMPORTANT, VERY_IMPORTANT, TAGS_NUMBER } from "../globalConstants";
+import {
+  A_LITTLE_IMPORTANT,
+  IRRELEVANT,
+  IS_10000,
+  MANDATORY,
+  PAGINATION,
+  ROOMMATE_FORM,
+  SOMEWHAT_IMPORTANT,
+  VERY_IMPORTANT,
+  TAGS_NUMBER,
+} from "../globalConstants";
 import { loadUser } from "../redux/auth/actions";
 import { getScoreList } from "../redux/score/actions";
 
 // RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.fUSER
 const RoommateCard = ({
-  post, scoreListObj,
+  post,
+  scoreListObj,
   user,
-  deletePost, deletePostSuccess, resetDeletePostSuccess,
+  deletePost,
+  deletePostSuccess,
+  resetDeletePostSuccess,
   getPostList,
   getUserPosts,
-  page, count, setPage,
+  page,
+  count,
+  setPage,
   getScoreList,
 }) => {
   // Styling
@@ -93,12 +109,12 @@ const RoommateCard = ({
     resetDeletePostSuccess();
     if (page > 1 && page > Math.ceil((count - 1) / PAGINATION)) {
       getPostList(ROOMMATE_FORM, page - 1);
-      setPage(page - 1)
+      setPage(page - 1);
     } else {
       getPostList(ROOMMATE_FORM, page);
     }
     getUserPosts(user.id, ROOMMATE_FORM);
-    getScoreList(undefined, user.id)
+    getScoreList(undefined, user.id);
     setOpen(false);
   };
 
@@ -180,12 +196,13 @@ const RoommateCard = ({
               {/* Name */}
               <Typography variant="h5" color="textPrimary">
                 {post.owner.first_name} {post.owner.last_name}{" "}
-                {scoreListObj?.[post.id] &&
+                {scoreListObj?.[post.id] && (
                   <Chip
                     label={scoreListObj[post.id].score + "%"}
                     color="secondary"
                     className={classes.tag}
-                  />}
+                  />
+                )}
               </Typography>
 
               {/* Bio */}
