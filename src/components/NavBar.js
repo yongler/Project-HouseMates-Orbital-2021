@@ -50,6 +50,7 @@ const NavBar = ({
   theme,
   changeTheme,
   OneSignal,
+  disableButton,
 }) => {
   // Styling (from left to right)
   const useStyles = makeStyles((theme) => ({
@@ -184,15 +185,17 @@ const NavBar = ({
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           {/* Menu button */}
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleMenuButton}
-            edge="start"
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
+          {!disableButton && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleMenuButton}
+              edge="start"
+              className={classes.menuButton}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
 
           {/* Logo */}
           <img
@@ -274,6 +277,8 @@ const NavBar = ({
                       <Paper>
                         <ClickAwayListener onClickAway={handleMenuClose}>
                           <MenuList>
+                            {/* {!disableButton && (
+                              <> */}
                             <MenuItem onClick={handleDarkMode}>
                               <IconButton
                                 edge="end"
@@ -284,6 +289,11 @@ const NavBar = ({
                               >
                                 {icon}
                               </IconButton>
+                            </MenuItem>
+                            {/* </>
+                            )} */}
+                            <MenuItem onClick={() => history.push("/profile")}>
+                              Dashboard
                             </MenuItem>
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             {/* <MenuItem onClick={handleNoti}>Noti</MenuItem> */}
