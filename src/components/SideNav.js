@@ -100,24 +100,14 @@ const SideNav = ({
   const [oneTimePass, setOneTimePass] = useState(true);
 
   // useEffects
+  useEffect(() => { if (user) getRoomList(user.id) }, [user.id])
   useEffect(() => {
     if (oneTimePass && roomList.length > 0) {
       setOneTimePass(false);
       roomList.forEach((room) => {
-        const temp4 = new W3CWebSocket(
-          ws_scheme +
-            "://" +
-            window.location.host +
-            "/ws/chat/" +
-            room.label +
-            "/"
-        );
-        temp4.onopen = () => {
-          console.log("WebSocket Client Connected: ", room.label);
-        };
-        temp4.onmessage = () => {
-          getRoomList(user.id);
-        };
+        const temp4 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
+        temp4.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
+        temp4.onmessage = () => { getRoomList(user.id); };
       });
     }
   }, [roomList]);
@@ -153,7 +143,7 @@ const SideNav = ({
                 (prevMsg, currMsg) =>
                   prevMsg +
                   (!currMsg.hasRead &&
-                  currMsg.user_id.toString() !== user.id.toString()
+                    currMsg.user_id.toString() !== user.id.toString()
                     ? 1
                     : 0),
                 0

@@ -141,9 +141,7 @@ const Profile = ({
 
   // Top 3 roommates
   // Get user roommate post score list
-  useEffect(() => {
-    if (user) getScoreList(undefined, user.id);
-  }, [user]);
+  useEffect(() => { if (user) getScoreList(undefined, user.id); }, [user]);
   // Get top 3 roommate post ids and process user roommate post score list
   useEffect(() => {
     if (scoreList.length > 0) {
@@ -179,6 +177,7 @@ const Profile = ({
   }, [post]);
 
   // New messages
+  useEffect(() => { if (user) getRoomList(user.id) }, [user])
   useEffect(() => {
     const temp3 = roomList.slice(0, 3)
       .filter((room) => room.messages.reduce((prev, curr) =>
@@ -334,7 +333,7 @@ const Profile = ({
                       <MenuItem
                         style={{ marginLeft: -10 }}
                         onClick={handleChangePassword}
-                        >
+                      >
                         <Typography noWrap>Change password</Typography>
                       </MenuItem>
                       <MenuItem
@@ -345,7 +344,7 @@ const Profile = ({
                       </MenuItem>
                     </MenuList>
                   </Paper>
-                  <Paper style={{ padding: 20, height: 80, minWidth: 230}}>
+                  <Paper style={{ padding: 20, height: 80, minWidth: 230 }}>
                     <MenuList>
                       <MenuItem
                         style={{ marginLeft: -10 }}
@@ -477,11 +476,11 @@ const Profile = ({
                             name={
                               user.id === room.owner1.id
                                 ? room.owner2.first_name +
-                                  " " +
-                                  room.owner2.last_name
+                                " " +
+                                room.owner2.last_name
                                 : room.owner1.first_name +
-                                  " " +
-                                  room.owner1.last_name
+                                " " +
+                                room.owner1.last_name
                             }
                             desc={
                               room.messages[room.messages.length - 1].message
@@ -495,7 +494,7 @@ const Profile = ({
                               (prev, curr) =>
                                 prev +
                                 (!curr.hasRead &&
-                                curr.user_id.toString() !== user.id.toString()
+                                  curr.user_id.toString() !== user.id.toString()
                                   ? 1
                                   : 0),
                               0
