@@ -198,9 +198,11 @@ const Chat = ({
     if (roomListByLabel[room]) {
       if (roomListByLabel[room].id !== activeRoom?.id) setActiveRoom(roomListByLabel[room]);
       setMessages(roomListByLabel[room].messages);
-      getUserPosts(roomListByLabel[room].user1 === user.id ? roomListByLabel[room].user2 : roomListByLabel[room].user1, ROOMMATE_FORM)
     }
-  }, [room]);
+    if (roomListByLabel[room] && user) {
+       getUserPosts(roomListByLabel[room].user1 === user.id ? roomListByLabel[room].user2 : roomListByLabel[room].user1, ROOMMATE_FORM)
+    }
+  }, [room, roomListByLabel, user]);
   useEffect(() => {
     if (userRoommatePosts.length > 0) setPostId(userRoommatePosts[0].id)
   }, [userRoommatePosts])

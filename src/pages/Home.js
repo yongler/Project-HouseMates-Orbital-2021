@@ -55,7 +55,7 @@ const Home = ({
   const handleLogin = () => history.push("/login");
   const handleRegister = () => history.push("/register");
   const handleSeeMore = () => history.push("/roommates");
-  const handleSeeMoreHousing = () => history.push("/housing");
+  const handleSeeMoreHousing = () => history.push("/housings");
 
   const [menuOpen, setMenuOpen] = useState(false);
 
