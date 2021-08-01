@@ -18,6 +18,7 @@ import videoPoster from "../static/videoPoster.png";
 import { ReactVideo } from "reactjs-media";
 import { YoutubePlayer } from "reactjs-media";
 import NavBar from "../components/NavBar";
+import { withStyles } from "@material-ui/core/styles";
 
 const Home = ({
   posts,
@@ -31,12 +32,15 @@ const Home = ({
   const useStyles = makeStyles((theme) => ({
     button: {
       borderRadius: 20,
+      borderColor: "black",
       "&:hover": {
         backgroundColor: theme.palette.primary.main,
-        color: "white",
+        color: "black",
       },
+      color: "black",
     },
     greyPaper: { background: "#f2f2f2" },
+    blackText: { color: "#000000" },
   }));
 
   // After render
@@ -63,55 +67,66 @@ const Home = ({
     setMenuOpen(!menuOpen);
   };
 
+  const BlackTextTypography = withStyles({
+    root: {
+      color: "#000000",
+    },
+  })(Typography);
+
   return (
     <>
-      {/* <NavBar
+      <NavBar
         handleMenuButton={handleMenuButton}
         setTheme={setTheme}
         theme={theme}
-      /> */}
-      <div className={classes.greyPaper}>
-        <Paper style={{ width: "100%" }} elevation={0}>
-          <Grid
-            item
-            xs={12}
-            style={{ display: "flex", justifyContent: "center" }}
+        disableButton={true}
+      />
+      <br />
+      <br />
+
+      <Paper style={{ width: "100%" }} elevation={0}>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <img
+            alt="home"
+            src={Pic}
+            width="100%"
+            height="auto"
+            style={{ opacity: 0.3 }}
+          />
+
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "600",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 200,
+            }}
           >
             <img
-              alt="home"
-              src={Pic}
-              width="100%"
-              height="auto"
-              style={{ opacity: 0.3 }}
+              alt="logo"
+              src={Logo}
+              width="100"
+              height="100"
+              // style={{ marginRight: 20 }}
             />
-
-            <div
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "600",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <img
-                alt="logo"
-                src={Logo}
-                width="100"
-                height="100"
-                // style={{ marginRight: 20 }}
-              />
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <Typography variant="h2">Welcome to HouseMates.</Typography>
-                <Typography variant="h5">
-                  Your one stop solution to a warm stay in Singapore.
-                </Typography>
-              </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <Typography variant="h2">Welcome to HouseMates.</Typography>
+              <Typography variant="h5">
+                Your one stop solution to a warm stay in Singapore.
+              </Typography>
             </div>
-          </Grid>
-        </Paper>
+          </div>
+        </Grid>
+      </Paper>
 
+      <div className={classes.greyPaper}>
         <Paper
           style={{ width: "100%", padding: 50 }}
           elevation={0}
@@ -147,18 +162,29 @@ const Home = ({
                 alignItems: "center",
               }}
             >
-              <Typography variant="body1" align="center">
+              <BlackTextTypography
+                variant="body1"
+                align="center"
+                color={classes.blackText}
+              >
                 Be it finding an accomodation with a housemate, or promoting
                 your properties,
-              </Typography>
-              <Typography variant="body1" align="center"></Typography>
-              <Typography variant="body1" align="center">
+              </BlackTextTypography>
+              <BlackTextTypography
+                variant="body1"
+                align="center"
+                color="primary"
+              >
                 we cater towards your accomodation related needs.
-              </Typography>
+              </BlackTextTypography>
               <br />
-              <Typography variant="body1" align="center">
+              <BlackTextTypography
+                variant="body1"
+                align="center"
+                color="primary"
+              >
                 Login or sign up now! No phone numbers required.
-              </Typography>
+              </BlackTextTypography>
               <div style={{ marginTop: 30 }}>
                 <Button
                   variant="outlined"
@@ -224,16 +250,17 @@ const Home = ({
           align="center"
         >
           <Grid item xs={6}>
-            <Typography
+            <BlackTextTypography
               variant="h4"
               align="left"
               style={{
                 marginLeft: 120,
                 marginBottom: 20,
               }}
+              color="primary"
             >
               Latest Housemates
-            </Typography>
+            </BlackTextTypography>
           </Grid>
           <Grid item xs={6}>
             <Typography
@@ -320,16 +347,17 @@ const Home = ({
           style={{ marginTop: 50 }}
         >
           <Grid item xs={6}>
-            <Typography
+            <BlackTextTypography
               variant="h4"
               align="left"
               style={{
                 marginLeft: 150,
                 marginBottom: 20,
               }}
+              color="primary"
             >
               Latest Housings
-            </Typography>
+            </BlackTextTypography>
           </Grid>
           <Grid item xs={6}>
             <Typography

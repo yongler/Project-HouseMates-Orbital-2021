@@ -244,19 +244,12 @@ const App = () => {
                 OneSignal={OneSignal}
               />
               {/* Routes with no layout */}
-              <Route
-                exact
-                path="/"
-                component={Home}
-                setTheme={setTheme}
-                theme={theme}
-              />
-              <Route
-                path="*"
-                component={Home}
-                setTheme={setTheme}
-                theme={theme}
-              />
+              <Route path="/">
+                <Home setTheme={setTheme} theme={theme} />
+              </Route>
+              <Route path="*">
+                <Home setTheme={setTheme} theme={theme} />
+              </Route>
             </Switch>
           </Layout>
         </BrowserRouter>
