@@ -19,6 +19,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import NotesIcon from "@material-ui/icons/Notes";
 import { setPage } from "../redux/post/actions";
 import { getRoomList } from "../redux/chat/actions";
+import { loadUser } from "../redux/auth/actions";
 
 // SideNav consists of list of tabs.
 const SideNav = ({
@@ -32,6 +33,7 @@ const SideNav = ({
   setPage,
   roomList,
   getRoomList,
+  loadUser,
 }) => {
   // Styling
   const useStyles = makeStyles((theme) => ({
@@ -100,6 +102,10 @@ const SideNav = ({
   const [oneTimePass, setOneTimePass] = useState(true);
 
   // useEffects
+  // useEffect(() => {
+  //   loadUser();
+  // }, []);
+
   useEffect(() => {
     if (oneTimePass && roomList.length > 0) {
       setOneTimePass(false);
@@ -153,6 +159,7 @@ const SideNav = ({
                 (prevMsg, currMsg) =>
                   prevMsg +
                   (!currMsg.hasRead &&
+                  user &&
                   currMsg.user_id.toString() !== user.id.toString()
                     ? 1
                     : 0),
@@ -222,6 +229,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   setPage,
   getRoomList,
+  loadUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideNav);
