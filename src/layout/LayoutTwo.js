@@ -82,7 +82,6 @@ const LayoutTwo = ({
         handleMenuButton={handleMenuButton}
         setTheme={setTheme}
         theme={theme}
-        OneSignal={OneSignal}
       />
 
       {/* SideNav */}

@@ -251,12 +251,12 @@ const App = () => {
                 setTheme={setTheme}
                 theme={theme}
               />
-              {/* <Route
+              <Route
                 path="*"
                 component={Home}
                 setTheme={setTheme}
                 theme={theme}
-              /> */}
+              />
             </Switch>
           </Layout>
         </BrowserRouter>

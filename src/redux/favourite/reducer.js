@@ -5,59 +5,59 @@ import {
   DELETE_FAVOURITE_FAIL,
   RESET_CREATE_FAVOURTIE_SUCCESS,
   RESET_DELETE_FAVOURTIE_SUCCESS,
-} from './types'
+} from "./types";
 
 const initialState = {
   favouriteErrorMsg: "",
   createFavouriteSuccess: false,
   deleteFavouriteSuccess: false,
-}
+};
 
 const favouriteReducer = (state = initialState, action) => {
-  const { type, payload } = action
+  const { type, payload } = action;
 
   switch (type) {
     case CREATE_FAVOURITE_SUCCESS:
       return {
         ...state,
         createFavouriteSuccess: true,
-      }
+      };
 
     case CREATE_FAVOURITE_FAIL:
       return {
         ...state,
         favouriteErrorMsg: payload,
         createFavouriteSuccess: false,
-      }
+      };
 
     case DELETE_FAVOURITE_SUCCESS:
       return {
         ...state,
         deleteFavouriteSuccess: true,
-      }
+      };
 
     case DELETE_FAVOURITE_FAIL:
       return {
         ...state,
         favouriteErrorMsg: payload,
         deleteFavouriteSuccess: false,
-      }
+      };
 
     case RESET_CREATE_FAVOURTIE_SUCCESS:
       return {
         ...state,
         createFavouriteSuccess: false,
-      }
+      };
 
-    case RESET_CREATE_FAVOURTIE_SUCCESS:
+    case RESET_DELETE_FAVOURTIE_SUCCESS:
       return {
         ...state,
         deleteFavouriteSuccess: false,
-      }
+      };
 
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default favouriteReducer
+export default favouriteReducer;

@@ -83,9 +83,9 @@ const Profile = ({
   const [bio, setBio] = useState("");
   const [topThreeRoommatesId, setTopThreeRoommatesId] = useState([]);
   const [topThreeRoommates, setTopThreeRoommates] = useState([]);
-  const [newMsgs, setNewMsgs] = useState([])
-  const [scoreListObj, setScoreListObj] = useState({})
-  const [oneTimePass, setOneTimePass] = useState(true)
+  const [newMsgs, setNewMsgs] = useState([]);
+  const [scoreListObj, setScoreListObj] = useState({});
+  const [oneTimePass, setOneTimePass] = useState(true);
 
   // Constants
   const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
@@ -179,19 +179,40 @@ const Profile = ({
   // New messages
   useEffect(() => { if (user) getRoomList(user.id) }, [user])
   useEffect(() => {
-    const temp3 = roomList.slice(0, 3)
-      .filter((room) => room.messages.reduce((prev, curr) =>
-        prev || (!curr.hasRead && curr.user_id.toString() !== user.id.toString() ? true : false), false))
-    setNewMsgs(temp3)
+    // loadUser();
+    const temp3 = roomList
+      .slice(0, 3)
+      .filter((room) =>
+        room.messages.reduce(
+          (prev, curr) =>
+            prev ||
+            (!curr.hasRead && curr.user_id.toString() !== user.id.toString()
+              ? true
+              : false),
+          false
+        )
+      );
+    setNewMsgs(temp3);
     if (oneTimePass && roomList.length > 0) {
-      setOneTimePass(false)
+      setOneTimePass(false);
       roomList.forEach((room) => {
-        const temp4 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
-        temp4.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
-        temp4.onmessage = () => { getRoomList(user.id); };
+        const temp4 = new W3CWebSocket(
+          ws_scheme +
+            "://" +
+            window.location.host +
+            "/ws/chat/" +
+            room.label +
+            "/"
+        );
+        temp4.onopen = () => {
+          console.log("WebSocket Client Connected: ", room.label);
+        };
+        temp4.onmessage = () => {
+          getRoomList(user.id);
+        };
       });
     }
-  }, [roomList])
+  }, [roomList]);
 
   if (!isAuthenticated) {
     return <Redirect to="/login" />;
@@ -213,7 +234,15 @@ const Profile = ({
               <Grid container item xs={12} spacing={3}>
                 {/* Profile */}
                 <Grid container item xs={12} md={8}>
-                  <Paper style={{ width: "100%", display: "flex", flexWrap: "wrap", padding: 10, minWidth: 230 }}>
+                  <Paper
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexWrap: "wrap",
+                      padding: 10,
+                      minWidth: 230,
+                    }}
+                  >
                     {/* Profile pic */}
                     <Grid item xs={12} md={6} align="center">
                       <Badge
@@ -322,7 +351,14 @@ const Profile = ({
 
                 {/* Account settings */}
                 <Grid item xs={12} md={4}>
-                  <Paper style={{ padding: 20, height: 140, minWidth: 230, marginBottom: 20 }}>
+                  <Paper
+                    style={{
+                      padding: 20,
+                      height: 140,
+                      minWidth: 230,
+                      marginBottom: 20,
+                    }}
+                  >
                     <MenuList>
                       <span style={{ display: "flex", alignItems: "center" }}>
                         <AccountBoxIcon style={{ marginRight: 10 }} />
@@ -348,7 +384,14 @@ const Profile = ({
                     <MenuList>
                       <MenuItem
                         style={{ marginLeft: -10 }}
-                        onClick={() => editJustRegistered(user.first_name, user.last_name, user.id, true)}
+                        onClick={() =>
+                          editJustRegistered(
+                            user.first_name,
+                            user.last_name,
+                            user.id,
+                            true
+                          )
+                        }
                       >
                         <NotesIcon style={{ marginRight: 10 }} />
                         <Typography variant="h6" display="inline" noWrap>
