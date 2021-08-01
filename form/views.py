@@ -19,7 +19,7 @@ class QuestionView(viewsets.ModelViewSet):
 	serializer_class = QuestionSerializer
 
 	def get_queryset(self):
-		queryset = Question.objects.all()
+		queryset = Question.objects.all().order_by('id')
 		form_type = self.request.query_params.get('form_type')
 		if form_type is not None:
 			queryset = queryset.filter(question_form_type=form_type)
