@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, MenuItem, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography,  IconButton } from '@material-ui/core'
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Paper, MenuItem, Radio, RadioGroup, Select, Step, StepButton, Stepper, TextField, Typography, IconButton } from '@material-ui/core'
 import Confirmation from '../components/Confirmation'
 import { getQuestions } from '../redux/form/actions'
 import { getUserPosts, getPostList, createPost, editPost, resetCreatePostSuccess, resetEditPostSuccess, resetPostList, searchPost } from '../redux/post/actions'
@@ -777,9 +777,12 @@ const RoommateForm = ({
       {roommateQuestions.length !== 0 && roommateCategories.length !== 0
         ?
         <Paper className={classes.paper}>
-              <IconButton onClick={() => history.push("/housings")}>
-            <ArrowBackIcon />Back to all posts
-          </IconButton>
+          <span style={{ display: "flex", alignItems: "center" }}>
+            <IconButton onClick={() => history.push("/roommates")} style={{ marginRight: 5 }}>
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6" color="textSecondary" display="inline">Back to all posts</Typography>
+          </span>
           <br />
           <br />
           {stepper}

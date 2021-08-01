@@ -472,9 +472,12 @@ const HousingForm = ({
     <>
       {housingQuestions.length !== 0 && housingCategories.length !== 0 ? (
         <Paper className={classes.paper}>
-          <IconButton onClick={() => history.push("/housings")}>
-            <ArrowBackIcon />Back to all posts
-          </IconButton>
+          <span style={{ display: "flex", alignItems: "center"}}>
+            <IconButton onClick={() => history.push("/housings")} style={{ marginRight: 5 }}>
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6" color="textSecondary" display="inline">Back to all posts</Typography>
+          </span>
           <br />
           <br />
           {stepper}
