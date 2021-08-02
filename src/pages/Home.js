@@ -143,18 +143,18 @@ const Home = ({
                 justifyContent: "center",
               }}
             >
-              <YoutubePlayer
-                src="https://youtu.be/jtneFF4psgM?autoplay=1&mute=1" // Required
+              {/* <YoutubePlayer
+                src="https://www.youtube.com/embed/jtneFF4psgM?autoplay=1&mute=1" // Required
                 width={600}
                 height={350}
-              />
-              {/* <iframe
-                src="https://youtu.be/jtneFF4psgM?autoplay=1&mute=1"
+              /> */}
+              <iframe
+                src="https://www.youtube.com/embed/jtneFF4psgM?autoplay=1&mute=1&controls=1"
                 width="600"
                 height="350"
                 frameborder="0"
                 allowfullscreen
-              ></iframe> */}
+              ></iframe>
               {/* <iframe
                 id="existing-iframe-example"
                 width="640"

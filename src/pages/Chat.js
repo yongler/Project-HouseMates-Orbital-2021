@@ -157,6 +157,7 @@ const Chat = ({
       roomList.forEach((room) => {
         const temp2 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
         // temp2.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
+        // temp2.onopen = () => { };
         temp2.onmessage = (message) => {
           const dataFromServer = JSON.parse(message.data);
           // console.log("got reply! ", dataFromServer.type);
@@ -168,15 +169,15 @@ const Chat = ({
                 user_id: dataFromServer.owner,
               },
             ]);
-            OneSignal.sendSelfNotification(
-              "HouseMates Notification",
-              "You have a new chat message!",
-              "https://localhost:3000/chat",
-              'https://onesignal.com/images/notification_logo.png',
-              {
-                notificationType: "news-feature",
-              }
-            );
+            // OneSignal.sendSelfNotification(
+            //   "HouseMates Notification",
+            //   "You have a new chat message!",
+            //   "https://localhost:3000/chat",
+            //   'https://onesignal.com/images/notification_logo.png',
+            //   {
+            //     notificationType: "news-feature",
+            //   }
+            // );
           }
           getRoomList(user.id);
         };
