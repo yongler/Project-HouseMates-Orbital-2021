@@ -36,6 +36,7 @@ import {
 } from "../globalConstants";
 import { loadUser } from "../redux/auth/actions";
 import { getScoreList } from "../redux/score/actions";
+import defaultPic from "../static/default_pic.png";
 
 // RoommateCard consists of poster's description: pic, name, gender, bio and top 3 preferred roommate tags.fUSER
 const RoommateCard = ({
@@ -186,7 +187,7 @@ const RoommateCard = ({
           {/* Pic */}
           <CardMedia
             className={classes.media}
-            image={post.owner.profile_pic}
+            image={post.owner.profile_pic || defaultPic}
             title={post.owner.first_name + " " + post.owner.last_name}
           />
 

@@ -9,7 +9,7 @@ class MessageView(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
-        queryset = Message.objects.all()
+        queryset = Message.objects.all().order_by('id')
         room = self.request.query_params.get('room')
         hasread = self.request.query_params.get('hasread')
         time = self.request.query_params.get('time')

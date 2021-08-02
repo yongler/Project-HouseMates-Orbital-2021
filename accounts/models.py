@@ -76,7 +76,7 @@ class CustomUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)  # an admin user; non super-user
     is_admin = models.BooleanField(default=False)
-    profile_pic = models.URLField(default="https://housematesorbital.s3.us-east-2.amazonaws.com/images/default+pic.png", null=True, blank=True)
+    profile_pic = models.URLField(default="", null=True, blank=True)
     bio = models.CharField(default='', max_length=500, null=True, blank=True)
     just_registered = models.BooleanField(default=True)
     light_theme = models.BooleanField(default=True)

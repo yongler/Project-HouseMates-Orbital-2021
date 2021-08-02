@@ -156,10 +156,10 @@ const Chat = ({
       setOneTimePass(false)
       roomList.forEach((room) => {
         const temp2 = new W3CWebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/" + room.label + "/");
-        temp2.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
+        // temp2.onopen = () => { console.log("WebSocket Client Connected: ", room.label); };
         temp2.onmessage = (message) => {
           const dataFromServer = JSON.parse(message.data);
-          console.log("got reply! ", dataFromServer.type);
+          // console.log("got reply! ", dataFromServer.type);
           if (dataFromServer && messages?.length > 0) {
             setMessages([
               ...messages,

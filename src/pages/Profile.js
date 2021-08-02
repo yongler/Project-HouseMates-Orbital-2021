@@ -204,9 +204,9 @@ const Profile = ({
             room.label +
             "/"
         );
-        temp4.onopen = () => {
-          console.log("WebSocket Client Connected: ", room.label);
-        };
+        // temp4.onopen = () => {
+        //   console.log("WebSocket Client Connected: ", room.label);
+        // };
         temp4.onmessage = () => {
           getRoomList(user.id);
         };

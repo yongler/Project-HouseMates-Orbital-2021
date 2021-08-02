@@ -148,6 +148,29 @@ const Home = ({
                 width={600}
                 height={350}
               />
+              {/* <iframe
+                src="https://youtu.be/jtneFF4psgM?autoplay=1&mute=1"
+                width="600"
+                height="350"
+                frameborder="0"
+                allowfullscreen
+              ></iframe> */}
+              {/* <iframe
+                id="existing-iframe-example"
+                width="640"
+                height="360"
+                src="https://youtu.be/jtneFF4psgM?autoplay=1&mute=1&enablejsapi=1"
+                frameborder="0"
+                allow="autoplay"
+                style={{ border: "solid 4px #37474F" }}
+              ></iframe> */}
+              {/* <iframe
+                type="text/html"
+                src="https://youtu.be/jtneFF4psgM?autoplay=1"
+                frameborder="0"
+                allow="autoplay"
+                X-Frame-Options="cross-origin"
+              ></iframe> */}
             </Grid>
 
             {/* Login & register */}
