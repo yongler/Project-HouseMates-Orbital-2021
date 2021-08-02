@@ -36,9 +36,9 @@ If interested in collaborations, do contact us at  [housematesorbital@gmail.com]
 
 
 [Website]: https://housematesorbital.herokuapp.com/
-[Video]: [https://drive.google.com/file/d/1Qq_O-xDxBkwFGBv5BVJdsCmHarahbMat/view?usp=sharing ](https://drive.google.com/file/d/1KeDcqG7U1gt98lqkOnnUpV1tjHj1a8OS/view?usp=sharing)
-[Cognitive Walkthrough]: https://drive.google.com/file/d/1KeDcqG7U1gt98lqkOnnUpV1tjHj1a8OS/view?usp=sharing
-[Poster]: https://drive.google.com/file/d/1dq5PYwDJUH9nrT0rTpD6yuWghK8gO4pH/view?usp=sharing
+[Video]: https://drive.google.com/file/d/1NQeBeghhZGNO6IuBM94ulc3Qz8s0cD-y/view?usp=sharing
+[Cognitive Walkthrough]: https://drive.google.com/file/d/1lBsyg0nKgpwas13BGbnGyvT_UBmux3s_/view?usp=sharing
+[Poster]: https://drive.google.com/file/d/1JzXkRPk3jCfKwVeImwHG87QZzbmkFaE7/view?usp=sharing
 [Documentation]: https://docs.google.com/document/d/16pjtKawz7sqSuMdYiBKtxLyIR5liNm7SvPhIsVVtp-c/edit?usp=sharing
 [Developer guide]: https://docs.google.com/document/d/10UjgAKWyJ8uNb9km_bVWmcQokz-bxytz31iyCi-oD8E/edit?usp=sharing
 

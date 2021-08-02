@@ -33,23 +33,23 @@ if os.path.isfile(dotenv_file):
 SECRET_KEY = "django-insecure-!pj4x%qojxw8-cf0hb**-9cyz8u+*9xlsu2xa)m*117n+oe&cc"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
- 
-CHANNEL_LAYERS = {
-"default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts":[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        }
-    },
-}
+DEBUG = True
+# DEBUG = False
  
 # CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+# "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts":[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#         }
 #     },
 # }
+ 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}
 
 ASGI_APPLICATION = "HouseMates.routing.application"
 
